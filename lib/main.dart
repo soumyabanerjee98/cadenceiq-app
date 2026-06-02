@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import 'package:cadenceiq_app/core/constants/app_strings.dart';
+import 'package:cadenceiq_app/core/navigation/app_router.dart';
+import 'package:cadenceiq_app/core/theme/app_theme.dart';
+import 'package:cadenceiq_app/providers/activity_provider.dart';
+import 'package:cadenceiq_app/providers/auth_provider.dart';
+import 'package:cadenceiq_app/providers/dashboard_provider.dart';
+import 'package:cadenceiq_app/providers/goal_provider.dart';
+import 'package:cadenceiq_app/providers/settings_provider.dart';
+import 'package:cadenceiq_app/providers/summary_provider.dart';
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ),
+  );
+  runApp(const CadenceIQApp());
+}
+
+class CadenceIQApp extends StatelessWidget {
+  const CadenceIQApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => DashboardProvider()),
+        ChangeNotifierProvider(create: (_) => ActivityProvider()),
+        ChangeNotifierProvider(create: (_) => GoalProvider()..load()),
+        ChangeNotifierProvider(create: (_) => SummaryProvider()),
+      ],
+      child: Consumer<SettingsProvider>(
+        builder: (context, settings, _) {
+          return MaterialApp.router(
+            title: AppStrings.appName,
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
+            routerConfig: AppRouter.create(),
+          );
+        },
+      ),
+    );
+  }
+}
