@@ -4,21 +4,53 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
 class WeeklyLoadChart extends StatelessWidget {
-  const WeeklyLoadChart({super.key, required this.data});
+  const WeeklyLoadChart({
+    super.key,
+    required this.data,
+  });
 
   final List<double> data;
 
   @override
   Widget build(BuildContext context) {
-    if (data.isEmpty) return const SizedBox.shrink();
+    if (data.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     final maxY = data.reduce((a, b) => a > b ? a : b) * 1.2;
 
     return SizedBox(
-      height: 180,
-      child: BarChart(
-        BarChartData(
+      height: 220,
+      child: LineChart(
+        duration: const Duration(
+          milliseconds: 400,
+        ),
+        curve: Curves.easeOut,
+        LineChartData(
+          minY: 0,
           maxY: maxY,
+          lineTouchData: LineTouchData(
+            handleBuiltInTouches: true,
+            touchTooltipData: LineTouchTooltipData(
+              getTooltipColor: (_) => Colors.white,
+              tooltipRoundedRadius: 12,
+              tooltipPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 8,
+              ),
+              getTooltipItems: (spots) {
+                return spots.map((spot) {
+                  return LineTooltipItem(
+                    spot.y.toStringAsFixed(0),
+                    const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  );
+                }).toList();
+              },
+            ),
+          ),
           gridData: FlGridData(
             show: true,
             drawVerticalLine: false,
@@ -27,50 +59,94 @@ class WeeklyLoadChart extends StatelessWidget {
               strokeWidth: 1,
             ),
           ),
-          borderData: FlBorderData(show: false),
+          borderData: FlBorderData(
+            show: false,
+          ),
           titlesData: FlTitlesData(
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: false,
+              ),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: false,
+              ),
+            ),
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 reservedSize: 32,
-                getTitlesWidget: (v, _) => Text(
-                  v.toInt().toString(),
-                  style: const TextStyle(fontSize: 10, color: AppColors.textTertiary),
-                ),
+                getTitlesWidget: (value, _) {
+                  return Text(
+                    value.toInt().toString(),
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: AppColors.textTertiary,
+                    ),
+                  );
+                },
               ),
             ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                getTitlesWidget: (v, _) {
-                  final i = v.toInt();
-                  if (i < 0 || i >= data.length) return const SizedBox.shrink();
+                getTitlesWidget: (value, _) {
+                  final i = value.toInt();
+
+                  if (i < 0 || i >= data.length) {
+                    return const SizedBox.shrink();
+                  }
+
                   return Padding(
-                    padding: const EdgeInsets.only(top: 6),
+                    padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       'W${i + 1}',
-                      style: const TextStyle(fontSize: 10, color: AppColors.textTertiary),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: AppColors.textTertiary,
+                      ),
                     ),
                   );
                 },
               ),
             ),
           ),
-          barGroups: List.generate(data.length, (i) {
-            return BarChartGroupData(
-              x: i,
-              barRods: [
-                BarChartRodData(
-                  toY: data[i],
-                  color: i == data.length - 1 ? AppColors.primary : AppColors.primary.withOpacity(0.5),
-                  width: 16,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+          lineBarsData: [
+            LineChartBarData(
+              spots: List.generate(
+                data.length,
+                (i) => FlSpot(
+                  i.toDouble(),
+                  data[i],
                 ),
-              ],
-            );
-          }),
+              ),
+              isCurved: true,
+              color: AppColors.primary,
+              barWidth: 3,
+              isStrokeCapRound: true,
+              dotData: FlDotData(
+                show: true,
+                getDotPainter: (
+                  spot,
+                  percent,
+                  bar,
+                  index,
+                ) {
+                  return FlDotCirclePainter(
+                    radius: 4,
+                    color: AppColors.primary,
+                    strokeWidth: 2,
+                    strokeColor: Colors.white,
+                  );
+                },
+              ),
+              belowBarData: BarAreaData(
+                show: true,
+                color: AppColors.primary.withValues(alpha: 0.12),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -140,7 +216,8 @@ class ZoneDistributionChart extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(entries[i].key, style: const TextStyle(fontSize: 12)),
+                      Text(entries[i].key,
+                          style: const TextStyle(fontSize: 12)),
                     ],
                   ),
                 );
