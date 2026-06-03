@@ -33,47 +33,9 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(padding, 16, padding, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Activities',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Search rides...',
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                    onChanged: provider.setSearch,
-                  ),
-                  const SizedBox(height: 12),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        _FilterChip(
-                          label: 'All',
-                          selected: provider.zoneFilter == null,
-                          onTap: () => provider.setZoneFilter(null),
-                        ),
-                        ...TrainingZone.values.map((z) => _FilterChip(
-                              label: z.name.toUpperCase(),
-                              selected: provider.zoneFilter == z,
-                              onTap: () => provider.setZoneFilter(z),
-                            )),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: ActivitiesHeaderDelegate(),
           ),
           if (provider.state == LoadState.loading)
             const SliverFillRemaining(child: SkeletonList())
@@ -114,6 +76,81 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
   }
 }
 
+class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  double get minExtent => kToolbarHeight + 135;
+
+  @override
+  double get maxExtent => kToolbarHeight + 135;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    final provider = context.watch<ActivityProvider>();
+
+    final padding = Responsive.horizontalPadding(context);
+
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      padding: EdgeInsets.fromLTRB(
+        padding,
+        16,
+        padding,
+        12,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Activities',
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          const SizedBox(height: 16),
+          TextField(
+            decoration: const InputDecoration(
+              hintText: 'Search rides...',
+              prefixIcon: Icon(Icons.search),
+            ),
+            onChanged: provider.setSearch,
+          ),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _FilterChip(
+                  label: 'All',
+                  selected: provider.zoneFilter == null,
+                  onTap: () => provider.setZoneFilter(null),
+                ),
+                ...TrainingZone.values.map(
+                  (z) => _FilterChip(
+                    label: z.name.toUpperCase(),
+                    selected: provider.zoneFilter == z,
+                    onTap: () => provider.setZoneFilter(z),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(
+    covariant SliverPersistentHeaderDelegate oldDelegate,
+  ) {
+    return true;
+  }
+}
+
 class _FilterChip extends StatelessWidget {
   const _FilterChip({
     required this.label,
@@ -133,7 +170,7 @@ class _FilterChip extends StatelessWidget {
         label: Text(label),
         selected: selected,
         onSelected: (_) => onTap(),
-        selectedColor: AppColors.primary.withOpacity(0.15),
+        selectedColor: AppColors.primary.withValues(alpha: 0.15),
         checkmarkColor: AppColors.primary,
       ),
     );

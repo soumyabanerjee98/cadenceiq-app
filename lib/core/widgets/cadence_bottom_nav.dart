@@ -14,7 +14,7 @@ class CadenceBottomNav extends StatelessWidget {
     return NavigationBar(
       selectedIndex: navigationShell.currentIndex,
       labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-      indicatorColor: AppColors.primary,
+      indicatorColor: Colors.transparent,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       surfaceTintColor: Colors.transparent,
       onDestinationSelected: (index) {
@@ -26,33 +26,30 @@ class CadenceBottomNav extends StatelessWidget {
       destinations: [
         NavigationDestination(
           icon: Icon(Icons.dashboard_outlined, color: AppColors.textTertiary),
-          selectedIcon: const Icon(Icons.dashboard, color: Colors.white),
-          // label: 'Dashboard',
-          label: '',
+          selectedIcon: const Icon(Icons.dashboard, color: AppColors.primary),
+          label: 'Dashboard',
         ),
         NavigationDestination(
-          icon: Icon(Icons.directions_bike_outlined, color: AppColors.textTertiary),
-          selectedIcon: const Icon(Icons.directions_bike, color: Colors.white),
-          // label: 'Activities',
-          label: '',
+          icon: Icon(Icons.directions_bike_outlined,
+              color: AppColors.textTertiary),
+          selectedIcon:
+              const Icon(Icons.directions_bike, color: AppColors.primary),
+          label: 'Activities',
         ),
         NavigationDestination(
           icon: Icon(Icons.flag_outlined, color: AppColors.textTertiary),
-          selectedIcon: const Icon(Icons.flag, color: Colors.white),
-          // label: 'Goals',
-          label: '',
+          selectedIcon: const Icon(Icons.flag, color: AppColors.primary),
+          label: 'Goals',
         ),
         NavigationDestination(
           icon: Icon(Icons.summarize_outlined, color: AppColors.textTertiary),
-          selectedIcon: const Icon(Icons.summarize, color: Colors.white),
-          // label: 'Summaries',
-          label: '',
+          selectedIcon: const Icon(Icons.summarize, color: AppColors.primary),
+          label: 'Summaries',
         ),
         NavigationDestination(
           icon: Icon(Icons.settings_outlined, color: AppColors.textTertiary),
-          selectedIcon: const Icon(Icons.settings, color: Colors.white),
-          // label: 'Settings',
-          label: '',
+          selectedIcon: const Icon(Icons.settings, color: AppColors.primary),
+          label: 'Settings',
         ),
       ],
     );
