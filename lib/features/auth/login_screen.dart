@@ -1,3 +1,6 @@
+import 'package:cadenceiq_app/models/user_profile.dart';
+import 'package:cadenceiq_app/providers/dashboard_provider.dart';
+import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +23,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(text: 'alex.morgan@example.com');
+  final _emailController =
+      TextEditingController(text: 'alex.morgan@example.com');
   final _passwordController = TextEditingController(text: 'password123');
 
   @override
@@ -33,9 +37,13 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthProvider>();
+    final dashboard = context.read<DashboardProvider>();
     await auth.login(_emailController.text, _passwordController.text);
-    if (!mounted) return;
-    if (auth.isAuthenticated) context.go(RoutePaths.dashboard);
+    if (auth.isAuthenticated) {
+      final UserProfile profile = dashboard.user;
+      await LocalStorage.setUserProfile(profile);
+      if (mounted) context.go(RoutePaths.dashboard);
+    }
   }
 
   @override
@@ -80,8 +88,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixIcon: Icon(Icons.email_outlined),
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    validator: (v) =>
-                        v == null || !v.contains('@') ? 'Enter a valid email' : null,
+                    validator: (v) => v == null || !v.contains('@')
+                        ? 'Enter a valid email'
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
@@ -91,8 +100,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixIcon: Icon(Icons.lock_outline),
                     ),
                     obscureText: true,
-                    validator: (v) =>
-                        v == null || v.length < 6 ? 'Password must be 6+ characters' : null,
+                    validator: (v) => v == null || v.length < 6
+                        ? 'Password must be 6+ characters'
+                        : null,
                   ),
                   Align(
                     alignment: Alignment.centerRight,
@@ -104,7 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (auth.errorMessage != null) ...[
                     Text(
                       auth.errorMessage!,
-                      style: const TextStyle(color: AppColors.error, fontSize: 13),
+                      style:
+                          const TextStyle(color: AppColors.error, fontSize: 13),
                     ),
                     const SizedBox(height: 8),
                   ],

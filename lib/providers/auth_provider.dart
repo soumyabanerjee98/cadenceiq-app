@@ -1,3 +1,5 @@
+import 'package:cadenceiq_app/models/user_profile.dart';
+import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:cadenceiq_app/services/mock/mock_user_repository.dart';
@@ -22,12 +24,13 @@ class AuthProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final success = await _repository.login(email, password);
-    if (success) {
+    final UserProfile? profile = await _repository.login(email, password);
+    if (profile != null) {
       _state = AuthState.authenticated;
     } else {
       _state = AuthState.error;
-      _errorMessage = 'Invalid email or password. Use any email and 6+ char password.';
+      _errorMessage =
+          'Invalid email or password. Use any email and 6+ char password.';
     }
     notifyListeners();
   }
@@ -55,8 +58,9 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void logout() {
+  void logout() async {
     _state = AuthState.unauthenticated;
+    await LocalStorage.removeUserProfile();
     notifyListeners();
   }
 

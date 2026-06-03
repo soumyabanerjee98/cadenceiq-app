@@ -32,4 +32,38 @@ class UserProfile {
     }
     return name.isNotEmpty ? name[0].toUpperCase() : '?';
   }
+
+  factory UserProfile.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    return UserProfile(
+      id: json["id"] ?? "",
+      name: json["name"] ?? "",
+      email: json["email"] ?? "",
+      age: json["age"] ?? 0,
+      maxHr: json["maxHr"] ?? 0,
+      restingHr: json["restingHr"] ?? 0,
+      avatarUrl: json["avatarUrl"] ?? "",
+      totalActivities: json["totalActivities"] ?? 0,
+      totalDistanceKm: json["totalDistanceKm"] ?? 0,
+      totalHours: json["totalHours"] ?? 0,
+      goalsCompleted: json["goalsCompleted"] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "name": name,
+      "email": email,
+      "age": age,
+      "maxHr": maxHr,
+      "restingHr": restingHr,
+      "avatarUrl": avatarUrl,
+      "totalActivities": totalActivities,
+      "totalDistanceKm": totalDistanceKm,
+      "totalHours": totalHours,
+      "goalsCompleted": goalsCompleted,
+    };
+  }
 }

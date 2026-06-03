@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -52,14 +53,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
-  void _next() {
+  void _next() async {
     if (_currentPage < _pages.length - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
     } else {
-      context.go(RoutePaths.login);
+      await LocalStorage.setOnboardingCompleted();
+      if (mounted) context.go(RoutePaths.login);
     }
   }
 
@@ -93,7 +95,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   width: _currentPage == i ? 24 : 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: _currentPage == i ? AppColors.primary : AppColors.border,
+                    color: _currentPage == i
+                        ? AppColors.primary
+                        : AppColors.border,
                     borderRadius: BorderRadius.circular(4),
                   ),
                 );

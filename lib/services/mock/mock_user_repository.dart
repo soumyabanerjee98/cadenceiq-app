@@ -9,9 +9,10 @@ class MockUserRepository {
   TodaySession getTodaySession() => MockData.todaySession;
   Goal getCurrentGoal() => MockData.activeGoal;
 
-  Future<bool> login(String email, String password) async {
+  Future<UserProfile?> login(String email, String password) async {
     await Future<void>.delayed(const Duration(milliseconds: 800));
-    return email.isNotEmpty && password.length >= 6;
+    if (email.isNotEmpty && password.length >= 6) return getProfile();
+    return null;
   }
 
   Future<bool> signup({
