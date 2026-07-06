@@ -31,7 +31,8 @@ class LocalStorage {
       return null;
     }
     final UserProfile profile = UserProfile.fromJson(
-        jsonDecode(prefs.getString(_userProfileKey) ?? ""));
+      jsonDecode(prefs.getString(_userProfileKey) ?? ""),
+    );
 
     return profile;
   }
@@ -40,5 +41,40 @@ class LocalStorage {
     final prefs = await SharedPreferences.getInstance();
 
     return prefs.remove(_userProfileKey);
+  }
+}
+
+class TokenStorage {
+  static const String _accessToken = 'access_token';
+  static const String _refreshToken = 'refresh_token';
+
+  static Future<void> save({
+    required String accessToken,
+    String? refreshToken,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(_accessToken, accessToken);
+    if (refreshToken != null) {
+      await prefs.setString(_refreshToken, refreshToken);
+    }
+  }
+
+  static Future<String?> getAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return prefs.getString(_accessToken);
+  }
+
+  static Future<String?> getRefreshToken() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return prefs.getString(_refreshToken);
+  }
+
+  static Future<void> clear() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_accessToken);
+    await prefs.remove(_refreshToken);
   }
 }
