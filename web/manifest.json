@@ -1,6 +1,6 @@
 {
-    "name": "cadenceiq_app",
-    "short_name": "cadenceiq_app",
+    "name": "cadenceiq",
+    "short_name": "cadenceiq",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

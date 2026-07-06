@@ -1,61 +1,16 @@
-# CadenceIQ
+# cadenceiq
 
-AI-powered cycling training and performance platform — Flutter MVP with mock data only.
-
-## Features
-
-- Splash & 4-screen onboarding flow
-- Authentication (login, signup, social placeholders)
-- Dashboard with CTL/ATL/TSB metrics, charts, and today's session
-- Activities list (28 mock rides) with search, filters, and detail views
-- Goals (current/past tabs), goal details, and AI plan generation UI
-- Completed goal summaries with insights and badges
-- Settings (dark mode, units, notifications, connected services)
-- Profile with performance stats
-
-## Tech Stack
-
-- Flutter 3.x
-- Provider (state management)
-- Go Router (navigation)
-- Material 3
-- fl_chart (charts)
-- google_fonts
+A new Flutter project.
 
 ## Getting Started
 
-```bash
-flutter pub get
-flutter run
-```
+This project is a starting point for a Flutter application.
 
-### Demo Login
+A few resources to get you started if this is your first Flutter project:
 
-- Email: any valid email (pre-filled `alex.morgan@example.com`)
-- Password: 6+ characters (pre-filled `password123`)
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-Social login buttons navigate directly to the dashboard for demo purposes.
-
-## Architecture
-
-```
-lib/
-├── core/           # theme, constants, widgets, utils, navigation
-├── features/       # feature screens by module
-├── models/         # data models
-├── providers/      # ChangeNotifier providers
-├── services/mock/  # mock repositories & data
-└── main.dart
-```
-
-## Backend Integration
-
-All data comes from `lib/services/mock/`. To integrate APIs later:
-
-1. Replace mock repositories with real implementations
-2. Keep the same model classes and provider interfaces
-3. Add network/error handling in providers
-
-## License
-
-Private — CadenceIQ MVP
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
