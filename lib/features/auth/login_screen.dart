@@ -1,4 +1,5 @@
 import 'package:cadenceiq_app/core/assets/assets.dart';
+import 'package:cadenceiq_app/core/components/text_form_field.dart';
 import 'package:cadenceiq_app/models/user_profile.dart';
 import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:cadenceiq_app/providers/settings_provider.dart';
@@ -25,10 +26,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(
-    text: 'alex.morgan@example.com',
-  );
-  final _passwordController = TextEditingController(text: 'password123');
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -85,28 +84,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.email,
-                      prefixIcon: Icon(Icons.email_outlined),
-                    ),
+                  CustomTextFormField(
+                    label: AppStrings.email,
+                    prefixIcon: Icon(Icons.email_outlined),
                     keyboardType: TextInputType.emailAddress,
                     validator: (v) => v == null || !v.contains('@')
                         ? 'Enter a valid email'
                         : null,
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.password,
-                      prefixIcon: Icon(Icons.lock_outline),
-                    ),
-                    obscureText: true,
+                  CustomTextFormField(
+                    label: AppStrings.password,
+                    prefixIcon: Icon(Icons.lock_outline),
+                    keyboardType: TextInputType.visiblePassword,
                     validator: (v) => v == null || v.length < 6
                         ? 'Password must be 6+ characters'
                         : null,
+                    obsecureText: true,
                   ),
                   Align(
                     alignment: Alignment.centerRight,
