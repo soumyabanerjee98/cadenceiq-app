@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../theme/app_colors.dart';
 
@@ -24,13 +25,19 @@ class PrimaryButton extends StatelessWidget {
         ? const SizedBox(
             height: 22,
             width: 22,
-            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.white,
+            ),
           )
         : Row(
             mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) ...[Icon(icon, size: 20), const SizedBox(width: 8)],
+              if (icon != null) ...[
+                Icon(icon, size: 20),
+                const SizedBox(width: 8),
+              ],
               Text(label),
             ],
           );
@@ -84,7 +91,7 @@ class SocialAuthButton extends StatelessWidget {
   });
 
   final String label;
-  final IconData icon;
+  final String icon;
   final VoidCallback onPressed;
 
   @override
@@ -99,9 +106,14 @@ class SocialAuthButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 22),
+          SvgPicture.asset(icon, height: 22),
           const SizedBox(width: 12),
-          Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+          Text(
+            label,
+            style: Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+          ),
         ],
       ),
     );

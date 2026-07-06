@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cadenceiq_app/core/constants/app_strings.dart';
@@ -20,11 +21,13 @@ void main() {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
-  runApp(const CadenceIQApp());
+  runApp(CadenceIQApp());
 }
 
 class CadenceIQApp extends StatelessWidget {
-  const CadenceIQApp({super.key});
+  CadenceIQApp({super.key});
+
+  final GoRouter _router = AppRouter.create();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,7 @@ class CadenceIQApp extends StatelessWidget {
             theme: AppTheme.light(),
             darkTheme: AppTheme.dark(),
             themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
-            routerConfig: AppRouter.create(),
+            routerConfig: _router,
           );
         },
       ),

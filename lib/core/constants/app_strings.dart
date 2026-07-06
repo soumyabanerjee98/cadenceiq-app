@@ -29,7 +29,7 @@ abstract final class AppStrings {
   static const forgotPassword = 'Forgot Password?';
   static const noAccount = "Don't have an account?";
   static const haveAccount = 'Already have an account?';
-  static const continueWith = 'Or continue with';
+  static const continueWith = 'Or';
 
   // Dashboard
   static const goodMorning = 'Good morning';

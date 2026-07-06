@@ -1,6 +1,6 @@
+import 'package:cadenceiq_app/core/assets/assets.dart';
 import 'package:flutter/material.dart';
-
-import '../theme/app_colors.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class CadenceAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CadenceAppBar({
@@ -46,14 +46,10 @@ class CadenceLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: AppColors.primary,
-        borderRadius: BorderRadius.circular(size * 0.25),
-      ),
-      child: Icon(Icons.directions_bike, color: Colors.white, size: size * 0.55),
+      child: SvgPicture.asset(AppImages.logoIcon, height: size * 0.55),
     );
   }
 }
