@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:cadenceiq_app/core/assets/assets.dart';
 import 'package:cadenceiq_app/core/components/text_form_field.dart';
 import 'package:cadenceiq_app/models/user_profile.dart';
-import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:cadenceiq_app/providers/settings_provider.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +33,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthProvider>();
-    final profile = await auth.login(email, password);
-    if (auth.isAuthenticated && profile != null) {
-      await LocalStorage.setUserProfile(profile);
+    final res = await auth.login(email, password);
+    if (auth.isAuthenticated) {
+      final accessToken = res.response['accessToken'];
+      final refreshToken = res.response['refreshToken'];
+      await TokenStorage.save(
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      );
       if (mounted) context.go(RoutePaths.dashboard);
     }
   }
@@ -140,21 +146,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   SocialAuthButton(
                     label: 'Continue with Google',
                     icon: AppImages.googleIcon,
-                    onPressed: () => context.go(RoutePaths.dashboard),
+                    onPressed: () {},
                   ),
-                  const SizedBox(height: 10),
-                  SocialAuthButton(
-                    label: 'Continue with Apple',
-                    icon: settings.darkMode
-                        ? AppImages.appleIconDark
-                        : AppImages.appleIcon,
-                    onPressed: () => context.go(RoutePaths.dashboard),
-                  ),
+                  if (Platform.isIOS == true) ...[
+                    const SizedBox(height: 10),
+                    SocialAuthButton(
+                      label: 'Continue with Apple',
+                      icon: settings.darkMode
+                          ? AppImages.appleIconDark
+                          : AppImages.appleIcon,
+                      onPressed: () {},
+                    ),
+                  ],
                   const SizedBox(height: 10),
                   SocialAuthButton(
                     label: 'Continue with Facebook',
                     icon: AppImages.facebookIcon,
-                    onPressed: () => context.go(RoutePaths.dashboard),
+                    onPressed: () {},
                   ),
                   const SizedBox(height: 24),
                   Row(

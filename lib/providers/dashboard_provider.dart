@@ -1,4 +1,5 @@
 import 'package:cadenceiq_app/services/repo/auth_repo.dart';
+import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cadenceiq_app/models/user_profile.dart';
 
@@ -32,6 +33,8 @@ class DashboardProvider extends ChangeNotifier {
   }
 
   Future<void> getProfile() async {
-    user = await _repository.getProfile();
+    final userProfile = await _repository.getProfile();
+    await LocalStorage.setUserProfile(userProfile);
+    user = userProfile;
   }
 }

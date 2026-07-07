@@ -19,22 +19,20 @@ class AuthProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _state == AuthState.authenticated;
 
-  Future<UserProfile?> login(String email, String password) async {
+  Future<ApiResponse> login(String email, String password) async {
     _state = AuthState.loading;
     _errorMessage = null;
     notifyListeners();
 
     final ApiResponse res = await _repository.login(email, password);
-    UserProfile? profile;
     if (res.error == null) {
       _state = AuthState.authenticated;
-      profile = UserProfile.fromJson(res.response);
     } else {
       _state = AuthState.error;
       _errorMessage = res.error?.errorMessage;
     }
     notifyListeners();
-    return profile;
+    return res;
   }
 
   Future<void> signup({
@@ -63,6 +61,7 @@ class AuthProvider extends ChangeNotifier {
   void logout() async {
     _state = AuthState.unauthenticated;
     await LocalStorage.removeUserProfile();
+    await TokenStorage.clear();
     notifyListeners();
   }
 

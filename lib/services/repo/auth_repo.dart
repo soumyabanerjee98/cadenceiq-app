@@ -18,7 +18,9 @@ class AuthRepository {
       return ApiResponse(
         statusCode: dioErr.response?.statusCode,
         response: null,
-        error: ServerError(errorMessage: dioErr.response?.data['message']),
+        error: ServerError(
+          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+        ),
       );
     }
   }
