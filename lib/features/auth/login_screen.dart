@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cadenceiq_app/core/assets/assets.dart';
 import 'package:cadenceiq_app/core/components/text_form_field.dart';
-import 'package:cadenceiq_app/models/user_profile.dart';
 import 'package:cadenceiq_app/providers/settings_provider.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/material.dart';

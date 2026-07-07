@@ -1,5 +1,4 @@
 import 'package:cadenceiq_app/core/network/dio.dart';
-import 'package:cadenceiq_app/models/user_profile.dart';
 import 'package:cadenceiq_app/services/repo/auth_repo.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/foundation.dart';
