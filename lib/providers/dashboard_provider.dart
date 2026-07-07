@@ -1,22 +1,19 @@
+import 'package:cadenceiq_app/services/repo/auth_repo.dart';
 import 'package:flutter/foundation.dart';
-
-import 'package:cadenceiq_app/models/goal.dart';
-import 'package:cadenceiq_app/models/training_metrics.dart';
 import 'package:cadenceiq_app/models/user_profile.dart';
-import 'package:cadenceiq_app/services/mock/mock_user_repository.dart';
 
 class DashboardProvider extends ChangeNotifier {
-  DashboardProvider({MockUserRepository? repository})
-      : _repository = repository ?? MockUserRepository();
+  DashboardProvider({AuthRepository? repository})
+    : _repository = repository ?? AuthRepository();
 
-  final MockUserRepository _repository;
+  final AuthRepository _repository;
 
   bool _isLoading = false;
 
-  UserProfile get user => _repository.getProfile();
-  TrainingMetrics get metrics => _repository.getMetrics();
-  TodaySession get todaySession => _repository.getTodaySession();
-  Goal get currentGoal => _repository.getCurrentGoal();
+  UserProfile? user;
+  // TrainingMetrics get metrics => _repository.getMetrics();
+  // TodaySession get todaySession => _repository.getTodaySession();
+  // Goal get currentGoal => _repository.getCurrentGoal();
   bool get isLoading => _isLoading;
 
   String get greeting {
@@ -29,8 +26,12 @@ class DashboardProvider extends ChangeNotifier {
   Future<void> refresh() async {
     _isLoading = true;
     notifyListeners();
-    await Future<void>.delayed(const Duration(milliseconds: 800));
+    await getProfile();
     _isLoading = false;
     notifyListeners();
+  }
+
+  Future<void> getProfile() async {
+    user = await _repository.getProfile();
   }
 }

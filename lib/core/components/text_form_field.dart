@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 class CustomTextFormField extends StatefulWidget {
   final String label;
   final String initialValue;
+  Function(String value) onChanged;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final bool obsecureText;
-  const CustomTextFormField({
+  CustomTextFormField({
     super.key,
     required this.label,
-    this.initialValue = '',
+    required this.initialValue,
+    required this.onChanged,
     this.prefixIcon,
     this.suffixIcon,
     this.keyboardType,
@@ -53,6 +55,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: _controller,
+        onChanged: widget.onChanged,
         decoration: InputDecoration(
           labelText: widget.label,
           prefixIcon: widget.prefixIcon,

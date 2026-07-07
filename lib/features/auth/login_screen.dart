@@ -26,23 +26,14 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  String email = '';
+  String password = '';
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthProvider>();
-    final dashboard = context.read<DashboardProvider>();
-    await auth.login(_emailController.text, _passwordController.text);
-    if (auth.isAuthenticated) {
-      final UserProfile profile = dashboard.user;
+    final profile = await auth.login(email, password);
+    if (auth.isAuthenticated && profile != null) {
       await LocalStorage.setUserProfile(profile);
       if (mounted) context.go(RoutePaths.dashboard);
     }
@@ -86,6 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 32),
                   CustomTextFormField(
                     label: AppStrings.email,
+                    initialValue: email,
+                    onChanged: (value) => setState(() {
+                      email = value;
+                    }),
                     prefixIcon: Icon(Icons.email_outlined),
                     keyboardType: TextInputType.emailAddress,
                     validator: (v) => v == null || !v.contains('@')
@@ -94,6 +89,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   CustomTextFormField(
                     label: AppStrings.password,
+                    initialValue: password,
+                    onChanged: (value) => setState(() {
+                      password = value;
+                    }),
                     prefixIcon: Icon(Icons.lock_outline),
                     keyboardType: TextInputType.visiblePassword,
                     validator: (v) => v == null || v.length < 6

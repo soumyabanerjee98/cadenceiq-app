@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/services/mock/mock_data.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -12,8 +13,21 @@ import 'package:cadenceiq_app/core/widgets/progress_card.dart';
 import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:cadenceiq_app/providers/settings_provider.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    final dashboard = context.read<DashboardProvider>();
+    dashboard.refresh();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +35,9 @@ class DashboardScreen extends StatelessWidget {
     final settings = context.watch<SettingsProvider>();
     final padding = Responsive.horizontalPadding(context);
     final user = dashboard.user;
-    final metrics = dashboard.metrics;
-    final goal = dashboard.currentGoal;
-    final session = dashboard.todaySession;
+    final metrics = MockData.metrics;
+    final goal = MockData.activeGoal;
+    final session = MockData.todaySession;
 
     return RefreshIndicator(
       color: AppColors.primary,
@@ -41,15 +55,13 @@ class DashboardScreen extends StatelessWidget {
                       children: [
                         Text(
                           dashboard.greeting,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: AppColors.textSecondary),
                         ),
                         Text(
-                          user.name.split(' ').first,
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w700,
-                              ),
+                          (user?.name ?? "").split(' ').first,
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                       ],
                     ),
@@ -62,7 +74,7 @@ class DashboardScreen extends StatelessWidget {
                         radius: 24,
                         backgroundColor: AppColors.primary,
                         child: Text(
-                          user.initials,
+                          user != null ? user.initials : "",
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
@@ -107,19 +119,25 @@ class DashboardScreen extends StatelessWidget {
                     if (isWide) {
                       return Row(
                         children: metricsRow
-                            .map((m) => Expanded(child: Padding(
+                            .map(
+                              (m) => Expanded(
+                                child: Padding(
                                   padding: const EdgeInsets.only(right: 8),
                                   child: m,
-                                )))
+                                ),
+                              ),
+                            )
                             .toList(),
                       );
                     }
                     return Column(
                       children: metricsRow
-                          .map((m) => Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: m,
-                              ))
+                          .map(
+                            (m) => Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: m,
+                            ),
+                          )
                           .toList(),
                     );
                   },
@@ -172,7 +190,9 @@ class DashboardScreen extends StatelessWidget {
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: ZoneDistributionChart(zones: metrics.zoneDistribution),
+                    child: ZoneDistributionChart(
+                      zones: metrics.zoneDistribution,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -188,7 +208,10 @@ class DashboardScreen extends StatelessWidget {
                             color: AppColors.primary.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: const Icon(Icons.fitness_center, color: AppColors.primary),
+                          child: const Icon(
+                            Icons.fitness_center,
+                            color: AppColors.primary,
+                          ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -197,16 +220,26 @@ class DashboardScreen extends StatelessWidget {
                             children: [
                               Text(
                                 session.title,
-                                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 '${Formatters.duration(session.duration)} · ${Formatters.distanceKm(session.distanceKm, imperial: settings.useImperial)} · TSS ${Formatters.load(session.targetLoad)}',
-                                style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                                style: const TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 13,
+                                ),
                               ),
                               Text(
                                 session.zone,
-                                style: const TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.w500),
+                                style: const TextStyle(
+                                  color: AppColors.primary,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ],
                           ),
@@ -262,7 +295,9 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+      style: Theme.of(
+        context,
+      ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
     );
   }
 }
@@ -283,14 +318,22 @@ class _MetricTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: highlight ? AppColors.primary.withOpacity(0.08) : AppColors.surface,
+        color: highlight
+            ? AppColors.primary.withOpacity(0.08)
+            : AppColors.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              color: AppColors.textSecondary,
+            ),
+          ),
           const SizedBox(height: 4),
           Text(
             value,

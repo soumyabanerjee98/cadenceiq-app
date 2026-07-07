@@ -2,22 +2,8 @@ import 'package:cadenceiq_app/models/activity.dart';
 import 'package:cadenceiq_app/models/goal.dart';
 import 'package:cadenceiq_app/models/goal_summary.dart';
 import 'package:cadenceiq_app/models/training_metrics.dart';
-import 'package:cadenceiq_app/models/user_profile.dart';
 
 abstract final class MockData {
-  static const user = UserProfile(
-    id: 'user-1',
-    name: 'Alex Morgan',
-    email: 'alex.morgan@example.com',
-    age: 34,
-    maxHr: 188,
-    restingHr: 52,
-    totalActivities: 247,
-    totalDistanceKm: 6842.5,
-    totalHours: 312.4,
-    goalsCompleted: 8,
-  );
-
   static final metrics = TrainingMetrics(
     ctl: 72.4,
     atl: 58.1,
@@ -75,8 +61,10 @@ abstract final class MockData {
     adjustedLoad: 445,
     progress: 0.62,
     status: GoalStatus.active,
-    description: 'Build endurance and climbing strength for a 160km gran fondo.',
-    goalRequest: 'Prepare for a hilly 160km gran fondo in June with focus on sustained power.',
+    description:
+        'Build endurance and climbing strength for a 160km gran fondo.',
+    goalRequest:
+        'Prepare for a hilly 160km gran fondo in June with focus on sustained power.',
     plannedSessions: _plannedSessions,
   );
 

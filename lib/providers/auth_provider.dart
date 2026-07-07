@@ -1,16 +1,16 @@
+import 'package:cadenceiq_app/core/network/dio.dart';
 import 'package:cadenceiq_app/models/user_profile.dart';
+import 'package:cadenceiq_app/services/repo/auth_repo.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/foundation.dart';
-
-import 'package:cadenceiq_app/services/mock/mock_user_repository.dart';
 
 enum AuthState { initial, loading, authenticated, unauthenticated, error }
 
 class AuthProvider extends ChangeNotifier {
-  AuthProvider({MockUserRepository? repository})
-      : _repository = repository ?? MockUserRepository();
+  AuthProvider({AuthRepository? repository})
+    : _repository = repository ?? AuthRepository();
 
-  final MockUserRepository _repository;
+  final AuthRepository _repository;
 
   AuthState _state = AuthState.initial;
   String? _errorMessage;
@@ -19,20 +19,22 @@ class AuthProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _state == AuthState.authenticated;
 
-  Future<void> login(String email, String password) async {
+  Future<UserProfile?> login(String email, String password) async {
     _state = AuthState.loading;
     _errorMessage = null;
     notifyListeners();
 
-    final UserProfile? profile = await _repository.login(email, password);
-    if (profile != null) {
+    final ApiResponse res = await _repository.login(email, password);
+    UserProfile? profile;
+    if (res.error == null) {
       _state = AuthState.authenticated;
+      profile = UserProfile.fromJson(res.response);
     } else {
       _state = AuthState.error;
-      _errorMessage =
-          'Invalid email or password. Use any email and 6+ char password.';
+      _errorMessage = res.error?.errorMessage;
     }
     notifyListeners();
+    return profile;
   }
 
   Future<void> signup({

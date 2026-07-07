@@ -23,97 +23,105 @@ class ProfileScreen extends StatelessWidget {
       appBar: const CadenceAppBar(showBack: true, title: 'Profile'),
       body: SafePage(
         child: ListView(
-        padding: EdgeInsets.all(padding),
-        children: [
-          Center(
-            child: Hero(
-              tag: 'profile-avatar',
-              child: CircleAvatar(
-                radius: 48,
-                backgroundColor: AppColors.primary,
-                child: Text(
-                  user.initials,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700,
+          padding: EdgeInsets.all(padding),
+          children: [
+            Center(
+              child: Hero(
+                tag: 'profile-avatar',
+                child: CircleAvatar(
+                  radius: 48,
+                  backgroundColor: AppColors.primary,
+                  child: Text(
+                    user?.initials ?? "",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Center(
-            child: Text(
-              user.name,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
+            const SizedBox(height: 16),
+            Center(
+              child: Text(
+                user?.name ?? "",
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            Center(
+              child: Text(
+                user?.email ?? "",
+                style: const TextStyle(color: AppColors.textSecondary),
+              ),
+            ),
+            const SizedBox(height: 32),
+            Text(
+              'User Information',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: Column(
+                children: [
+                  _InfoRow(label: 'Age', value: '${user?.age} years'),
+                  const Divider(height: 1),
+                  _InfoRow(
+                    label: 'Max HR',
+                    value: Formatters.bpm(user?.maxHr ?? 0),
                   ),
+                  const Divider(height: 1),
+                  _InfoRow(
+                    label: 'Resting HR',
+                    value: Formatters.bpm(user?.restingHr ?? 0),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Center(
-            child: Text(
-              user.email,
-              style: const TextStyle(color: AppColors.textSecondary),
-            ),
-          ),
-          const SizedBox(height: 32),
-          Text(
-            'User Information',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 12),
-          Card(
-            child: Column(
-              children: [
-                _InfoRow(label: 'Age', value: '${user.age} years'),
-                const Divider(height: 1),
-                _InfoRow(label: 'Max HR', value: Formatters.bpm(user.maxHr)),
-                const Divider(height: 1),
-                _InfoRow(label: 'Resting HR', value: Formatters.bpm(user.restingHr)),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Performance Stats',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 12),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 1.5,
-            children: [
-              MetricCard(
-                label: 'Total Activities',
-                value: '${user.totalActivities}',
-                icon: Icons.directions_bike,
-              ),
-              MetricCard(
-                label: 'Total Distance',
-                value: Formatters.distanceKm(user.totalDistanceKm, imperial: imperial),
-                icon: Icons.straighten,
-              ),
-              MetricCard(
-                label: 'Total Hours',
-                value: user.totalHours.toStringAsFixed(0),
-                unit: 'hrs',
-                icon: Icons.timer,
-              ),
-              MetricCard(
-                label: 'Goals Completed',
-                value: '${user.goalsCompleted}',
-                icon: Icons.emoji_events,
-                color: AppColors.primary,
-              ),
-            ],
-          ),
-          const SizedBox(height: 32),
-        ],
+            // const SizedBox(height: 24),
+            // Text(
+            //   'Performance Stats',
+            //   style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            // ),
+            // const SizedBox(height: 12),
+            // GridView.count(
+            //   crossAxisCount: 2,
+            //   shrinkWrap: true,
+            //   physics: const NeverScrollableScrollPhysics(),
+            //   mainAxisSpacing: 10,
+            //   crossAxisSpacing: 10,
+            //   childAspectRatio: 1.5,
+            //   children: [
+            //     MetricCard(
+            //       label: 'Total Activities',
+            //       value: '${user.totalActivities}',
+            //       icon: Icons.directions_bike,
+            //     ),
+            //     MetricCard(
+            //       label: 'Total Distance',
+            //       value: Formatters.distanceKm(user.totalDistanceKm, imperial: imperial),
+            //       icon: Icons.straighten,
+            //     ),
+            //     MetricCard(
+            //       label: 'Total Hours',
+            //       value: user.totalHours.toStringAsFixed(0),
+            //       unit: 'hrs',
+            //       icon: Icons.timer,
+            //     ),
+            //     MetricCard(
+            //       label: 'Goals Completed',
+            //       value: '${user.goalsCompleted}',
+            //       icon: Icons.emoji_events,
+            //       color: AppColors.primary,
+            //     ),
+            //   ],
+            // ),
+            const SizedBox(height: 32),
+          ],
         ),
       ),
     );

@@ -4,6 +4,23 @@ import 'package:cadenceiq_app/core/constants/api_url.dart';
 import 'package:cadenceiq_app/core/network/api_interceptor.dart';
 import 'package:dio/dio.dart';
 
+class ServerError {
+  const ServerError({required this.errorMessage});
+  final String errorMessage;
+}
+
+class ApiResponse {
+  final int? statusCode;
+  final dynamic response;
+  final ServerError? error;
+
+  const ApiResponse({
+    required this.statusCode,
+    required this.response,
+    this.error,
+  });
+}
+
 class DioClient {
   DioClient._();
 
