@@ -5,10 +5,10 @@ import 'package:cadenceiq_app/core/theme/app_colors.dart';
 import 'package:cadenceiq_app/core/utils/formatters.dart';
 import 'package:cadenceiq_app/core/utils/responsive.dart';
 import 'package:cadenceiq_app/core/widgets/cadence_app_bar.dart';
-import 'package:cadenceiq_app/core/widgets/metric_card.dart';
+// import 'package:cadenceiq_app/core/widgets/metric_card.dart';
 import 'package:cadenceiq_app/core/widgets/safe_page.dart';
 import 'package:cadenceiq_app/providers/dashboard_provider.dart';
-import 'package:cadenceiq_app/providers/settings_provider.dart';
+// import 'package:cadenceiq_app/providers/settings_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -16,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<DashboardProvider>().user;
-    final imperial = context.watch<SettingsProvider>().useImperial;
+    // final imperial = context.watch<SettingsProvider>().useImperial;
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(

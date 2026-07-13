@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class CustomTextFormField extends StatefulWidget {
   final String label;
   final String initialValue;
-  Function(String value) onChanged;
+  final Function(String value) onChanged;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final bool obsecureText;
-  CustomTextFormField({
+  const CustomTextFormField({
     super.key,
     required this.label,
     required this.initialValue,

@@ -1,11 +1,8 @@
 import 'package:cadenceiq_app/core/constants/api_url.dart';
-import 'package:cadenceiq_app/core/constants/route_paths.dart';
 import 'package:cadenceiq_app/core/env/env.dart';
 import 'package:cadenceiq_app/providers/auth_provider.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:dio/dio.dart';
-import 'package:cadenceiq_app/core/navigation/app_router.dart';
-import 'package:go_router/go_router.dart';
 
 class ApiInterceptor extends QueuedInterceptor {
   final Dio refreshClient;

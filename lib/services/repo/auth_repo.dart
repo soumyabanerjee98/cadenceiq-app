@@ -1,6 +1,5 @@
 import 'package:cadenceiq_app/core/constants/api_url.dart';
 import 'package:cadenceiq_app/core/network/dio.dart';
-import 'package:cadenceiq_app/models/user_profile.dart';
 import 'package:dio/dio.dart';
 
 class AuthRepository {

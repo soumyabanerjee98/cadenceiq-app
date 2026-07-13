@@ -64,7 +64,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ?.copyWith(color: AppColors.textSecondary),
                         ),
                         Text(
-                          (user?.name ?? "").split(' ').first,
+                          (user.name ?? "").split(' ').first,
                           style: Theme.of(context).textTheme.headlineSmall
                               ?.copyWith(fontWeight: FontWeight.w700),
                         ),
@@ -79,7 +79,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         radius: 24,
                         backgroundColor: AppColors.primary,
                         child: Text(
-                          user != null ? user.initials : "",
+                          user.initials,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
