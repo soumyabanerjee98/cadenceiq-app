@@ -102,21 +102,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     final metricsRow = [
                       MetricCard(
                         label: 'Fitness (CTL)',
-                        value: metrics.ctl.toStringAsFixed(1),
-                        trend: '+3.2 this week',
+                        value: (dashboard.user?.ctl ?? 0).toStringAsFixed(1),
+                        // trend: '+3.2 this week',
                         color: AppColors.success,
                         icon: Icons.trending_up,
                       ),
                       MetricCard(
                         label: 'Fatigue (ATL)',
-                        value: metrics.atl.toStringAsFixed(1),
+                        value: (dashboard.user?.atl ?? 0).toStringAsFixed(1),
                         color: AppColors.warning,
                         icon: Icons.battery_alert,
                       ),
                       MetricCard(
                         label: 'Readiness (TSB)',
-                        value: metrics.tsb.toStringAsFixed(1),
-                        trend: 'Fresh',
+                        value: (dashboard.user?.tsb ?? 0).toStringAsFixed(1),
+                        // trend: 'Fresh',
                         color: AppColors.info,
                         icon: Icons.bolt,
                       ),

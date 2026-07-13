@@ -13,6 +13,10 @@ class UserProfile {
     this.ctl = 0,
     this.tsb = 0,
     this.stravaConnected = false,
+    this.totalActivities = 0,
+    this.totalDistance = 0,
+    this.totalHours = 0,
+    this.goalsCompleted = 0,
   });
 
   final String id;
@@ -26,6 +30,10 @@ class UserProfile {
   final num ctl;
   final num tsb;
   final bool stravaConnected;
+  final int totalActivities;
+  final num totalDistance;
+  final num totalHours;
+  final int goalsCompleted;
 
   String get initials {
     final parts = name!.trim().split(' ');
@@ -36,7 +44,6 @@ class UserProfile {
   }
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
-    print(json);
     return UserProfile(
       id: json["id"],
       name: json["name"] ?? "",
@@ -48,7 +55,11 @@ class UserProfile {
       atl: json["metrics"]["atl"],
       ctl: json["metrics"]["ctl"],
       tsb: json["metrics"]["tsb"],
-      stravaConnected: json["stravaConnected"],
+      stravaConnected: json["settings"]["stravaConnected"],
+      totalActivities: json["stats"]["totalActivities"],
+      totalDistance: json["stats"]["totalDistance"],
+      totalHours: json["stats"]["totalHours"],
+      goalsCompleted: json["stats"]["goalsCompleted"],
     );
   }
 

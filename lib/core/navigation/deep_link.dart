@@ -24,7 +24,6 @@ class DeepLinkService {
 
   void _handleUri(Uri uri) {
     final String path = '/${uri.host}?${uri.query}';
-    print("deeplink -> $path");
     router.push(path);
   }
 

@@ -5,10 +5,10 @@ import 'package:cadenceiq_app/core/theme/app_colors.dart';
 import 'package:cadenceiq_app/core/utils/formatters.dart';
 import 'package:cadenceiq_app/core/utils/responsive.dart';
 import 'package:cadenceiq_app/core/widgets/cadence_app_bar.dart';
-// import 'package:cadenceiq_app/core/widgets/metric_card.dart';
+import 'package:cadenceiq_app/core/widgets/metric_card.dart';
 import 'package:cadenceiq_app/core/widgets/safe_page.dart';
 import 'package:cadenceiq_app/providers/dashboard_provider.dart';
-// import 'package:cadenceiq_app/providers/settings_provider.dart';
+import 'package:cadenceiq_app/providers/settings_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -16,7 +16,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<DashboardProvider>().user;
-    // final imperial = context.watch<SettingsProvider>().useImperial;
+    final imperial = context.watch<SettingsProvider>().useImperial;
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(
@@ -82,44 +82,49 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
             ),
-            // const SizedBox(height: 24),
-            // Text(
-            //   'Performance Stats',
-            //   style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-            // ),
-            // const SizedBox(height: 12),
-            // GridView.count(
-            //   crossAxisCount: 2,
-            //   shrinkWrap: true,
-            //   physics: const NeverScrollableScrollPhysics(),
-            //   mainAxisSpacing: 10,
-            //   crossAxisSpacing: 10,
-            //   childAspectRatio: 1.5,
-            //   children: [
-            //     MetricCard(
-            //       label: 'Total Activities',
-            //       value: '${user.totalActivities}',
-            //       icon: Icons.directions_bike,
-            //     ),
-            //     MetricCard(
-            //       label: 'Total Distance',
-            //       value: Formatters.distanceKm(user.totalDistanceKm, imperial: imperial),
-            //       icon: Icons.straighten,
-            //     ),
-            //     MetricCard(
-            //       label: 'Total Hours',
-            //       value: user.totalHours.toStringAsFixed(0),
-            //       unit: 'hrs',
-            //       icon: Icons.timer,
-            //     ),
-            //     MetricCard(
-            //       label: 'Goals Completed',
-            //       value: '${user.goalsCompleted}',
-            //       icon: Icons.emoji_events,
-            //       color: AppColors.primary,
-            //     ),
-            //   ],
-            // ),
+            const SizedBox(height: 24),
+            Text(
+              'Performance Stats',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: 1.5,
+              children: [
+                MetricCard(
+                  label: 'Total Activities',
+                  value: '${user?.totalActivities}',
+                  icon: Icons.directions_bike,
+                ),
+                MetricCard(
+                  label: 'Total Distance',
+                  value: Formatters.distanceKm(
+                    (user?.totalDistance ?? 0) / 1000,
+                    imperial: imperial,
+                  ),
+                  icon: Icons.straighten,
+                ),
+                MetricCard(
+                  label: 'Total Hours',
+                  value: (user?.totalHours ?? 0).toStringAsFixed(0),
+                  unit: 'hrs',
+                  icon: Icons.timer,
+                ),
+                MetricCard(
+                  label: 'Goals Completed',
+                  value: '${user?.goalsCompleted}',
+                  icon: Icons.emoji_events,
+                  color: AppColors.primary,
+                ),
+              ],
+            ),
             const SizedBox(height: 32),
           ],
         ),
