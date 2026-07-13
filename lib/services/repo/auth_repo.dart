@@ -40,9 +40,18 @@ class AuthRepository {
     return null;
   }
 
-  Future<UserProfile> getProfile() async {
-    final res = await dio.get(ApiUrl.profile);
-    final profile = UserProfile.fromJson(res.data);
-    return profile;
+  Future<ApiResponse> getProfile() async {
+    try {
+      final res = await dio.get(ApiUrl.profile);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(
+          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+        ),
+      );
+    }
   }
 }

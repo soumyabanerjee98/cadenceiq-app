@@ -1,7 +1,10 @@
+import 'package:cadenceiq_app/core/constants/route_paths.dart';
+import 'package:cadenceiq_app/core/navigation/app_router.dart';
 import 'package:cadenceiq_app/core/network/dio.dart';
 import 'package:cadenceiq_app/services/repo/auth_repo.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 
 enum AuthState { initial, loading, authenticated, unauthenticated, error }
 
@@ -61,6 +64,7 @@ class AuthProvider extends ChangeNotifier {
     _state = AuthState.unauthenticated;
     await LocalStorage.removeUserProfile();
     await TokenStorage.clear();
+    rootNavigatorKey.currentContext?.go(RoutePaths.login);
     notifyListeners();
   }
 

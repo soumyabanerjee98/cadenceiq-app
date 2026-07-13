@@ -33,8 +33,11 @@ class DashboardProvider extends ChangeNotifier {
   }
 
   Future<void> getProfile() async {
-    final userProfile = await _repository.getProfile();
-    await LocalStorage.setUserProfile(userProfile);
-    user = userProfile;
+    final res = await _repository.getProfile();
+    if (res.response != null) {
+      final userProfile = UserProfile.fromJson(res.response);
+      await LocalStorage.setUserProfile(userProfile);
+      user = userProfile;
+    }
   }
 }

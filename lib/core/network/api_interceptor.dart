@@ -1,6 +1,11 @@
+import 'package:cadenceiq_app/core/constants/api_url.dart';
+import 'package:cadenceiq_app/core/constants/route_paths.dart';
 import 'package:cadenceiq_app/core/env/env.dart';
+import 'package:cadenceiq_app/providers/auth_provider.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:dio/dio.dart';
+import 'package:cadenceiq_app/core/navigation/app_router.dart';
+import 'package:go_router/go_router.dart';
 
 class ApiInterceptor extends QueuedInterceptor {
   final Dio refreshClient;
@@ -48,29 +53,24 @@ class ApiInterceptor extends QueuedInterceptor {
 
     try {
       final refreshToken = await TokenStorage.getRefreshToken();
-
+      final Map<String, String> refreshPayload = {"token": refreshToken ?? ""};
       final response = await refreshClient.post(
-        "/auth/refresh",
-        data: {"refreshToken": refreshToken},
+        ApiUrl.refreshToken,
+        data: refreshPayload,
         options: Options(headers: {"x-api-key": Env.apiKey}),
       );
 
       final accessToken = response.data["accessToken"];
-      final newRefreshToken = response.data["refreshToken"];
-
-      await TokenStorage.save(
-        accessToken: accessToken,
-        refreshToken: newRefreshToken,
-      );
+      await TokenStorage.save(accessToken: accessToken);
 
       err.requestOptions.headers["Authorization"] = "Bearer $accessToken";
 
       final retryResponse = await refreshClient.fetch(err.requestOptions);
 
       handler.resolve(retryResponse);
-    } catch (_) {
-      await TokenStorage.clear();
-      handler.next(err);
+    } catch (e) {
+      final AuthProvider auth = AuthProvider();
+      auth.logout();
     }
 
     _isRefreshing = false;

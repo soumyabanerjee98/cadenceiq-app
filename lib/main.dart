@@ -51,7 +51,7 @@ class CadenceIQApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: AppTheme.light(),
             darkTheme: AppTheme.dark(),
-            themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: ThemeMode.system,
             routerConfig: _router,
           );
         },

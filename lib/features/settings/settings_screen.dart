@@ -22,9 +22,9 @@ class SettingsScreen extends StatelessWidget {
         children: [
           Text(
             'Settings',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 24),
           _SectionHeader(title: 'Account'),
@@ -54,20 +54,22 @@ class SettingsScreen extends StatelessWidget {
             activeColor: AppColors.primary,
             onChanged: settings.setTrainingReminders,
           ),
-          const SizedBox(height: 16),
-          _SectionHeader(title: 'Appearance'),
-          SwitchListTile(
-            title: const Text('Dark Mode'),
-            subtitle: const Text('Use dark theme'),
-            value: settings.darkMode,
-            activeColor: AppColors.primary,
-            onChanged: settings.setDarkMode,
-          ),
+          // const SizedBox(height: 16),
+          // _SectionHeader(title: 'Appearance'),
+          // SwitchListTile(
+          //   title: const Text('Dark Mode'),
+          //   subtitle: const Text('Use dark theme'),
+          //   value: settings.darkMode,
+          //   activeColor: AppColors.primary,
+          //   onChanged: settings.setDarkMode,
+          // ),
           const SizedBox(height: 16),
           _SectionHeader(title: 'Preferences'),
           SwitchListTile(
             title: const Text('Imperial Units'),
-            subtitle: Text(settings.useImperial ? 'Miles, feet' : 'Kilometers, meters'),
+            subtitle: Text(
+              settings.useImperial ? 'Miles, feet' : 'Kilometers, meters',
+            ),
             value: settings.useImperial,
             activeColor: AppColors.primary,
             onChanged: settings.setUseImperial,
@@ -127,10 +129,12 @@ class SettingsScreen extends StatelessWidget {
           OutlinedButton.icon(
             onPressed: () {
               context.read<AuthProvider>().logout();
-              context.go(RoutePaths.login);
             },
             icon: const Icon(Icons.logout, color: AppColors.error),
-            label: const Text('Log Out', style: TextStyle(color: AppColors.error)),
+            label: const Text(
+              'Log Out',
+              style: TextStyle(color: AppColors.error),
+            ),
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: AppColors.error),
               padding: const EdgeInsets.symmetric(vertical: 14),
@@ -148,16 +152,18 @@ class SettingsScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: ['English', 'Spanish', 'French', 'German']
-              .map((lang) => ListTile(
-                    title: Text(lang),
-                    trailing: settings.language == lang
-                        ? const Icon(Icons.check, color: AppColors.primary)
-                        : null,
-                    onTap: () {
-                      settings.setLanguage(lang);
-                      Navigator.pop(ctx);
-                    },
-                  ))
+              .map(
+                (lang) => ListTile(
+                  title: Text(lang),
+                  trailing: settings.language == lang
+                      ? const Icon(Icons.check, color: AppColors.primary)
+                      : null,
+                  onTap: () {
+                    settings.setLanguage(lang);
+                    Navigator.pop(ctx);
+                  },
+                ),
+              )
               .toList(),
         ),
       ),
@@ -176,9 +182,9 @@ class _SectionHeader extends StatelessWidget {
       child: Text(
         title,
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
-            ),
+          color: AppColors.primary,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

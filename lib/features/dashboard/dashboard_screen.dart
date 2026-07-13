@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/components/loading.dart';
 import 'package:cadenceiq_app/services/mock/mock_data.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -25,8 +26,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     // TODO: implement initState
     final dashboard = context.read<DashboardProvider>();
-    dashboard.refresh();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      dashboard.refresh();
+    });
   }
 
   @override
@@ -38,6 +41,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final metrics = MockData.metrics;
     final goal = MockData.activeGoal;
     final session = MockData.todaySession;
+
+    if (user == null) return AppLoading();
 
     return RefreshIndicator(
       color: AppColors.primary,

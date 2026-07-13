@@ -18,12 +18,12 @@ import 'package:cadenceiq_app/features/shell/main_shell.dart';
 import 'package:cadenceiq_app/features/summaries/summaries_list_screen.dart';
 import 'package:cadenceiq_app/features/summaries/summary_detail_screen.dart';
 
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 class AppRouter {
   static GoRouter create() {
     return GoRouter(
-      navigatorKey: _rootNavigatorKey,
+      navigatorKey: rootNavigatorKey,
       initialLocation: RoutePaths.splash,
       routes: [
         GoRoute(
@@ -105,33 +105,30 @@ class AppRouter {
           ],
         ),
         GoRoute(
-          parentNavigatorKey: _rootNavigatorKey,
+          parentNavigatorKey: rootNavigatorKey,
           path: '/activities/:id',
-          builder: (_, state) => ActivityDetailScreen(
-            activityId: state.pathParameters['id']!,
-          ),
+          builder: (_, state) =>
+              ActivityDetailScreen(activityId: state.pathParameters['id']!),
         ),
         GoRoute(
-          parentNavigatorKey: _rootNavigatorKey,
+          parentNavigatorKey: rootNavigatorKey,
           path: '/goals/:id',
-          builder: (_, state) => GoalDetailScreen(
-            goalId: state.pathParameters['id']!,
-          ),
+          builder: (_, state) =>
+              GoalDetailScreen(goalId: state.pathParameters['id']!),
         ),
         GoRoute(
-          parentNavigatorKey: _rootNavigatorKey,
+          parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.createGoal,
           builder: (_, __) => const CreateGoalScreen(),
         ),
         GoRoute(
-          parentNavigatorKey: _rootNavigatorKey,
+          parentNavigatorKey: rootNavigatorKey,
           path: '/summaries/:id',
-          builder: (_, state) => SummaryDetailScreen(
-            summaryId: state.pathParameters['id']!,
-          ),
+          builder: (_, state) =>
+              SummaryDetailScreen(summaryId: state.pathParameters['id']!),
         ),
         GoRoute(
-          parentNavigatorKey: _rootNavigatorKey,
+          parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.profile,
           builder: (_, __) => const ProfileScreen(),
         ),

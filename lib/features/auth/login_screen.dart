@@ -151,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 10),
                     SocialAuthButton(
                       label: 'Continue with Apple',
-                      icon: settings.darkMode
+                      icon: ThemeMode.system.name == 'light'
                           ? AppImages.appleIconDark
                           : AppImages.appleIcon,
                       onPressed: () {},
