@@ -31,7 +31,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
-                    android:scheme="cadenceiq_app"
+                    android:scheme="cadenceiq"
                     android:host="oauth"/>
             </intent-filter>
         </activity>
