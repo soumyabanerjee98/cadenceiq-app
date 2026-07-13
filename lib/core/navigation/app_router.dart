@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/features/auth/oauth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -131,6 +132,14 @@ class AppRouter {
           parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.profile,
           builder: (_, __) => const ProfileScreen(),
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
+          path: RoutePaths.oauth,
+          builder: (_, state) {
+            final success = state.uri.queryParameters['success'] == 'true';
+            return OAuthResultScreen(success: success);
+          },
         ),
       ],
     );

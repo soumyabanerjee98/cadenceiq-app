@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/navigation/deep_link.dart';
 import 'package:cadenceiq_app/core/network/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,13 +26,15 @@ void main() async {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
-  runApp(CadenceIQApp());
+  final GoRouter router = AppRouter.create();
+  final deepLinkService = DeepLinkService(router);
+  await deepLinkService.initialize();
+  runApp(CadenceIQApp(router: router));
 }
 
 class CadenceIQApp extends StatelessWidget {
-  CadenceIQApp({super.key});
-
-  final GoRouter _router = AppRouter.create();
+  final GoRouter? router;
+  const CadenceIQApp({super.key, this.router});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +55,7 @@ class CadenceIQApp extends StatelessWidget {
             theme: AppTheme.light(),
             darkTheme: AppTheme.dark(),
             themeMode: ThemeMode.system,
-            routerConfig: _router,
+            routerConfig: router,
           );
         },
       ),
