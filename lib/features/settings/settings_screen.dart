@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -126,19 +127,12 @@ class SettingsScreen extends StatelessWidget {
             onTap: () {},
           ),
           const SizedBox(height: 32),
-          OutlinedButton.icon(
+          PrimaryButton(
+            label: "Log Out",
             onPressed: () {
               context.read<AuthProvider>().logout();
             },
-            icon: const Icon(Icons.logout, color: AppColors.error),
-            label: const Text(
-              'Log Out',
-              style: TextStyle(color: AppColors.error),
-            ),
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: AppColors.error),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-            ),
+            icon: Icons.logout,
           ),
         ],
       ),
