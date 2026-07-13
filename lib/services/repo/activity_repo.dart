@@ -1,0 +1,44 @@
+import 'package:cadenceiq_app/core/constants/api_url.dart';
+import 'package:cadenceiq_app/core/network/dio.dart';
+import 'package:cadenceiq_app/models/activity.dart';
+import 'package:dio/dio.dart';
+
+class ActivityRepository {
+  final DioClient dio = DioClient();
+
+  Future<ApiResponse> fetch({
+    required int currentPage,
+    int perPage = 10,
+    String? fromDate,
+    String? toDate,
+    String? search,
+    TrainingZone? zone,
+  }) async {
+    try {
+      final Map<String, String> query = {
+        "page": currentPage.toString(),
+        "perPage": perPage.toString(),
+      };
+      if (fromDate != null && toDate != null) {
+        query['fromDate'] = fromDate;
+        query['toDate'] = toDate;
+      }
+      if (search != null && search.isNotEmpty) {
+        query['search'] = search;
+      }
+      if (zone != null) {
+        query['zone'] = zone.name;
+      }
+      final res = await dio.get(ApiUrl.activities, query: query);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(
+          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+        ),
+      );
+    }
+  }
+}

@@ -34,7 +34,7 @@ abstract final class Formatters {
     return '${kmh.toStringAsFixed(1)} km/h';
   }
 
-  static String elevationM(double m, {bool imperial = false}) {
+  static String elevationM(num m, {bool imperial = false}) {
     if (imperial) {
       final ft = m * 3.28084;
       return '${ft.round()} ft';
@@ -42,9 +42,9 @@ abstract final class Formatters {
     return '${m.round()} m';
   }
 
-  static String load(double load) => load.toStringAsFixed(0);
+  static String load(num load) => load.toStringAsFixed(0);
   static String percent(double p) => '${(p * 100).round()}%';
-  static String watts(double w) => '${w.round()} W';
+  static String watts(num w) => '${w.round()} W';
   static String bpm(int hr) => '$hr bpm';
   static String calories(int c) => '$c kcal';
 }

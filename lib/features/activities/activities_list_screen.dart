@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/utils/debouncer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -17,12 +18,34 @@ class ActivitiesListScreen extends StatefulWidget {
 }
 
 class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    const threshold = 300.0;
+
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - threshold) {
+      context.read<ActivityProvider>().loadMore();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ActivityProvider>().load();
     });
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
   }
 
   @override
@@ -31,46 +54,54 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: ActivitiesHeaderDelegate(),
-          ),
-          if (provider.state == LoadState.loading)
-            const SliverFillRemaining(child: SkeletonList())
-          else if (provider.state == LoadState.error)
-            SliverFillRemaining(
-              child: ErrorStateWidget(
-                message: provider.errorMessage ?? 'Failed to load',
-                onRetry: provider.refresh,
-              ),
-            )
-          else if (provider.activities.isEmpty)
-            const SliverFillRemaining(
-              child: EmptyStateWidget(
-                title: 'No activities yet',
-                message: 'Your rides will appear here once recorded.',
-                icon: Icons.directions_bike_outlined,
-              ),
-            )
-          else
-            SliverPadding(
-              padding: EdgeInsets.all(padding),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, i) {
+      body: RefreshIndicator(
+        onRefresh: () => provider.refresh(),
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: ActivitiesHeaderDelegate(),
+            ),
+            if (provider.state == LoadState.loading)
+              const SliverFillRemaining(child: SkeletonList())
+            else if (provider.state == LoadState.error)
+              SliverFillRemaining(
+                child: ErrorStateWidget(
+                  message: provider.errorMessage ?? 'Failed to load',
+                  onRetry: provider.refresh,
+                ),
+              )
+            else if (provider.activities.isEmpty)
+              const SliverFillRemaining(
+                child: EmptyStateWidget(
+                  title: 'No activities yet',
+                  message: 'Your rides will appear here once recorded.',
+                  icon: Icons.directions_bike_outlined,
+                ),
+              )
+            else
+              SliverPadding(
+                padding: EdgeInsets.all(padding),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((context, i) {
                     final activity = provider.activities[i];
                     return ActivityCard(
                       activity: activity,
                       onTap: () => context.push('/activities/${activity.id}'),
                     );
-                  },
-                  childCount: provider.activities.length,
+                  }, childCount: provider.activities.length),
                 ),
               ),
-            ),
-        ],
+            if (provider.state == LoadState.loadingMore)
+              const SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -95,20 +126,15 @@ class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
 
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
-      padding: EdgeInsets.fromLTRB(
-        padding,
-        16,
-        padding,
-        12,
-      ),
+      padding: EdgeInsets.fromLTRB(padding, 16, padding, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Activities',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 16),
           TextField(
@@ -144,9 +170,7 @@ class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  bool shouldRebuild(
-    covariant SliverPersistentHeaderDelegate oldDelegate,
-  ) {
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return true;
   }
 }

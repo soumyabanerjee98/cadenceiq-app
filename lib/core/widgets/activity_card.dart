@@ -6,11 +6,7 @@ import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
 
 class ActivityCard extends StatelessWidget {
-  const ActivityCard({
-    super.key,
-    required this.activity,
-    this.onTap,
-  });
+  const ActivityCard({super.key, required this.activity, this.onTap});
 
   final Activity activity;
   final VoidCallback? onTap;
@@ -35,8 +31,8 @@ class ActivityCard extends StatelessWidget {
                     Text(
                       activity.name,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
+                        fontWeight: FontWeight.w600,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -44,8 +40,8 @@ class ActivityCard extends StatelessWidget {
                     Text(
                       Formatters.date(activity.date),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Row(
@@ -62,14 +58,14 @@ class ActivityCard extends StatelessWidget {
                         const SizedBox(width: 8),
                         _Chip(
                           icon: Icons.bolt,
-                          label: 'TSS ${Formatters.load(activity.trainingLoad)}',
+                          label:
+                              'TSS ${Formatters.load(activity.trainingLoad)}',
                         ),
                       ],
                     ),
                   ],
                 ),
               ),
-              _StatusBadge(status: activity.status),
             ],
           ),
         ),
@@ -83,12 +79,12 @@ class _ZoneIndicator extends StatelessWidget {
   final TrainingZone zone;
 
   Color get _color => switch (zone) {
-        TrainingZone.z1 => AppColors.zone1,
-        TrainingZone.z2 => AppColors.zone2,
-        TrainingZone.z3 => AppColors.zone3,
-        TrainingZone.z4 => AppColors.zone4,
-        TrainingZone.z5 => AppColors.zone5,
-      };
+    TrainingZone.z1 => AppColors.zone1,
+    TrainingZone.z2 => AppColors.zone2,
+    TrainingZone.z3 => AppColors.zone3,
+    TrainingZone.z4 => AppColors.zone4,
+    TrainingZone.z5 => AppColors.zone5,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -127,36 +123,11 @@ class _Chip extends StatelessWidget {
         const SizedBox(width: 3),
         Text(
           label,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: AppColors.textSecondary,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.labelSmall?.copyWith(color: AppColors.textSecondary),
         ),
       ],
-    );
-  }
-}
-
-class _StatusBadge extends StatelessWidget {
-  const _StatusBadge({required this.status});
-  final ActivityStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final (label, color) = switch (status) {
-      ActivityStatus.completed => ('Done', AppColors.success),
-      ActivityStatus.planned => ('Planned', AppColors.info),
-      ActivityStatus.skipped => ('Skipped', AppColors.textTertiary),
-    };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
-      ),
     );
   }
 }

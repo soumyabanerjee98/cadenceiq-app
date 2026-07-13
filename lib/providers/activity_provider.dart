@@ -1,62 +1,113 @@
+import 'package:cadenceiq_app/core/utils/debouncer.dart';
+import 'package:cadenceiq_app/services/repo/activity_repo.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:cadenceiq_app/models/activity.dart';
-import 'package:cadenceiq_app/services/mock/mock_activity_repository.dart';
 
-enum LoadState { initial, loading, loaded, error, empty }
+enum LoadState { initial, loading, loaded, error, empty, loadingMore }
 
 class ActivityProvider extends ChangeNotifier {
-  ActivityProvider({MockActivityRepository? repository})
-      : _repository = repository ?? MockActivityRepository();
+  ActivityProvider({ActivityRepository? repository})
+    : _repository = repository ?? ActivityRepository();
 
-  final MockActivityRepository _repository;
+  final ActivityRepository _repository;
+  final debouncer = Debouncer(delay: const Duration(milliseconds: 500));
 
   LoadState _state = LoadState.initial;
-  List<Activity> _activities = [];
+  int currentPage = 1;
+  bool hasNext = false;
+  List<Activity> activities = [];
   String _searchQuery = '';
   TrainingZone? _zoneFilter;
   String? _errorMessage;
 
   LoadState get state => _state;
-  List<Activity> get activities => _filtered;
   String get searchQuery => _searchQuery;
   TrainingZone? get zoneFilter => _zoneFilter;
   String? get errorMessage => _errorMessage;
 
-  List<Activity> get _filtered {
-    var list = _searchQuery.isEmpty
-        ? _activities
-        : _repository.search(_searchQuery);
-    if (_zoneFilter != null) {
-      list = list.where((a) => a.zone == _zoneFilter).toList();
+  Future<List<Activity>> filter() async {
+    List<Activity> filterActivities = activities;
+    final res = await _repository.fetch(
+      currentPage: currentPage,
+      search: _searchQuery.isNotEmpty ? _searchQuery : null,
+      zone: _zoneFilter,
+    );
+    if (res.response != null) {
+      filterActivities = (res.response["activities"] as List)
+          .map((e) => Activity.fromJson(e))
+          .toList();
+      _state = activities.isEmpty ? LoadState.empty : LoadState.loaded;
     }
-    return list;
+    return filterActivities;
   }
 
-  Activity? getById(String id) => _repository.getById(id);
+  Activity getById(String id) => activities.firstWhere((e) => e.id == id);
 
   Future<void> load() async {
     _state = LoadState.loading;
     notifyListeners();
-    try {
-      _activities = await _repository.fetchAll();
-      _state = _activities.isEmpty ? LoadState.empty : LoadState.loaded;
-    } catch (e) {
+    final res = await _repository.fetch(currentPage: currentPage);
+    if (res.response != null) {
+      activities = (res.response["activities"] as List)
+          .map((e) => Activity.fromJson(e))
+          .toList();
+      hasNext = res.response["hasNext"];
+      _state = activities.isEmpty ? LoadState.empty : LoadState.loaded;
+    } else {
       _state = LoadState.error;
-      _errorMessage = 'Failed to load activities.';
+      _errorMessage = res.error?.errorMessage;
     }
     notifyListeners();
   }
 
-  Future<void> refresh() => load();
-
-  void setSearch(String query) {
-    _searchQuery = query;
+  Future<void> loadMore() async {
+    if (hasNext == false || _state == LoadState.loadingMore) return;
+    _state = LoadState.loadingMore;
+    notifyListeners();
+    currentPage++;
+    final res = await _repository.fetch(currentPage: currentPage);
+    if (res.response != null) {
+      activities = [
+        ...activities,
+        ...(res.response["activities"] as List).map(
+          (e) => Activity.fromJson(e),
+        ),
+      ];
+      hasNext = res.response["hasNext"];
+      _state = activities.isEmpty ? LoadState.empty : LoadState.loaded;
+    } else {
+      _state = LoadState.error;
+      _errorMessage = res.error?.errorMessage;
+    }
     notifyListeners();
   }
 
-  void setZoneFilter(TrainingZone? zone) {
+  Future<void> refresh() async {
+    currentPage = 1;
+    hasNext = false;
+    load();
+  }
+
+  Future<void> setSearch(String query) async {
+    _searchQuery = query;
+    debouncer(() async {
+      _state = LoadState.loading;
+      notifyListeners();
+      final filteredActivities = await filter();
+      activities = filteredActivities;
+      _state = activities.isEmpty ? LoadState.empty : LoadState.loaded;
+      notifyListeners();
+    });
+  }
+
+  Future<void> setZoneFilter(TrainingZone? zone) async {
     _zoneFilter = zone;
+    _state = LoadState.loading;
+    notifyListeners();
+    final filteredActivities = await filter();
+    activities = filteredActivities;
+    _state = activities.isEmpty ? LoadState.empty : LoadState.loaded;
     notifyListeners();
   }
 

@@ -163,16 +163,12 @@ abstract final class MockData {
         duration: Duration(hours: hours, minutes: mins),
         trainingLoad: 45 + (i * 11) % 120,
         zone: zone,
-        status: ActivityStatus.completed,
         elevationM: 150 + (i * 47) % 1200,
         avgSpeedKmh: 22 + (i % 8),
         avgHr: 125 + (i * 3) % 45,
         maxHr: 165 + (i * 2) % 25,
         calories: (distance * 28).round(),
         avgPower: 180 + (i * 7) % 80,
-        notes: i % 4 == 0
-            ? 'Felt strong today. Good power on climbs. Need more recovery tomorrow.'
-            : '',
         splits: i % 3 == 0
             ? [
                 ActivitySplit(
