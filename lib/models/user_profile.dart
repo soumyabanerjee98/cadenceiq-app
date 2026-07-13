@@ -1,3 +1,5 @@
+import 'package:cadenceiq_app/models/goal.dart';
+
 class UserProfile {
   const UserProfile({
     required this.id,
@@ -6,7 +8,11 @@ class UserProfile {
     this.age = 0,
     this.maxHr = 0,
     this.restingHr = 0,
-    this.currentGoalId = '',
+    this.goal,
+    this.atl = 0,
+    this.ctl = 0,
+    this.tsb = 0,
+    this.stravaConnected = false,
   });
 
   final String id;
@@ -15,7 +21,11 @@ class UserProfile {
   final int? age;
   final int? maxHr;
   final int? restingHr;
-  final String? currentGoalId;
+  final Goal? goal;
+  final num atl;
+  final num ctl;
+  final num tsb;
+  final bool stravaConnected;
 
   String get initials {
     final parts = name!.trim().split(' ');
@@ -26,6 +36,7 @@ class UserProfile {
   }
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
+    print(json);
     return UserProfile(
       id: json["id"],
       name: json["name"] ?? "",
@@ -33,7 +44,11 @@ class UserProfile {
       age: json["age"] ?? 0,
       maxHr: json["maxHR"] ?? 0,
       restingHr: json["restingHR"] ?? 0,
-      currentGoalId: json["currentGoalId"] ?? "",
+      goal: json["goal"],
+      atl: json["metrics"]["atl"],
+      ctl: json["metrics"]["ctl"],
+      tsb: json["metrics"]["tsb"],
+      stravaConnected: json["stravaConnected"],
     );
   }
 
@@ -45,7 +60,11 @@ class UserProfile {
       "age": age,
       "maxHR": maxHr,
       "restingHR": restingHr,
-      "currentGoalId": currentGoalId,
+      "goal": goal,
+      "atl": atl,
+      "ctl": ctl,
+      "tsb": tsb,
+      "stravaConnected": stravaConnected,
     };
   }
 }

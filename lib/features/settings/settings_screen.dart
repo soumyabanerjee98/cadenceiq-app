@@ -1,4 +1,5 @@
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
+import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +16,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsProvider>();
+    final profile = context.watch<DashboardProvider>();
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(
@@ -98,8 +100,15 @@ class SettingsScreen extends StatelessWidget {
           _SettingsTile(
             icon: Icons.link,
             title: 'Strava',
-            subtitle: 'Not connected',
-            onTap: () => settings.connectStrava(),
+            subtitle: profile.user?.stravaConnected == true
+                ? 'Connected'
+                : 'Not connected',
+            subTitleStyle: profile.user?.stravaConnected == true
+                ? TextStyle(color: Colors.green)
+                : null,
+            onTap: profile.user?.stravaConnected == true
+                ? null
+                : () => settings.connectStrava(),
           ),
           // _SettingsTile(
           //   icon: Icons.watch,
@@ -189,12 +198,14 @@ class _SettingsTile extends StatelessWidget {
     required this.icon,
     required this.title,
     this.subtitle,
+    this.subTitleStyle,
     this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String? subtitle;
+  final TextStyle? subTitleStyle;
   final VoidCallback? onTap;
 
   @override
@@ -202,8 +213,10 @@ class _SettingsTile extends StatelessWidget {
     return ListTile(
       leading: Icon(icon, color: AppColors.textSecondary),
       title: Text(title),
-      subtitle: subtitle != null ? Text(subtitle!) : null,
-      trailing: const Icon(Icons.chevron_right, size: 20),
+      subtitle: subtitle != null ? Text(subtitle!, style: subTitleStyle) : null,
+      trailing: onTap != null
+          ? const Icon(Icons.chevron_right, size: 20)
+          : null,
       onTap: onTap,
       contentPadding: EdgeInsets.zero,
     );
