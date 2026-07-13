@@ -24,19 +24,28 @@ class AuthRepository {
     }
   }
 
-  Future<dynamic> signup({
+  Future<ApiResponse> signup({
     required String name,
     required String email,
     required String password,
   }) async {
-    final Map<String, String> payload = {
-      "email": email,
-      "password": password,
-      "name": name,
-    };
-    final res = await dio.post(ApiUrl.register, data: payload);
-    print(res);
-    return null;
+    try {
+      final Map<String, String> payload = {
+        "email": email,
+        "password": password,
+        "name": name,
+      };
+      final res = await dio.post(ApiUrl.register, data: payload);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(
+          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+        ),
+      );
+    }
   }
 
   Future<ApiResponse> getProfile() async {

@@ -27,7 +27,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     final ApiResponse res = await _repository.login(email, password);
-    if (res.error == null) {
+    if (res.response != null) {
       _state = AuthState.authenticated;
     } else {
       _state = AuthState.error;
@@ -46,16 +46,16 @@ class AuthProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final success = await _repository.signup(
+    final res = await _repository.signup(
       name: name,
       email: email,
       password: password,
     );
-    if (success) {
+    if (res.response != null) {
       _state = AuthState.authenticated;
     } else {
       _state = AuthState.error;
-      _errorMessage = 'Please check your details and try again.';
+      _errorMessage = res.error?.errorMessage;
     }
     notifyListeners();
   }
