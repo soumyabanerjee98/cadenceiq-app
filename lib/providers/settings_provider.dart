@@ -1,6 +1,16 @@
+import 'dart:io';
+
+import 'package:cadenceiq_app/core/navigation/app_router.dart';
+import 'package:cadenceiq_app/services/repo/settings_repo.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsProvider extends ChangeNotifier {
+  SettingsProvider({SettingsRepository? repository})
+    : _repository = repository ?? SettingsRepository();
+
+  final SettingsRepository _repository;
   bool _useImperial = false;
   String _language = 'English';
   bool _pushNotifications = true;
@@ -36,5 +46,18 @@ class SettingsProvider extends ChangeNotifier {
   void setTrainingReminders(bool value) {
     _trainingReminders = value;
     notifyListeners();
+  }
+
+  Future<void> connectStrava() async {
+    final res = await _repository.connectStrava();
+    if (res.response != null) {
+      String uri = res.response['url'];
+      final link = await FlutterWebAuth2.authenticate(
+        url: uri,
+        callbackUrlScheme: Platform.isAndroid == true ? "cadenceiq" : "https",
+      );
+      final String route = link.split("/").last;
+      rootNavigatorKey.currentContext?.push("/$route");
+    }
   }
 }

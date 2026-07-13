@@ -99,20 +99,20 @@ class SettingsScreen extends StatelessWidget {
             icon: Icons.link,
             title: 'Strava',
             subtitle: 'Not connected',
-            onTap: () {},
+            onTap: () => settings.connectStrava(),
           ),
-          _SettingsTile(
-            icon: Icons.watch,
-            title: 'Garmin Connect',
-            subtitle: 'Not connected',
-            onTap: () {},
-          ),
-          _SettingsTile(
-            icon: Icons.favorite_border,
-            title: 'Wahoo',
-            subtitle: 'Not connected',
-            onTap: () {},
-          ),
+          // _SettingsTile(
+          //   icon: Icons.watch,
+          //   title: 'Garmin Connect',
+          //   subtitle: 'Not connected',
+          //   onTap: () {},
+          // ),
+          // _SettingsTile(
+          //   icon: Icons.favorite_border,
+          //   title: 'Wahoo',
+          //   subtitle: 'Not connected',
+          //   onTap: () {},
+          // ),
           const SizedBox(height: 16),
           _SectionHeader(title: 'About'),
           _SettingsTile(

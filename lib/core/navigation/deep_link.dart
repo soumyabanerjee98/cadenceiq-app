@@ -23,7 +23,9 @@ class DeepLinkService {
   }
 
   void _handleUri(Uri uri) {
-    router.go('${uri.path}?${uri.query}');
+    final String path = '/${uri.host}?${uri.query}';
+    print("deeplink -> $path");
+    router.push(path);
   }
 
   void dispose() {

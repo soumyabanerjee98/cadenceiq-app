@@ -72,7 +72,7 @@ class _OAuthResultScreenState extends State<OAuthResultScreen> {
 
               FilledButton(
                 onPressed: () {
-                  context.go('/profile');
+                  context.pop();
                 },
                 child: Text(success ? "Continue" : "Go Back"),
               ),
