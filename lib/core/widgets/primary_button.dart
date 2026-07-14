@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../theme/app_colors.dart';
 
-class PrimaryButton extends StatelessWidget {
+class GradientTranslation extends GradientTransform {
+  const GradientTranslation(this.dx);
+
+  final double dx;
+
+  @override
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
+    return Matrix4.translationValues(dx, 0, 0);
+  }
+}
+
+class PrimaryButton extends StatefulWidget {
   const PrimaryButton({
     super.key,
     required this.label,
@@ -11,6 +23,7 @@ class PrimaryButton extends StatelessWidget {
     this.isLoading = false,
     this.icon,
     this.expand = true,
+    this.shine = false,
   });
 
   final String label;
@@ -18,10 +31,50 @@ class PrimaryButton extends StatelessWidget {
   final bool isLoading;
   final IconData? icon;
   final bool expand;
+  final bool shine;
+
+  @override
+  State<PrimaryButton> createState() => _PrimaryButtonState();
+}
+
+class _PrimaryButtonState extends State<PrimaryButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 5),
+    );
+
+    if (widget.shine) {
+      _controller.repeat();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant PrimaryButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.shine && !_controller.isAnimating) {
+      _controller.repeat();
+    } else if (!widget.shine && _controller.isAnimating) {
+      _controller.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final child = isLoading
+    final child = widget.isLoading
         ? const SizedBox(
             height: 22,
             width: 22,
@@ -31,23 +84,82 @@ class PrimaryButton extends StatelessWidget {
             ),
           )
         : Row(
-            mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
+            mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (icon != null) ...[
-                Icon(icon, size: 20),
+              if (widget.icon != null) ...[
+                Icon(widget.icon, size: 20),
                 const SizedBox(width: 8),
               ],
-              Text(label),
+              Text(
+                widget.label,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleSmall!.copyWith(color: AppColors.surface),
+              ),
             ],
           );
 
-    final button = ElevatedButton(
-      onPressed: isLoading ? null : onPressed,
+    Widget button = ElevatedButton(
+      onPressed: widget.isLoading ? null : widget.onPressed,
       child: child,
     );
 
-    return expand ? SizedBox(width: double.infinity, child: button) : button;
+    if (widget.shine) {
+      button = ClipRRect(
+        borderRadius: BorderRadius.circular(14),
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (_, child) {
+            return ShaderMask(
+              shaderCallback: (rect) {
+                final width = rect.width;
+
+                final dx = Tween<double>(
+                  begin: -width,
+                  end: width * 2,
+                ).transform(_controller.value);
+
+                return LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: const [
+                    Colors.transparent,
+                    Colors.white10,
+                    Colors.white12,
+                    Colors.white24,
+                    Colors.white30,
+                    Colors.white24,
+                    Colors.white12,
+                    Colors.white10,
+                    Colors.transparent,
+                  ],
+                  stops: const [
+                    0.00,
+                    0.18,
+                    0.34,
+                    0.46,
+                    0.50,
+                    0.54,
+                    0.66,
+                    0.82,
+                    1.00,
+                  ],
+                  transform: GradientTranslation(dx),
+                ).createShader(rect);
+              },
+              blendMode: BlendMode.srcATop,
+              child: child,
+            );
+          },
+          child: button,
+        ),
+      );
+    }
+
+    return widget.expand == true
+        ? SizedBox(width: double.infinity, child: button)
+        : button;
   }
 }
 

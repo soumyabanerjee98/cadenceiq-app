@@ -1,6 +1,10 @@
+import 'package:cadenceiq_app/core/assets/assets.dart';
 import 'package:cadenceiq_app/core/components/loading.dart';
+import 'package:cadenceiq_app/core/constants/app_strings.dart';
+import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:cadenceiq_app/services/mock/mock_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -96,165 +100,214 @@ class _DashboardScreenState extends State<DashboardScreen> {
             padding: EdgeInsets.all(padding),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    final isWide = constraints.maxWidth > 500;
-                    final metricsRow = [
-                      MetricCard(
-                        label: 'Fitness (CTL)',
-                        value: (dashboard.user?.ctl ?? 0).toStringAsFixed(1),
-                        // trend: '+3.2 this week',
-                        color: AppColors.success,
-                        icon: Icons.trending_up,
-                      ),
-                      MetricCard(
-                        label: 'Fatigue (ATL)',
-                        value: (dashboard.user?.atl ?? 0).toStringAsFixed(1),
-                        color: AppColors.warning,
-                        icon: Icons.battery_alert,
-                      ),
-                      MetricCard(
-                        label: 'Readiness (TSB)',
-                        value: (dashboard.user?.tsb ?? 0).toStringAsFixed(1),
-                        // trend: 'Fresh',
-                        color: AppColors.info,
-                        icon: Icons.bolt,
-                      ),
-                    ];
-                    if (isWide) {
-                      return Row(
+                if (dashboard.user?.goal != null) ...[
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isWide = constraints.maxWidth > 500;
+                      final metricsRow = [
+                        MetricCard(
+                          label: AppStrings.currentFitness,
+                          value: (dashboard.user?.ctl ?? 0).toStringAsFixed(1),
+                          // trend: '+3.2 this week',
+                          color: AppColors.success,
+                          icon: Icons.trending_up,
+                        ),
+                        MetricCard(
+                          label: AppStrings.fatigue,
+                          value: (dashboard.user?.atl ?? 0).toStringAsFixed(1),
+                          color: AppColors.warning,
+                          icon: Icons.battery_alert,
+                        ),
+                        MetricCard(
+                          label: AppStrings.readiness,
+                          value: (dashboard.user?.tsb ?? 0).toStringAsFixed(1),
+                          // trend: 'Fresh',
+                          color: AppColors.info,
+                          icon: Icons.bolt,
+                        ),
+                      ];
+                      if (isWide) {
+                        return Row(
+                          children: metricsRow
+                              .map(
+                                (m) => Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 8),
+                                    child: m,
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        );
+                      }
+                      return Column(
                         children: metricsRow
                             .map(
-                              (m) => Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: m,
-                                ),
+                              (m) => Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+                                child: m,
                               ),
                             )
                             .toList(),
                       );
-                    }
-                    return Column(
-                      children: metricsRow
-                          .map(
-                            (m) => Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: m,
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  ProgressCard(
+                    title: goal.title,
+                    progress: goal.progress,
+                    daysRemaining: goal.daysRemaining,
+                    onTap: () => context.push('/goals/${goal.id}'),
+                  ),
+                  const SizedBox(height: 20),
+                  _SectionTitle(title: AppStrings.trainingMetrics),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _MetricTile(
+                          label: 'Current Load',
+                          value: Formatters.load(metrics.currentLoad),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _MetricTile(
+                          label: 'Target Load',
+                          value: Formatters.load(metrics.targetLoad),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _MetricTile(
+                          label: 'Adjusted',
+                          value: Formatters.load(metrics.adjustedLoad),
+                          highlight: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  _SectionTitle(title: AppStrings.weeklyLoad),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: WeeklyLoadChart(data: metrics.weeklyLoads),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _SectionTitle(title: AppStrings.zoneDistribution),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: ZoneDistributionChart(
+                        zones: metrics.zoneDistribution,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _SectionTitle(title: AppStrings.todaysSession),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.12),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          )
-                          .toList(),
-                    );
-                  },
-                ),
-                const SizedBox(height: 8),
-                ProgressCard(
-                  title: goal.title,
-                  progress: goal.progress,
-                  daysRemaining: goal.daysRemaining,
-                  onTap: () => context.push('/goals/${goal.id}'),
-                ),
-                const SizedBox(height: 20),
-                _SectionTitle(title: 'Training Metrics'),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _MetricTile(
-                        label: 'Current Load',
-                        value: Formatters.load(metrics.currentLoad),
+                            child: const Icon(
+                              Icons.fitness_center,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  session.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${Formatters.duration(session.duration)} · ${Formatters.distanceKm(session.distanceKm, imperial: settings.useImperial)} · TSS ${Formatters.load(session.targetLoad)}',
+                                  style: const TextStyle(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                Text(
+                                  session.zone,
+                                  style: const TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _MetricTile(
-                        label: 'Target Load',
-                        value: Formatters.load(metrics.targetLoad),
+                  ),
+                ] else ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(14),
+                    child: SvgPicture.asset(AppImages.noGoal),
+                  ),
+                  const SizedBox(height: 20),
+                  Center(
+                    child: Text.rich(
+                      TextSpan(
+                        text: "No",
+                        style: TextStyle(color: AppColors.primary),
+                        children: [
+                          TextSpan(
+                            text: " Goal... ",
+                            style: TextStyle(
+                              color: AppColors.darkTextSecondary,
+                            ),
+                          ),
+                          TextSpan(
+                            text: " No",
+                            style: TextStyle(color: AppColors.primary),
+                          ),
+                          TextSpan(
+                            text: " Progress...",
+                            style: TextStyle(
+                              color: AppColors.darkTextSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: _MetricTile(
-                        label: 'Adjusted',
-                        value: Formatters.load(metrics.adjustedLoad),
-                        highlight: true,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                _SectionTitle(title: 'Weekly Load Trend'),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: WeeklyLoadChart(data: metrics.weeklyLoads),
                   ),
-                ),
-                const SizedBox(height: 16),
-                _SectionTitle(title: 'Zone Distribution'),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: ZoneDistributionChart(
-                      zones: metrics.zoneDistribution,
-                    ),
+                  const SizedBox(height: 12),
+                  Text(
+                    AppStrings.noGoalDescription,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-                ),
-                const SizedBox(height: 20),
-                _SectionTitle(title: "Today's Session"),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Icon(
-                            Icons.fitness_center,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                session.title,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${Formatters.duration(session.duration)} · ${Formatters.distanceKm(session.distanceKm, imperial: settings.useImperial)} · TSS ${Formatters.load(session.targetLoad)}',
-                                style: const TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontSize: 13,
-                                ),
-                              ),
-                              Text(
-                                session.zone,
-                                style: const TextStyle(
-                                  color: AppColors.primary,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                  const SizedBox(height: 20),
+                  PrimaryButton(
+                    label: "Create Goal",
+                    expand: false,
+                    onPressed: () => context.push(RoutePaths.createGoal),
+                    shine: true,
                   ),
-                ),
+                ],
                 const SizedBox(height: 20),
-                _SectionTitle(title: 'Quick Actions'),
+                _SectionTitle(title: AppStrings.quickActions),
                 const SizedBox(height: 12),
                 Wrap(
                   spacing: 10,
@@ -262,22 +315,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   children: [
                     _QuickAction(
                       icon: Icons.directions_bike,
-                      label: 'Activities',
+                      label: AppStrings.navActivities,
                       onTap: () => context.go(RoutePaths.activities),
                     ),
                     _QuickAction(
                       icon: Icons.flag,
-                      label: 'Goals',
+                      label: AppStrings.navGoals,
                       onTap: () => context.go(RoutePaths.goals),
                     ),
                     _QuickAction(
                       icon: Icons.summarize,
-                      label: 'Summaries',
+                      label: AppStrings.navSummaries,
                       onTap: () => context.go(RoutePaths.summaries),
                     ),
                     _QuickAction(
                       icon: Icons.settings,
-                      label: 'Settings',
+                      label: AppStrings.navSettings,
                       onTap: () => context.go(RoutePaths.settings),
                     ),
                   ],

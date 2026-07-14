@@ -44,6 +44,8 @@ abstract final class AppStrings {
   static const zoneDistribution = 'Zone Distribution';
   static const todaysSession = "Today's Session";
   static const quickActions = 'Quick Actions';
+  static const noGoalDescription =
+      "Create a goal to give your rides a clear purpose and personalized direction.\n\nCadenceIQ adapts your training based on your progress, helping you build fitness consistently and reach your cycling goals smarter.";
 
   // Nav
   static const navDashboard = 'Dashboard';

@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 340" width="480" height="340">
+
+  <!-- Background: transparent -->
+
+  <!-- Faint hill silhouette behind flag — drawn first (back of z-order) -->
+  <path d="M 355,298 Q 440,185 492,298 Z" fill="#F0F2F5"/>
+
+  <!-- Ground strip -->
+  <rect x="0" y="298" width="480" height="42" fill="#ECF0F3"/>
+  <line x1="0" y1="298" x2="480" y2="298" stroke="#D2D8E0" stroke-width="1.5"/>
+
+  <!-- Flat tire tracks — going nowhere, fading left -->
+  <line x1="20" y1="294" x2="124" y2="294" stroke="#CDD3DC" stroke-width="1.5" opacity="0.55"/>
+  <line x1="20" y1="291" x2="100" y2="291" stroke="#CDD3DC" stroke-width="0.9" opacity="0.35"/>
+
+  <!-- Ground shadow under bike -->
+  <ellipse cx="232" cy="304" rx="122" ry="7" fill="#BCC4CE" opacity="0.32"/>
+
+  <!-- ═══ REAR WHEEL ═══ -->
+  <!-- Tire -->
+  <circle cx="162" cy="260" r="38" stroke="#A5ADB9" stroke-width="7" fill="none"/>
+  <!-- Rim -->
+  <circle cx="162" cy="260" r="30" stroke="#B8C0CB" stroke-width="1.2" fill="none" opacity="0.5"/>
+  <!-- Hub -->
+  <circle cx="162" cy="260" r="5" fill="#A5ADB9"/>
+  <!-- Spokes — cross -->
+  <line x1="162" y1="229" x2="162" y2="255" stroke="#B8C0CB" stroke-width="1.2" opacity="0.6"/>
+  <line x1="162" y1="265" x2="162" y2="291" stroke="#B8C0CB" stroke-width="1.2" opacity="0.6"/>
+  <line x1="131" y1="260" x2="157" y2="260" stroke="#B8C0CB" stroke-width="1.2" opacity="0.6"/>
+  <line x1="167" y1="260" x2="193" y2="260" stroke="#B8C0CB" stroke-width="1.2" opacity="0.6"/>
+  <!-- Spokes — diagonal -->
+  <line x1="141" y1="239" x2="158" y2="256" stroke="#B8C0CB" stroke-width="0.8" opacity="0.35"/>
+  <line x1="183" y1="239" x2="166" y2="256" stroke="#B8C0CB" stroke-width="0.8" opacity="0.35"/>
+  <line x1="141" y1="281" x2="158" y2="264" stroke="#B8C0CB" stroke-width="0.8" opacity="0.35"/>
+  <line x1="183" y1="281" x2="166" y2="264" stroke="#B8C0CB" stroke-width="0.8" opacity="0.35"/>
+
+  <!-- Cobweb on rear wheel — stagnation signal -->
+  <path d="M 162,229 Q 179,243 162,254" stroke="#CDD4DC" stroke-width="0.85" fill="none" opacity="0.8"/>
+  <path d="M 162,229 Q 145,243 162,254" stroke="#CDD4DC" stroke-width="0.85" fill="none" opacity="0.8"/>
+  <path d="M 151,238 Q 162,244 173,238" stroke="#CDD4DC" stroke-width="0.8" fill="none" opacity="0.65"/>
+  <path d="M 149,248 Q 162,253 175,248" stroke="#CDD4DC" stroke-width="0.8" fill="none" opacity="0.5"/>
+
+  <!-- ═══ FRONT WHEEL ═══ -->
+  <circle cx="302" cy="260" r="38" stroke="#A5ADB9" stroke-width="7" fill="none"/>
+  <circle cx="302" cy="260" r="30" stroke="#B8C0CB" stroke-width="1.2" fill="none" opacity="0.5"/>
+  <circle cx="302" cy="260" r="5" fill="#A5ADB9"/>
+  <line x1="302" y1="229" x2="302" y2="255" stroke="#B8C0CB" stroke-width="1.2" opacity="0.6"/>
+  <line x1="302" y1="265" x2="302" y2="291" stroke="#B8C0CB" stroke-width="1.2" opacity="0.6"/>
+  <line x1="271" y1="260" x2="297" y2="260" stroke="#B8C0CB" stroke-width="1.2" opacity="0.6"/>
+  <line x1="307" y1="260" x2="333" y2="260" stroke="#B8C0CB" stroke-width="1.2" opacity="0.6"/>
+  <line x1="281" y1="239" x2="298" y2="256" stroke="#B8C0CB" stroke-width="0.8" opacity="0.35"/>
+  <line x1="323" y1="239" x2="306" y2="256" stroke="#B8C0CB" stroke-width="0.8" opacity="0.35"/>
+
+  <!-- ═══ BIKE FRAME ═══ -->
+  <!-- Chain stays -->
+  <line x1="232" y1="238" x2="162" y2="260" stroke="#9BA3AF" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Seat stays -->
+  <line x1="220" y1="175" x2="162" y2="260" stroke="#9BA3AF" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Seat tube -->
+  <line x1="220" y1="175" x2="232" y2="238" stroke="#9BA3AF" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- Top tube -->
+  <line x1="220" y1="175" x2="286" y2="182" stroke="#9BA3AF" stroke-width="3" stroke-linecap="round"/>
+  <!-- Down tube -->
+  <line x1="286" y1="182" x2="232" y2="238" stroke="#9BA3AF" stroke-width="3" stroke-linecap="round"/>
+  <!-- Head tube -->
+  <line x1="286" y1="182" x2="291" y2="200" stroke="#9BA3AF" stroke-width="4" stroke-linecap="round"/>
+  <!-- Fork -->
+  <line x1="291" y1="200" x2="302" y2="260" stroke="#9BA3AF" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Saddle -->
+  <path d="M 206,172 Q 220,165 234,172" stroke="#9BA3AF" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <!-- Seat post clamp -->
+  <line x1="220" y1="172" x2="220" y2="188" stroke="#9BA3AF" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Handlebars -->
+  <line x1="286" y1="182" x2="283" y2="167" stroke="#9BA3AF" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 271,167 Q 283,164 296,168" stroke="#9BA3AF" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+
+  <!-- ═══ RIDER — slumped, dormant pose ═══ -->
+  <!-- Leg: hip to BB (bent knee, stationary pedal) -->
+  <path d="M 218,173 C 222,202 228,222 232,238" stroke="#828FA0" stroke-width="12" stroke-linecap="round" fill="none"/>
+  <!-- Body: hips curving up to hunched shoulders (slumped arc, no aggressive forward lean) -->
+  <path d="M 218,173 C 235,157 255,154 271,159" stroke="#828FA0" stroke-width="20" stroke-linecap="round" fill="none"/>
+  <!-- Arm reaching limp to handlebar -->
+  <path d="M 271,159 L 283,168" stroke="#828FA0" stroke-width="11" stroke-linecap="round" fill="none"/>
+  <!-- Head: drooped forward and low, resting on/near bars -->
+  <ellipse cx="292" cy="163" rx="14" ry="13" fill="#828FA0"/>
+
+  <!-- ═══ ZZZ — idle/sleeping signal ═══ -->
+  <!-- Z shapes as paths: top-line → diagonal → bottom-line, ascending size and altitude -->
+  <!-- Small Z -->
+  <path d="M 305,149 L 315,149 L 305,157 L 315,157" stroke="#C6D0DA" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Medium Z -->
+  <path d="M 317,133 L 330,133 L 317,143 L 330,143" stroke="#C6D0DA" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.85"/>
+  <!-- Large Z -->
+  <path d="M 331,114 L 347,114 L 331,127 L 347,127" stroke="#C6D0DA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.7"/>
+
+  <!-- ═══ GOAL — what they are missing ═══ -->
+  <!-- Soft glow behind flag -->
+  <circle cx="432" cy="172" r="40" fill="#FC4C02" opacity="0.07"/>
+
+  <!-- Dashed arc: the journey not taken, from front of bike toward goal -->
+  <path d="M 340,258 C 376,216 412,238 432,292" stroke="#FC4C02" stroke-width="2" stroke-dasharray="8 5" fill="none" opacity="0.38"/>
+
+  <!-- Goal flag pole -->
+  <line x1="432" y1="298" x2="432" y2="158" stroke="#FC4C02" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Pennant -->
+  <path d="M 432,158 L 465,170 L 432,191 Z" fill="#FC4C02"/>
+  <!-- Highlight sheen on pennant -->
+  <path d="M 432,162 L 458,172 L 432,183 Z" fill="white" opacity="0.13"/>
+
+  <!-- Pole base dot -->
+  <circle cx="432" cy="298" r="5" fill="#FC4C02" opacity="0.18"/>
+
+</svg>

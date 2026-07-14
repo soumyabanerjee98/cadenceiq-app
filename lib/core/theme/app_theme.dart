@@ -5,7 +5,7 @@ import 'app_colors.dart';
 
 abstract final class AppTheme {
   static ThemeData light() {
-    final textTheme = GoogleFonts.interTextTheme();
+    final textTheme = GoogleFonts.unboundedTextTheme();
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
@@ -126,7 +126,9 @@ abstract final class AppTheme {
   }
 
   static ThemeData dark() {
-    final textTheme = GoogleFonts.interTextTheme(ThemeData.dark().textTheme);
+    final textTheme = GoogleFonts.unboundedTextTheme(
+      ThemeData.dark().textTheme,
+    );
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
