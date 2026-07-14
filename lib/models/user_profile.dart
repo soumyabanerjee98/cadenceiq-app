@@ -44,7 +44,6 @@ class UserProfile {
   }
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
-    print(json);
     return UserProfile(
       id: json["id"],
       name: json["name"] ?? "",
@@ -73,10 +72,14 @@ class UserProfile {
       "maxHR": maxHr,
       "restingHR": restingHr,
       "goal": goal,
-      "atl": atl,
-      "ctl": ctl,
-      "tsb": tsb,
-      "stravaConnected": stravaConnected,
+      "metrics": {"atl": atl, "ctl": ctl, "tsb": tsb},
+      "settings": {"stravaConnected": stravaConnected},
+      "stats": {
+        "totalActivities": totalActivities,
+        "totalDistance": totalDistance,
+        "totalHours": totalHours,
+        "goalsCompleted": goalsCompleted,
+      },
     };
   }
 }

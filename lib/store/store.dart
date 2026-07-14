@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:cadenceiq_app/models/user_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
@@ -19,22 +16,14 @@ class LocalStorage {
     return prefs.getBool(_onboardingKey) ?? false;
   }
 
-  static Future<void> setUserProfile(UserProfile profile) async {
+  static Future<void> setUserProfileId(String profileId) async {
     final prefs = await SharedPreferences.getInstance();
-
-    await prefs.setString(_userProfileKey, jsonEncode(profile.toJson()));
+    await prefs.setString(_userProfileKey, profileId);
   }
 
-  static Future<UserProfile?> getUserProfile() async {
+  static Future<String?> getUserProfileId() async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.getString(_userProfileKey) == null) {
-      return null;
-    }
-    final UserProfile profile = UserProfile.fromJson(
-      jsonDecode(prefs.getString(_userProfileKey) ?? ""),
-    );
-
-    return profile;
+    return prefs.getString(_userProfileKey);
   }
 
   static Future<bool> removeUserProfile() async {

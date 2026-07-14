@@ -117,3 +117,35 @@ class Activity {
     };
   }
 }
+
+class StravaActivity {
+  const StravaActivity({
+    required this.id,
+    required this.name,
+    required this.distance,
+    required this.date,
+  });
+
+  final String id;
+  final String name;
+  final num distance;
+  final DateTime date;
+
+  factory StravaActivity.fromJson(Map<String, dynamic> json) {
+    return StravaActivity(
+      id: json["id"],
+      name: json["name"],
+      distance: json["distance"],
+      date: DateTime.parse(json["date"]),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "name": name,
+      "distance": distance,
+      "date": date.toString(),
+    };
+  }
+}

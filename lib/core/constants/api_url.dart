@@ -17,6 +17,8 @@ abstract final class ApiUrl {
 
   // activity
   static const activities = '/activity/get-activities';
+  static const stravaActivities = '/activity/preview-strava-activities';
+  static const syncActivities = '/activity/sync-activities';
 
   // settings
   static const connectStrava = '/strava/connect';

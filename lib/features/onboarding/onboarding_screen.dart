@@ -74,7 +74,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () => context.go(RoutePaths.login),
+                onPressed: () async {
+                  await LocalStorage.setOnboardingCompleted();
+                  if (mounted) context.go(RoutePaths.login);
+                },
                 child: const Text(AppStrings.skip),
               ),
             ),
@@ -142,18 +145,18 @@ class _OnboardingPage extends StatelessWidget {
           const SizedBox(height: 48),
           Text(
             data.title,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           Text(
             data.subtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: AppColors.textSecondary,
-                  height: 1.5,
-                ),
+              color: AppColors.textSecondary,
+              height: 1.5,
+            ),
             textAlign: TextAlign.center,
           ),
         ],

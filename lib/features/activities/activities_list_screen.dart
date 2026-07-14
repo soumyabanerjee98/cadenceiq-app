@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/constants/route_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -108,10 +109,10 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
 
 class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
-  double get minExtent => kToolbarHeight + 135;
+  double get minExtent => kToolbarHeight + 150;
 
   @override
-  double get maxExtent => kToolbarHeight + 135;
+  double get maxExtent => kToolbarHeight + 150;
 
   @override
   Widget build(
@@ -129,11 +130,26 @@ class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Activities',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Activities',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              IconButton(
+                onPressed: () async {
+                  final res = await context.push<bool>(RoutePaths.syncActivity);
+                  if (res == true) {
+                    provider.refresh();
+                  }
+                },
+                icon: Icon(Icons.sync, color: AppColors.primary),
+                tooltip: "Sync New Activities",
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           TextField(

@@ -104,14 +104,14 @@ class ActivityDetailScreen extends StatelessWidget {
                       ),
                       MetricCard(
                         label: 'Avg HR',
-                        value: '${activity.avgHr}',
+                        value: '${activity.avgHr ?? "-"}',
                         unit: 'bpm',
                         icon: Icons.favorite,
                         color: AppColors.error,
                       ),
                       MetricCard(
                         label: 'Max HR',
-                        value: '${activity.maxHr}',
+                        value: '${activity.maxHr ?? "-"}',
                         unit: 'bpm',
                         icon: Icons.favorite_border,
                         color: AppColors.error,

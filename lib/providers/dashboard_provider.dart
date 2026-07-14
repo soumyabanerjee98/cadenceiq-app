@@ -36,7 +36,7 @@ class DashboardProvider extends ChangeNotifier {
     final res = await _repository.getProfile();
     if (res.response != null) {
       final userProfile = UserProfile.fromJson(res.response);
-      await LocalStorage.setUserProfile(userProfile);
+      await LocalStorage.setUserProfileId(userProfile.id);
       user = userProfile;
     }
   }

@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/features/activities/sync_activities_list.dart';
 import 'package:cadenceiq_app/features/auth/oauth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -107,20 +108,25 @@ class AppRouter {
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
+          path: RoutePaths.syncActivity,
+          builder: (_, __) => SyncStravaActivity(),
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/activities/:id',
           builder: (_, state) =>
               ActivityDetailScreen(activityId: state.pathParameters['id']!),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
-          path: '/goals/:id',
-          builder: (_, state) =>
-              GoalDetailScreen(goalId: state.pathParameters['id']!),
+          path: RoutePaths.createGoal,
+          builder: (_, __) => const CreateGoalScreen(),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
-          path: RoutePaths.createGoal,
-          builder: (_, __) => const CreateGoalScreen(),
+          path: '/goals/:id',
+          builder: (_, state) =>
+              GoalDetailScreen(goalId: state.pathParameters['id']!),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,

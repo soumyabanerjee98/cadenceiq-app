@@ -8,6 +8,7 @@ abstract final class RoutePaths {
   static const dashboard = '/dashboard';
   static const activities = '/activities';
   static const activityDetail = '/activities/:id';
+  static const syncActivity = '/sync-activity';
   static const goals = '/goals';
   static const goalDetail = '/goals/:id';
   static const createGoal = '/goals/create';

@@ -68,12 +68,10 @@ class ActivityProvider extends ChangeNotifier {
     currentPage++;
     final res = await _repository.fetch(currentPage: currentPage);
     if (res.response != null) {
-      activities = [
-        ...activities,
-        ...(res.response["activities"] as List).map(
-          (e) => Activity.fromJson(e),
-        ),
-      ];
+      final newActivities = (res.response["activities"] as List).map(
+        (e) => Activity.fromJson(e),
+      );
+      activities.addAll(newActivities);
       hasNext = res.response["hasNext"];
       _state = activities.isEmpty ? LoadState.empty : LoadState.loaded;
     } else {

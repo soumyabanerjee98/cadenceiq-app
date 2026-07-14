@@ -41,4 +41,44 @@ class ActivityRepository {
       );
     }
   }
+
+  Future<ApiResponse> fetchStravaActivities({
+    required int currentPage,
+    int perPage = 10,
+  }) async {
+    try {
+      final Map<String, String> query = {
+        "page": currentPage.toString(),
+        "perPage": perPage.toString(),
+      };
+      final res = await dio.get(ApiUrl.stravaActivities, query: query);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(
+          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+        ),
+      );
+    }
+  }
+
+  Future<ApiResponse> syncStravaActivities({
+    required List<int> activityIds,
+  }) async {
+    try {
+      final Map<String, dynamic> payload = {"activityIds": activityIds};
+      final res = await dio.post(ApiUrl.syncActivities, data: payload);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(
+          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+        ),
+      );
+    }
+  }
 }

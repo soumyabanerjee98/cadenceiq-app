@@ -45,8 +45,8 @@ class _SplashScreenState extends State<SplashScreen>
 
     Future.delayed(const Duration(seconds: 2), () async {
       final completed = await LocalStorage.isOnboardingCompleted();
-      final profile = await LocalStorage.getUserProfile();
-      if (completed) {
+      final profile = await LocalStorage.getUserProfileId();
+      if (completed == true) {
         if (profile != null) {
           if (mounted) context.go(RoutePaths.dashboard);
         } else {
