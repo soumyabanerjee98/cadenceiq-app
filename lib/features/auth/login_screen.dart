@@ -62,12 +62,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 32),
                   const Center(child: CadenceLogo(size: 72)),
                   const SizedBox(height: 24),
-                  Text(
-                    'Welcome back',
+                  Text.rich(
+                    TextSpan(
+                      text: 'Welcome to ',
+                      children: [
+                        TextSpan(
+                          text: "CadenceIQ",
+                          style: TextStyle(color: AppColors.primary),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
                   Text(
