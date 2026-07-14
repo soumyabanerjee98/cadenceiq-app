@@ -18,7 +18,10 @@ class AuthRepository {
         statusCode: dioErr.response?.statusCode,
         response: null,
         error: ServerError(
-          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+          errorMessage:
+              dioErr.response?.data?['message'] ??
+              dioErr.message ??
+              "Unknown Error!",
         ),
       );
     }
@@ -42,7 +45,10 @@ class AuthRepository {
         statusCode: dioErr.response?.statusCode,
         response: null,
         error: ServerError(
-          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+          errorMessage:
+              dioErr.response?.data?['message'] ??
+              dioErr.message ??
+              "Unknown Error!",
         ),
       );
     }
@@ -57,7 +63,10 @@ class AuthRepository {
         statusCode: dioErr.response?.statusCode,
         response: null,
         error: ServerError(
-          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+          errorMessage:
+              dioErr.response?.data?['message'] ??
+              dioErr.message ??
+              "Unknown Error!",
         ),
       );
     }

@@ -36,7 +36,10 @@ class ActivityRepository {
         statusCode: dioErr.response?.statusCode,
         response: null,
         error: ServerError(
-          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+          errorMessage:
+              dioErr.response?.data?['message'] ??
+              dioErr.message ??
+              "Unknown Error!",
         ),
       );
     }
@@ -51,7 +54,10 @@ class ActivityRepository {
         statusCode: dioErr.response?.statusCode,
         response: null,
         error: ServerError(
-          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+          errorMessage:
+              dioErr.response?.data?['message'] ??
+              dioErr.message ??
+              "Unknown Error!",
         ),
       );
     }
@@ -73,7 +79,10 @@ class ActivityRepository {
         statusCode: dioErr.response?.statusCode,
         response: null,
         error: ServerError(
-          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+          errorMessage:
+              dioErr.response?.data?['message'] ??
+              dioErr.message ??
+              "Unknown Error!",
         ),
       );
     }
@@ -91,7 +100,10 @@ class ActivityRepository {
         statusCode: dioErr.response?.statusCode,
         response: null,
         error: ServerError(
-          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+          errorMessage:
+              dioErr.response?.data?['message'] ??
+              dioErr.message ??
+              "Unknown Error!",
         ),
       );
     }
