@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/widgets/activity_map.dart';
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:cadenceiq_app/models/activity.dart';
 import 'package:cadenceiq_app/services/repo/activity_repo.dart';
@@ -87,10 +88,11 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
           ),
         ),
         body: SafePage(
+          top: false,
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
-                expandedHeight: 200,
+                expandedHeight: MediaQuery.of(context).size.height * 0.4,
                 pinned: true,
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios_new, size: 20),
@@ -104,25 +106,15 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  background: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          AppColors.primary.withOpacity(0.6),
-                          AppColors.primary,
-                        ],
-                      ),
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.terrain,
-                        size: 64,
-                        color: Colors.white54,
-                      ),
-                    ),
-                  ),
+                  background: activity.map != null
+                      ? ActivityMap(polyline: activity.map!)
+                      : Center(
+                          child: Text(
+                            "No Map Data!",
+                            style: Theme.of(context).textTheme.titleSmall!
+                                .copyWith(color: AppColors.darkTextSecondary),
+                          ),
+                        ),
                 ),
               ),
               SliverPadding(
