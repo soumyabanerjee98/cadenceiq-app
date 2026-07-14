@@ -58,6 +58,7 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
         onRefresh: () => provider.refresh(),
         child: CustomScrollView(
           controller: _scrollController,
+          physics: AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverPersistentHeader(
               pinned: true,

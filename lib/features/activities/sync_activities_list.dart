@@ -39,6 +39,7 @@ class _SyncStravaActivityState extends State<SyncStravaActivity> {
               .map((e) => StravaActivity.fromJson(e))
               .toList();
           hasNext = res.response["hasNext"];
+          currentPage = res.response["nextPage"];
         });
       }
     }
@@ -53,7 +54,6 @@ class _SyncStravaActivityState extends State<SyncStravaActivity> {
     if (loadingMore == true || hasNext == false) return;
     setState(() {
       loadingMore = true;
-      currentPage++;
     });
     final res = await _repo.fetchStravaActivities(currentPage: currentPage);
     if (res.response != null) {
@@ -65,6 +65,7 @@ class _SyncStravaActivityState extends State<SyncStravaActivity> {
         setState(() {
           activities.addAll(newActivities);
           hasNext = res.response["hasNext"];
+          currentPage = res.response["nextPage"];
         });
       }
     }
@@ -144,6 +145,7 @@ class _SyncStravaActivityState extends State<SyncStravaActivity> {
         onRefresh: refresh,
         child: CustomScrollView(
           controller: _scrollController,
+          physics: AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverPersistentHeader(
               pinned: true,
