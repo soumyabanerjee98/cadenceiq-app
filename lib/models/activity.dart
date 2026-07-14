@@ -45,6 +45,7 @@ class Activity {
     required this.duration,
     required this.trainingLoad,
     required this.zone,
+    this.map,
     this.elevationM = 0,
     this.avgSpeedKmh = 0,
     this.avgHr = 0,
@@ -61,6 +62,7 @@ class Activity {
   final Duration duration;
   final num trainingLoad;
   final TrainingZone zone;
+  final String? map;
   final num elevationM;
   final double avgSpeedKmh;
   final int? avgHr;
@@ -86,6 +88,7 @@ class Activity {
       duration: Duration(seconds: json["movingTime"]),
       trainingLoad: json["trainingLoad"],
       zone: TrainingZone.values.firstWhere((e) => e.name == json["zone"]),
+      map: json["map"],
       elevationM: json["elevationGain"],
       avgSpeedKmh: json["avgSpeed"] * 3.6,
       avgHr: json["avgHR"],
@@ -107,6 +110,7 @@ class Activity {
       "movingTime": duration.inSeconds,
       "trainingLoad": trainingLoad,
       "zone": zone.name,
+      "map": map,
       "elevationGain": elevationM,
       "avgSpeed": avgSpeedKmh / 3.6,
       "avgHR": avgHr,

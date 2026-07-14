@@ -1,5 +1,7 @@
+import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class OAuthResultScreen extends StatefulWidget {
   const OAuthResultScreen({super.key, required this.success});
@@ -16,12 +18,15 @@ class _OAuthResultScreenState extends State<OAuthResultScreen> {
   @override
   void initState() {
     super.initState();
-    _verify();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _reloadProfile();
+    });
   }
 
-  Future<void> _verify() async {
+  Future<void> _reloadProfile() async {
     if (widget.success) {
-      try {} catch (_) {}
+      final dashboard = context.read<DashboardProvider>();
+      await dashboard.refresh();
     }
 
     if (mounted) {

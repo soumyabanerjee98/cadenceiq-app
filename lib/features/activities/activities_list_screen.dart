@@ -89,7 +89,14 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
                     final activity = provider.activities[i];
                     return ActivityCard(
                       activity: activity,
-                      onTap: () => context.push('/activities/${activity.id}'),
+                      onTap: () async {
+                        final reload = await context.push<bool>(
+                          '/activities/${activity.id}',
+                        );
+                        if (reload == true) {
+                          provider.refresh();
+                        }
+                      },
                     );
                   }, childCount: provider.activities.length),
                 ),

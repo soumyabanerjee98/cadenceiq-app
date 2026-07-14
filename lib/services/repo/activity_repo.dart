@@ -42,6 +42,21 @@ class ActivityRepository {
     }
   }
 
+  Future<ApiResponse> fetchSingle({required String activityId}) async {
+    try {
+      final res = await dio.get("${ApiUrl.singleActivity}/$activityId");
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(
+          errorMessage: dioErr.response?.data?['message'] ?? "Unknown Error!",
+        ),
+      );
+    }
+  }
+
   Future<ApiResponse> fetchStravaActivities({
     required int currentPage,
     int perPage = 10,
