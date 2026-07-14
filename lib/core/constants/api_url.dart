@@ -2,7 +2,7 @@ const String environment = "UAT";
 
 const Map<String, String> baseUrl = {
   "UAT":
-      "https://6454-2409-40d0-2b1-5ad6-a8ff-bd23-4d80-4420.ngrok-free.app/api",
+      "https://94da-2409-40d0-2b1-5ad6-2ccb-74f5-7cd-ec9b.ngrok-free.app/api",
   "LIVE": "https://cadenceiq.onrender.com/api",
 };
 
