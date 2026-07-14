@@ -3,12 +3,90 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
 
+final TextTheme textTheme = const TextTheme(
+  displayLarge: TextStyle(
+    fontSize: 57,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Unbounded',
+  ),
+  displayMedium: TextStyle(
+    fontSize: 45,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Unbounded',
+  ),
+  displaySmall: TextStyle(
+    fontSize: 36,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'Unbounded',
+  ),
+  headlineLarge: TextStyle(
+    fontSize: 32,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Unbounded',
+  ),
+  headlineMedium: TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'Unbounded',
+  ),
+  headlineSmall: TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'Unbounded',
+  ),
+  titleLarge: TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'Unbounded',
+  ),
+  titleMedium: TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Unbounded',
+  ),
+  titleSmall: TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Unbounded',
+  ),
+  bodyLarge: TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Unbounded',
+  ),
+  bodyMedium: TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Unbounded',
+  ),
+  bodySmall: TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Unbounded',
+  ),
+  labelLarge: TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    fontFamily: 'Unbounded',
+  ),
+  labelMedium: TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Unbounded',
+  ),
+  labelSmall: TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Unbounded',
+  ),
+);
+
 abstract final class AppTheme {
   static ThemeData light() {
-    final textTheme = GoogleFonts.unboundedTextTheme();
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      fontFamily: 'Unbounded',
       colorScheme: const ColorScheme.light(
         primary: AppColors.primary,
         onPrimary: Colors.white,
@@ -126,12 +204,10 @@ abstract final class AppTheme {
   }
 
   static ThemeData dark() {
-    final textTheme = GoogleFonts.unboundedTextTheme(
-      ThemeData.dark().textTheme,
-    );
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      fontFamily: 'Unbounded',
       colorScheme: const ColorScheme.dark(
         primary: AppColors.primary,
         onPrimary: Colors.white,
