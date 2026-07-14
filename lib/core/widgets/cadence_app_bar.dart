@@ -24,7 +24,9 @@ class CadenceAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: title != null ? Text(title!) : null,
+      title: title != null
+          ? Text(title!, style: Theme.of(context).textTheme.titleMedium)
+          : null,
       centerTitle: centerTitle,
       leading: showBack
           ? IconButton(
