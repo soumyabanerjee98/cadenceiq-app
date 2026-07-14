@@ -154,7 +154,7 @@ class ActivityDetailScreen extends StatelessWidget {
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                           subtitle: Text(
-                            '${Formatters.distanceKm(s.distanceKm, imperial: imperial)} · ${Formatters.duration(s.duration)} · ${Formatters.speedKmh(s.avgSpeedKmh, imperial: imperial)} · ${s.avgHr?.toStringAsPrecision(3)} bpm',
+                            '${Formatters.distanceKm(s.distanceKm, imperial: imperial)} · ${Formatters.duration(s.duration)} · ${Formatters.speedKmh(s.avgSpeedKmh, imperial: imperial)} · ${s.avgHr != null ? (s.avgHr)?.toStringAsPrecision(3) : "-"} bpm',
                           ),
                         ),
                       ),
