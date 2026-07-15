@@ -139,7 +139,7 @@ class SettingsScreen extends StatelessWidget {
           PrimaryButton(
             label: "Log Out",
             onPressed: () {
-              context.read<AuthProvider>().logout();
+              context.read<AuthProvider>().logout(context: context);
             },
             icon: Icons.logout,
           ),

@@ -26,6 +26,16 @@ class ActivityProvider extends ChangeNotifier {
   TrainingZone? get zoneFilter => _zoneFilter;
   String? get errorMessage => _errorMessage;
 
+  void reset() {
+    _state = LoadState.initial;
+    currentPage = 1;
+    hasNext = false;
+    activities = [];
+    _searchQuery = '';
+    _zoneFilter = null;
+    _errorMessage = null;
+  }
+
   Future<List<Activity>> filter() async {
     List<Activity> filterActivities = activities;
     final res = await _repository.fetch(

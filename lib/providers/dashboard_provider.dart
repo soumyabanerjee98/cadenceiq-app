@@ -24,6 +24,11 @@ class DashboardProvider extends ChangeNotifier {
     return 'Good evening';
   }
 
+  void reset() {
+    _isLoading = false;
+    user = null;
+  }
+
   Future<void> refresh() async {
     _isLoading = true;
     notifyListeners();
