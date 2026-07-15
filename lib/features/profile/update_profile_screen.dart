@@ -5,6 +5,7 @@ import 'package:cadenceiq_app/core/components/text_form_field.dart';
 import 'package:cadenceiq_app/core/theme/app_colors.dart';
 import 'package:cadenceiq_app/core/utils/mediapicker.dart';
 import 'package:cadenceiq_app/core/utils/responsive.dart';
+import 'package:cadenceiq_app/core/utils/snackbar.dart';
 import 'package:cadenceiq_app/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:cadenceiq_app/core/widgets/safe_page.dart';
@@ -59,10 +60,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     final res = await _repo.updateProfile(formData);
     if (res.response != null) {
       await dashboard.refresh();
+      if (mounted) {
+        AppSnackbar.show(context, message: "Profile updated successfully!");
+      }
     }
-    setState(() {
-      loading = false;
-    });
+    if (mounted) {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
   @override
