@@ -127,4 +127,47 @@ class DioClient {
       options: options,
     );
   }
+
+  String extractError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+        return "Connection timed out.";
+
+      case DioExceptionType.sendTimeout:
+        return "Request timed out.";
+
+      case DioExceptionType.receiveTimeout:
+        return "Server took too long to respond.";
+
+      case DioExceptionType.connectionError:
+        return "Unable to connect to the server. Check your internet connection.";
+
+      case DioExceptionType.badCertificate:
+        return "Invalid SSL certificate.";
+
+      case DioExceptionType.cancel:
+        return "Request cancelled.";
+
+      case DioExceptionType.badResponse:
+        final data = e.response?.data;
+
+        if (data is Map<String, dynamic>) {
+          return data['message']?.toString() ??
+              data['error']?.toString() ??
+              'Server error (${e.response?.statusCode})';
+        }
+
+        if (data is String) {
+          return data;
+        }
+
+        return "Server error (${e.response?.statusCode})";
+
+      case DioExceptionType.unknown:
+        return e.error?.toString() ?? e.message ?? "Unexpected error occurred.";
+
+      default:
+        return "Unexpected error occurred.";
+    }
+  }
 }

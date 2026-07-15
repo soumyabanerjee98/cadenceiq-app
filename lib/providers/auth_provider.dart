@@ -72,4 +72,8 @@ class AuthProvider extends ChangeNotifier {
     _state = AuthState.authenticated;
     notifyListeners();
   }
+
+  void clearErrors() {
+    _errorMessage = null;
+  }
 }

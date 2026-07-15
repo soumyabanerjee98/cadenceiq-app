@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/components/text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,6 @@ import 'package:cadenceiq_app/core/constants/app_strings.dart';
 import 'package:cadenceiq_app/core/constants/route_paths.dart';
 import 'package:cadenceiq_app/core/theme/app_colors.dart';
 import 'package:cadenceiq_app/core/utils/responsive.dart';
-import 'package:cadenceiq_app/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:cadenceiq_app/core/widgets/safe_page.dart';
 import 'package:cadenceiq_app/providers/auth_provider.dart';
@@ -20,30 +20,23 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmController = TextEditingController();
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmController.dispose();
-    super.dispose();
-  }
+  String name = '';
+  String email = '';
+  String password = '';
+  String confirmPassword = '';
 
   Future<void> _signup() async {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthProvider>();
-    await auth.signup(
-      name: _nameController.text,
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
+    await auth.signup(name: name, email: email, password: password);
     if (!mounted) return;
     if (auth.isAuthenticated) context.go(RoutePaths.dashboard);
+  }
+
+  void navigateToLogin() {
+    final auth = context.read<AuthProvider>();
+    auth.clearErrors();
+    context.go(RoutePaths.login);
   }
 
   @override
@@ -52,7 +45,7 @@ class _SignupScreenState extends State<SignupScreen> {
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(
-      appBar: const CadenceAppBar(showBack: true),
+      // appBar: const CadenceAppBar(showBack: true),
       body: SafePage(
         child: Responsive.centeredContent(
           context: context,
@@ -66,63 +59,72 @@ class _SignupScreenState extends State<SignupScreen> {
                   Text(
                     'Create account',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'Start your AI-powered training journey',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                   const SizedBox(height: 32),
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.name,
-                      prefixIcon: Icon(Icons.person_outline),
-                    ),
+                  CustomTextFormField(
+                    label: AppStrings.name,
+                    initialValue: name,
+                    onChanged: (value) => setState(() {
+                      name = value;
+                    }),
+                    prefixIcon: Icon(Icons.person_outline),
+                    keyboardType: TextInputType.name,
                     validator: (v) =>
                         v == null || v.isEmpty ? 'Enter your name' : null,
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.email,
-                      prefixIcon: Icon(Icons.email_outlined),
-                    ),
+                  CustomTextFormField(
+                    label: AppStrings.email,
+                    initialValue: email,
+                    onChanged: (value) => setState(() {
+                      email = value;
+                    }),
+                    prefixIcon: Icon(Icons.email_outlined),
                     keyboardType: TextInputType.emailAddress,
-                    validator: (v) =>
-                        v == null || !v.contains('@') ? 'Enter a valid email' : null,
+                    validator: (v) => v == null || !v.contains('@')
+                        ? 'Enter a valid email'
+                        : null,
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.password,
-                      prefixIcon: Icon(Icons.lock_outline),
-                    ),
-                    obscureText: true,
-                    validator: (v) =>
-                        v == null || v.length < 6 ? 'Password must be 6+ characters' : null,
+                  CustomTextFormField(
+                    label: AppStrings.password,
+                    initialValue: password,
+                    onChanged: (value) => setState(() {
+                      password = value;
+                    }),
+                    prefixIcon: Icon(Icons.lock_outline),
+                    keyboardType: TextInputType.visiblePassword,
+                    validator: (v) => v == null || v.length < 6
+                        ? 'Password must be 6+ characters'
+                        : null,
+                    obsecureText: true,
                   ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _confirmController,
-                    decoration: const InputDecoration(
-                      labelText: AppStrings.confirmPassword,
-                      prefixIcon: Icon(Icons.lock_outline),
-                    ),
-                    obscureText: true,
-                    validator: (v) => v != _passwordController.text
+                  CustomTextFormField(
+                    label: AppStrings.confirmPassword,
+                    initialValue: confirmPassword,
+                    onChanged: (value) => setState(() {
+                      confirmPassword = value;
+                    }),
+                    prefixIcon: Icon(Icons.lock_outline),
+                    keyboardType: TextInputType.visiblePassword,
+                    validator: (v) => v == null || v != password
                         ? 'Passwords do not match'
                         : null,
+                    obsecureText: true,
                   ),
                   if (auth.errorMessage != null) ...[
                     const SizedBox(height: 12),
-                    Text(auth.errorMessage!, style: const TextStyle(color: AppColors.error)),
+                    Text(
+                      auth.errorMessage!,
+                      style: const TextStyle(color: AppColors.error),
+                    ),
                   ],
                   const SizedBox(height: 24),
                   PrimaryButton(
@@ -136,7 +138,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     children: [
                       Text(AppStrings.haveAccount),
                       TextButton(
-                        onPressed: () => context.pop(),
+                        onPressed: navigateToLogin,
                         child: const Text(AppStrings.login),
                       ),
                     ],

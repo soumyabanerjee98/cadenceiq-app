@@ -43,6 +43,12 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void navigateToSignup() {
+    final auth = context.read<AuthProvider>();
+    auth.clearErrors();
+    context.go(RoutePaths.signup);
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
@@ -175,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(AppStrings.noAccount),
                       TextButton(
-                        onPressed: () => context.push(RoutePaths.signup),
+                        onPressed: navigateToSignup,
                         child: const Text(AppStrings.signup),
                       ),
                     ],

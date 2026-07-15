@@ -1,11 +1,13 @@
+import 'dart:math';
+
 import 'package:cadenceiq_app/core/assets/assets.dart';
 import 'package:cadenceiq_app/core/components/loading.dart';
 import 'package:cadenceiq_app/core/constants/app_strings.dart';
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:cadenceiq_app/services/mock/mock_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cadenceiq_app/core/constants/route_paths.dart';
@@ -25,15 +27,33 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> {
+class _DashboardScreenState extends State<DashboardScreen>
+    with TickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final String tagline;
+  final _random = Random();
+
+  String getRandomGoalTagline() {
+    return AppStrings.goalTaglines[_random.nextInt(
+      AppStrings.goalTaglines.length,
+    )];
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     final dashboard = context.read<DashboardProvider>();
+    _controller = AnimationController(vsync: this);
+    tagline = getRandomGoalTagline();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       dashboard.refresh();
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -261,7 +281,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ] else ...[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(14),
-                    child: SvgPicture.asset(AppImages.noGoal),
+                    child: Lottie.asset(
+                      AppLotties.noGoal,
+                      controller: _controller,
+                      onLoaded: (composition) {
+                        // Configure the AnimationController with the duration of the
+                        // Lottie file and start the animation.
+                        _controller
+                          ..duration = composition.duration
+                          ..repeat();
+                      },
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Center(
@@ -293,10 +323,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 20),
                   Text(
-                    AppStrings.noGoalDescription,
+                    tagline,
                     style: Theme.of(context).textTheme.bodySmall,
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
                   PrimaryButton(

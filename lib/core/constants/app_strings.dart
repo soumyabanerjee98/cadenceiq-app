@@ -44,8 +44,33 @@ abstract final class AppStrings {
   static const zoneDistribution = 'Zone Distribution';
   static const todaysSession = "Today's Session";
   static const quickActions = 'Quick Actions';
-  static const noGoalDescription =
-      "Create a goal to give your rides a clear purpose and personalized direction.\n\nCadenceIQ adapts your training based on your progress, helping you build fitness consistently and reach your cycling goals smarter.";
+  static const goalTaglines = [
+    "Every journey begins with a goal.",
+    "Great rides start with a plan.",
+    "Your future self starts here.",
+    "One goal. Endless possibilities.",
+    "The first step is deciding.",
+    "Set a goal. Start today.",
+    "Goals turn dreams into rides.",
+    "Commit today. Conquer tomorrow.",
+    "Every achievement starts with intent.",
+    "Start strong. Stay stronger.",
+    "A goal gives every ride meaning.",
+    "The best time to begin is now.",
+    "Progress starts with one decision.",
+    "Success begins with a clear goal.",
+    "Your next milestone starts here.",
+    "One goal can change everything.",
+    "Start with purpose. Finish with pride.",
+    "Every champion starts somewhere.",
+    "Small goals. Big transformations.",
+    "Begin the ride that changes you.",
+    "Make today your starting line.",
+    "The road ahead begins with one goal.",
+    "Turn ambition into action.",
+    "Create your goal. Own your journey.",
+    "Every finish line starts here.",
+  ];
 
   // Nav
   static const navDashboard = 'Dashboard';

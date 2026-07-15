@@ -1,3 +1,5 @@
+import 'package:cadenceiq_app/core/assets/assets.dart';
+import 'package:cadenceiq_app/core/widgets/safe_page.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +8,6 @@ import 'package:cadenceiq_app/core/constants/app_strings.dart';
 import 'package:cadenceiq_app/core/constants/route_paths.dart';
 import 'package:cadenceiq_app/core/theme/app_colors.dart';
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
-import 'package:cadenceiq_app/core/widgets/safe_page.dart';
 import 'package:cadenceiq_app/models/onboarding_page.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -24,26 +25,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     OnboardingPageData(
       title: AppStrings.onboardingTitle1,
       subtitle: AppStrings.onboardingSubtitle1,
-      icon: Icons.directions_bike,
-      iconColor: AppColors.primary,
+      image: AppImages.onboarding_1,
     ),
     OnboardingPageData(
       title: AppStrings.onboardingTitle2,
       subtitle: AppStrings.onboardingSubtitle2,
-      icon: Icons.analytics_outlined,
-      iconColor: AppColors.info,
+      image: AppImages.onboarding_2,
     ),
     OnboardingPageData(
       title: AppStrings.onboardingTitle3,
       subtitle: AppStrings.onboardingSubtitle3,
-      icon: Icons.calendar_month_outlined,
-      iconColor: AppColors.success,
+      image: AppImages.onboarding_3,
     ),
     OnboardingPageData(
       title: AppStrings.onboardingTitle4,
       subtitle: AppStrings.onboardingSubtitle4,
-      icon: Icons.trending_up,
-      iconColor: AppColors.warning,
+      image: AppImages.onboarding_4,
     ),
   ];
 
@@ -67,12 +64,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SafePage(
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          PageView.builder(
+            controller: _controller,
+            onPageChanged: (i) => setState(() => _currentPage = i),
+            itemCount: _pages.length,
+            itemBuilder: (_, i) => _OnboardingPage(data: _pages[i]),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: SafePage(
               child: TextButton(
                 onPressed: () async {
                   await LocalStorage.setOnboardingCompleted();
@@ -81,15 +86,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: const Text(AppStrings.skip),
               ),
             ),
-            Expanded(
-              child: PageView.builder(
-                controller: _controller,
-                onPageChanged: (i) => setState(() => _currentPage = i),
-                itemCount: _pages.length,
-                itemBuilder: (_, i) => _OnboardingPage(data: _pages[i]),
-              ),
-            ),
-            Row(
+          ),
+          Positioned(
+            bottom: size.height * 0.1,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(_pages.length, (i) {
                 return AnimatedContainer(
@@ -106,8 +106,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 );
               }),
             ),
-            Padding(
-              padding: const EdgeInsets.all(24),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SafeArea(
+              minimum: const EdgeInsets.all(16),
               child: PrimaryButton(
                 label: _currentPage == _pages.length - 1
                     ? AppStrings.getStarted
@@ -115,52 +118,84 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 onPressed: _next,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _OnboardingPage extends StatelessWidget {
+class _OnboardingPage extends StatefulWidget {
   const _OnboardingPage({required this.data});
   final OnboardingPageData data;
 
   @override
+  State<_OnboardingPage> createState() => _OnboardingPageState();
+}
+
+class _OnboardingPageState extends State<_OnboardingPage> {
+  @override
+  void didChangeDependencies() {
+    precacheImage(AssetImage(widget.data.image), context);
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 160,
-            height: 160,
+    final Size size = MediaQuery.of(context).size;
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Image.asset(
+          widget.data.image,
+          cacheHeight: size.height.ceil(),
+          cacheWidth: size.width.ceil(),
+        ),
+        Positioned.fill(
+          child: DecoratedBox(
             decoration: BoxDecoration(
-              color: data.iconColor.withOpacity(0.12),
-              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                // Controls where the black fade begins (0.6 means it starts at 60% down)
+                stops: const [0.6, 1.0],
+                colors: [
+                  Colors.transparent,
+                  Colors.black.withOpacity(
+                    0.8,
+                  ), // Adjust opacity to control darkness
+                ],
+              ),
             ),
-            child: Icon(data.icon, size: 80, color: data.iconColor),
           ),
-          const SizedBox(height: 48),
-          Text(
-            data.title,
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            data.subtitle,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppColors.textSecondary,
-              height: 1.5,
+        ),
+        Positioned(
+          bottom: size.height * 0.15,
+          child: SizedBox(
+            width: size.width * 0.9,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 20,
+              children: [
+                Text(
+                  widget.data.title,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: AppColors.darkTextPrimary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  widget.data.subtitle,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppColors.darkTextPrimary,
+                    height: 1.5,
+                  ),
+                ),
+              ],
             ),
-            textAlign: TextAlign.center,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

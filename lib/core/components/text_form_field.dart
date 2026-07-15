@@ -37,14 +37,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _controller.text = widget.initialValue;
     super.initState();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _controller.dispose();
     super.dispose();
   }

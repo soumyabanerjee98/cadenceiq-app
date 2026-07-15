@@ -1,15 +1,11 @@
-import 'package:flutter/material.dart';
-
 class OnboardingPageData {
   const OnboardingPageData({
     required this.title,
     required this.subtitle,
-    required this.icon,
-    required this.iconColor,
+    required this.image,
   });
 
   final String title;
   final String subtitle;
-  final IconData icon;
-  final Color iconColor;
+  final String image;
 }

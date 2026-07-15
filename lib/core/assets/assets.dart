@@ -7,5 +7,14 @@ class AppImages {
   static const appleIcon = '$base/apple-logo-icon.svg';
   static const appleIconDark = '$base/apple-logo-icon-dark.svg';
 
-  static const noGoal = '$base/cadenceiq-idle-no-goal.svg';
+  static const onboarding_1 = '$base/onboarding-1.jpg';
+  static const onboarding_2 = '$base/onboarding-2.jpg';
+  static const onboarding_3 = '$base/onboarding-3.jpg';
+  static const onboarding_4 = '$base/onboarding-4.jpg';
+}
+
+class AppLotties {
+  static const base = 'assets/lotties';
+
+  static const noGoal = '$base/cat-idle.json';
 }
