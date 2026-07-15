@@ -29,6 +29,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   String? name;
   String? password;
   int? age;
+  String? existingImage;
   File? image;
 
   bool loading = false;
@@ -43,12 +44,24 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     });
   }
 
+  void _removePhoto() async {
+    setState(() {
+      existingImage = null;
+      image = null;
+    });
+  }
+
   Future<void> _updateProfile() async {
     final dashboard = context.read<DashboardProvider>();
     setState(() {
       loading = true;
     });
     Map<String, dynamic> payload = {"name": name, "age": age};
+    if (dashboard.user?.avatarUrl != null) {
+      if (existingImage == null && image == null) {
+        payload["removeImage"] = true;
+      }
+    }
     if (image != null) {
       final multiPartFile = await MultipartFile.fromFile(
         image!.path,
@@ -77,6 +90,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     setState(() {
       name = user?.name;
       age = user?.age;
+      existingImage = user?.avatarUrl;
     });
     super.initState();
   }
@@ -110,9 +124,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       child: ClipOval(
                         child: image != null
                             ? Image.file(image!)
-                            : (user?.avatarUrl?.isNotEmpty ?? false)
+                            : (existingImage?.isNotEmpty ?? false)
                             ? Image.network(
-                                user!.avatarUrl!,
+                                existingImage!,
                                 width: 144,
                                 height: 144,
                                 fit: BoxFit.cover,
@@ -123,7 +137,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                       }
 
                                       return Text(
-                                        user.initials,
+                                        user?.initials ?? "",
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 36,
@@ -133,7 +147,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     },
                                 errorBuilder: (_, __, ___) => Center(
                                   child: Text(
-                                    user.initials,
+                                    user?.initials ?? "",
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 36,
@@ -169,6 +183,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 ],
               ),
             ),
+            if (existingImage != null || image != null)
+              Column(
+                children: [
+                  TextButton(
+                    onPressed: _removePhoto,
+                    child: Text("Remove Photo"),
+                  ),
+                ],
+              ),
             const SizedBox(height: 16),
             Form(
               key: _formKey,
