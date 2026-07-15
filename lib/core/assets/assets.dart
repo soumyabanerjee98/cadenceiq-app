@@ -6,6 +6,8 @@ class AppImages {
   static const facebookIcon = '$base/facebook-logo-icon.svg';
   static const appleIcon = '$base/apple-logo-icon.svg';
   static const appleIconDark = '$base/apple-logo-icon-dark.svg';
+  static const stravaIcon = '$base/strava-icon.svg';
+  static const stravaIconText = '$base/strava-ar21.svg';
 
   static const onboarding_1 = '$base/onboarding-1.jpg';
   static const onboarding_2 = '$base/onboarding-2.jpg';

@@ -15,6 +15,7 @@ abstract final class RoutePaths {
   static const summaries = '/summaries';
   static const summaryDetail = '/summaries/:id';
   static const settings = '/settings';
+  static const connectStrava = '/connect-strava';
   static const profile = '/profile';
   static const updateProfile = '/update-profile';
   static const oauth = '/oauth';

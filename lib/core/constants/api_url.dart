@@ -24,4 +24,5 @@ abstract final class ApiUrl {
 
   // settings
   static const connectStrava = '/strava/connect';
+  static const disconnectStrava = '/strava/disconnect';
 }

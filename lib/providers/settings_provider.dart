@@ -60,4 +60,12 @@ class SettingsProvider extends ChangeNotifier {
       rootNavigatorKey.currentContext?.push("/$route");
     }
   }
+
+  Future<bool> disconnectStrava() async {
+    final res = await _repository.disconnectStrava();
+    if (res.response != null) {
+      return true;
+    }
+    return false;
+  }
 }

@@ -106,9 +106,7 @@ class SettingsScreen extends StatelessWidget {
             subTitleStyle: profile.user?.stravaConnected == true
                 ? TextStyle(color: Colors.green)
                 : null,
-            onTap: profile.user?.stravaConnected == true
-                ? null
-                : () => settings.connectStrava(),
+            onTap: () => context.push(RoutePaths.connectStrava),
           ),
           // _SettingsTile(
           //   icon: Icons.watch,

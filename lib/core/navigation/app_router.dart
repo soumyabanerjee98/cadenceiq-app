@@ -1,6 +1,7 @@
 import 'package:cadenceiq_app/features/activities/sync_activities_list.dart';
 import 'package:cadenceiq_app/features/auth/oauth.dart';
 import 'package:cadenceiq_app/features/profile/update_profile_screen.dart';
+import 'package:cadenceiq_app/features/settings/strava_connect.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -106,6 +107,11 @@ class AppRouter {
               ],
             ),
           ],
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
+          path: RoutePaths.connectStrava,
+          builder: (_, __) => StravaConnect(),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
