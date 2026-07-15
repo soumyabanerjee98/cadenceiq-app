@@ -5,6 +5,7 @@ class UserProfile {
     required this.id,
     required this.email,
     this.name = '',
+    this.avatarUrl,
     this.age,
     this.maxHr,
     this.restingHr,
@@ -22,6 +23,7 @@ class UserProfile {
   final String id;
   final String email;
   final String? name;
+  final String? avatarUrl;
   final int? age;
   final int? maxHr;
   final int? restingHr;
@@ -47,6 +49,7 @@ class UserProfile {
     return UserProfile(
       id: json["id"],
       name: json["name"] ?? "",
+      avatarUrl: json["avatarUrl"],
       email: json["email"],
       age: json["age"],
       maxHr: json["maxHR"],
@@ -67,6 +70,7 @@ class UserProfile {
     return {
       "id": id,
       "name": name,
+      "avatarUrl": avatarUrl,
       "email": email,
       "age": age,
       "maxHR": maxHr,

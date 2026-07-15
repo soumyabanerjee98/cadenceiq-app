@@ -31,13 +31,48 @@ class ProfileScreen extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 48,
                   backgroundColor: AppColors.primary,
-                  child: Text(
-                    user?.initials ?? "",
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w700,
-                    ),
+                  child: ClipOval(
+                    child: (user?.avatarUrl?.isNotEmpty ?? false)
+                        ? Image.network(
+                            user!.avatarUrl!,
+                            width: 96,
+                            height: 96,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              }
+
+                              return Text(
+                                user.initials,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              );
+                            },
+                            errorBuilder: (_, __, ___) => Center(
+                              child: Text(
+                                user.initials,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          )
+                        : Center(
+                            child: Text(
+                              user?.initials ?? "",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 32,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ),
                   ),
                 ),
               ),

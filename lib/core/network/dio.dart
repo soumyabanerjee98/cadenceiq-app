@@ -80,6 +80,21 @@ class DioClient {
     );
   }
 
+  Future<Response<T>> postForm<T>(
+    String path, {
+    FormData? data,
+    Map<String, dynamic>? query,
+    Options? options,
+  }) async {
+    return dio.post<T>(
+      path,
+      data: data,
+      queryParameters: query,
+      options:
+          options ?? Options(contentType: Headers.multipartFormDataContentType),
+    );
+  }
+
   //---------------------- PUT ----------------------//
 
   Future<Response<T>> put<T>(
@@ -96,6 +111,21 @@ class DioClient {
     );
   }
 
+  Future<Response<T>> putForm<T>(
+    String path, {
+    FormData? data,
+    Map<String, dynamic>? query,
+    Options? options,
+  }) async {
+    return dio.put<T>(
+      path,
+      data: data,
+      queryParameters: query,
+      options:
+          options ?? Options(contentType: Headers.multipartFormDataContentType),
+    );
+  }
+
   //---------------------- PATCH ----------------------//
 
   Future<Response<T>> patch<T>(
@@ -109,6 +139,21 @@ class DioClient {
       data: data,
       queryParameters: query,
       options: options,
+    );
+  }
+
+  Future<Response<T>> patchForm<T>(
+    String path, {
+    FormData? data,
+    Map<String, dynamic>? query,
+    Options? options,
+  }) async {
+    return dio.patch<T>(
+      path,
+      data: data,
+      queryParameters: query,
+      options:
+          options ?? Options(contentType: Headers.multipartFormDataContentType),
     );
   }
 
