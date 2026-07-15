@@ -59,5 +59,13 @@
     <string>sms</string>
     <string>tel</string>
   </array>
+  <key>NSCameraUsageDescription</key>
+  <string>We need camera access to take your profile photo.</string>
+
+  <key>NSPhotoLibraryUsageDescription</key>
+  <string>We need gallery access to choose your profile photo.</string>
+
+  <key>NSPhotoLibraryAddUsageDescription</key>
+  <string>We need permission to save photos.</string>
 </dict>
 </plist>

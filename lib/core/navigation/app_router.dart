@@ -1,5 +1,6 @@
 import 'package:cadenceiq_app/features/activities/sync_activities_list.dart';
 import 'package:cadenceiq_app/features/auth/oauth.dart';
+import 'package:cadenceiq_app/features/profile/update_profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -138,6 +139,11 @@ class AppRouter {
           parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.profile,
           builder: (_, __) => const ProfileScreen(),
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
+          path: RoutePaths.updateProfile,
+          builder: (_, __) => const UpdateProfileScreen(),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,

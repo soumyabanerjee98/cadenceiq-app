@@ -16,5 +16,6 @@ abstract final class RoutePaths {
   static const summaryDetail = '/summaries/:id';
   static const settings = '/settings';
   static const profile = '/profile';
+  static const updateProfile = '/update-profile';
   static const oauth = '/oauth';
 }

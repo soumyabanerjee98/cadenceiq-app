@@ -1,4 +1,6 @@
+import 'package:cadenceiq_app/core/constants/route_paths.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cadenceiq_app/core/theme/app_colors.dart';
@@ -20,7 +22,16 @@ class ProfileScreen extends StatelessWidget {
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(
-      appBar: const CadenceAppBar(showBack: true, title: 'Profile'),
+      appBar: CadenceAppBar(
+        showBack: true,
+        title: 'Profile',
+        actions: [
+          TextButton(
+            onPressed: () => context.push(RoutePaths.updateProfile),
+            child: const Text("Edit"),
+          ),
+        ],
+      ),
       body: SafePage(
         child: ListView(
           padding: EdgeInsets.all(padding),

@@ -56,4 +56,17 @@ class AuthRepository {
       );
     }
   }
+
+  Future<ApiResponse> updateProfile(FormData data) async {
+    try {
+      final res = await dio.putForm(ApiUrl.updateProfile, data: data);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(errorMessage: dio.extractError(dioErr)),
+      );
+    }
+  }
 }

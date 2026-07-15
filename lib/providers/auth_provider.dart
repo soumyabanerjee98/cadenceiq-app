@@ -5,7 +5,6 @@ import 'package:cadenceiq_app/providers/activity_provider.dart';
 import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:cadenceiq_app/services/repo/auth_repo.dart';
 import 'package:cadenceiq_app/store/store.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
