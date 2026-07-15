@@ -45,6 +45,6 @@ abstract final class Formatters {
   static String load(num load) => load.toStringAsFixed(0);
   static String percent(double p) => '${(p * 100).round()}%';
   static String watts(num w) => '${w.round()} W';
-  static String bpm(int hr) => '$hr bpm';
+  static String bpm(int? hr) => '${hr ?? "-"} bpm';
   static String calories(int c) => '$c kcal';
 }

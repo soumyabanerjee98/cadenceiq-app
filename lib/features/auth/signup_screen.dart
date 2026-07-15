@@ -1,4 +1,5 @@
 import 'package:cadenceiq_app/core/components/text_form_field.dart';
+import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -28,9 +29,16 @@ class _SignupScreenState extends State<SignupScreen> {
   Future<void> _signup() async {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthProvider>();
-    await auth.signup(name: name, email: email, password: password);
-    if (!mounted) return;
-    if (auth.isAuthenticated) context.go(RoutePaths.dashboard);
+    final res = await auth.signup(name: name, email: email, password: password);
+    if (auth.isAuthenticated) {
+      final accessToken = res.response['accessToken'];
+      final refreshToken = res.response['refreshToken'];
+      await TokenStorage.save(
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      );
+      if (mounted) context.go(RoutePaths.dashboard);
+    }
   }
 
   void navigateToLogin() {

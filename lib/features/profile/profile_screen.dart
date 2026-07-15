@@ -68,16 +68,13 @@ class ProfileScreen extends StatelessWidget {
             Card(
               child: Column(
                 children: [
-                  _InfoRow(label: 'Age', value: '${user?.age} years'),
+                  _InfoRow(label: 'Age', value: '${user?.age ?? "-"} years'),
                   const Divider(height: 1),
-                  _InfoRow(
-                    label: 'Max HR',
-                    value: Formatters.bpm(user?.maxHr ?? 0),
-                  ),
+                  _InfoRow(label: 'Max HR', value: Formatters.bpm(user?.maxHr)),
                   const Divider(height: 1),
                   _InfoRow(
                     label: 'Resting HR',
-                    value: Formatters.bpm(user?.restingHr ?? 0),
+                    value: Formatters.bpm(user?.restingHr),
                   ),
                 ],
               ),

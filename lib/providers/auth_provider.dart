@@ -37,7 +37,7 @@ class AuthProvider extends ChangeNotifier {
     return res;
   }
 
-  Future<void> signup({
+  Future<ApiResponse> signup({
     required String name,
     required String email,
     required String password,
@@ -46,7 +46,7 @@ class AuthProvider extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
 
-    final res = await _repository.signup(
+    final ApiResponse res = await _repository.signup(
       name: name,
       email: email,
       password: password,
@@ -58,6 +58,7 @@ class AuthProvider extends ChangeNotifier {
       _errorMessage = res.error?.errorMessage;
     }
     notifyListeners();
+    return res;
   }
 
   void logout() async {
