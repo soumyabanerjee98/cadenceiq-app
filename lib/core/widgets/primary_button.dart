@@ -156,9 +156,12 @@ class _PrimaryButtonState extends State<PrimaryButton>
       );
     }
 
-    return widget.expand == true
-        ? SizedBox(width: double.infinity, child: button)
-        : button;
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: widget.expand == true
+          ? SizedBox(width: double.infinity, child: button)
+          : button,
+    );
   }
 }
 
@@ -189,7 +192,10 @@ class SecondaryButton extends StatelessWidget {
         ],
       ),
     );
-    return expand ? SizedBox(width: double.infinity, child: button) : button;
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: expand ? SizedBox(width: double.infinity, child: button) : button,
+    );
   }
 }
 

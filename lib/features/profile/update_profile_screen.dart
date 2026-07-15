@@ -123,7 +123,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       backgroundColor: AppColors.primary,
                       child: ClipOval(
                         child: image != null
-                            ? Image.file(image!)
+                            ? Image.file(
+                                image!,
+                                width: 144,
+                                height: 144,
+                                fit: BoxFit.cover,
+                              )
                             : (existingImage?.isNotEmpty ?? false)
                             ? Image.network(
                                 existingImage!,

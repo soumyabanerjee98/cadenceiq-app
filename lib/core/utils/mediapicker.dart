@@ -96,6 +96,7 @@ class MediaPicker {
       showDragHandle: true,
       builder: (_) {
         return SafeArea(
+          top: false,
           child: Wrap(
             children: [
               ListTile(

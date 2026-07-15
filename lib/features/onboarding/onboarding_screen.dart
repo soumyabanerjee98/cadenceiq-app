@@ -64,7 +64,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
@@ -87,36 +86,39 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
-          Positioned(
-            bottom: size.height * 0.1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(_pages.length, (i) {
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  width: _currentPage == i ? 24 : 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: _currentPage == i
-                        ? AppColors.primary
-                        : AppColors.border,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                );
-              }),
-            ),
-          ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: SafeArea(
-              minimum: const EdgeInsets.all(16),
-              child: PrimaryButton(
-                label: _currentPage == _pages.length - 1
-                    ? AppStrings.getStarted
-                    : AppStrings.next,
-                onPressed: _next,
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(_pages.length, (i) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      width: _currentPage == i ? 24 : 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: _currentPage == i
+                            ? AppColors.primary
+                            : AppColors.border,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    );
+                  }),
+                ),
+                SafeArea(
+                  minimum: const EdgeInsets.all(16),
+                  top: false,
+                  child: PrimaryButton(
+                    label: _currentPage == _pages.length - 1
+                        ? AppStrings.getStarted
+                        : AppStrings.next,
+                    onPressed: _next,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -158,19 +160,17 @@ class _OnboardingPageState extends State<_OnboardingPage> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 // Controls where the black fade begins (0.6 means it starts at 60% down)
-                stops: const [0.6, 1.0],
+                stops: const [0.2, 1.0],
                 colors: [
                   Colors.transparent,
-                  Colors.black.withOpacity(
-                    0.8,
-                  ), // Adjust opacity to control darkness
+                  Colors.black87, // Adjust opacity to control darkness
                 ],
               ),
             ),
           ),
         ),
         Positioned(
-          bottom: size.height * 0.15,
+          bottom: size.height * 0.2,
           child: SizedBox(
             width: size.width * 0.9,
             child: Column(
