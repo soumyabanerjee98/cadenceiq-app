@@ -319,11 +319,16 @@ class _DashboardScreenState extends State<DashboardScreen>
                       AppLotties.noGoal,
                       controller: _controller,
                       onLoaded: (composition) {
-                        // Configure the AnimationController with the duration of the
-                        // Lottie file and start the animation.
-                        _controller
-                          ..duration = composition.duration
-                          ..repeat();
+                        _controller.duration = composition.duration;
+
+                        _controller.addStatusListener((status) async {
+                          if (status == AnimationStatus.completed && mounted) {
+                            await Future.delayed(const Duration(seconds: 2));
+                            _controller.forward(from: 0);
+                          }
+                        });
+
+                        _controller.forward();
                       },
                     ),
                   ),
