@@ -1,4 +1,5 @@
 import 'package:cadenceiq_app/core/components/text_form_field.dart';
+import 'package:cadenceiq_app/features/auth/otp_screen.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -25,6 +26,22 @@ class _SignupScreenState extends State<SignupScreen> {
   String email = '';
   String password = '';
   String confirmPassword = '';
+
+  Future<void> _verify() async {
+    if (!_formKey.currentState!.validate()) return;
+    final auth = context.read<AuthProvider>();
+    await auth.sendOtp(email: email, reason: OtpReason.registration);
+    if (auth.isAuthenticated && mounted) {
+      context.push(
+        RoutePaths.otp,
+        extra: OtpScreenArgs(
+          onVerify: _signup,
+          email: email,
+          reason: OtpReason.registration,
+        ),
+      );
+    }
+  }
 
   Future<void> _signup() async {
     if (!_formKey.currentState!.validate()) return;
@@ -53,7 +70,6 @@ class _SignupScreenState extends State<SignupScreen> {
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(
-      // appBar: const CadenceAppBar(showBack: true),
       body: SafePage(
         child: Responsive.centeredContent(
           context: context,
@@ -138,7 +154,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   PrimaryButton(
                     label: AppStrings.signup,
                     isLoading: auth.state == AuthState.loading,
-                    onPressed: _signup,
+                    onPressed: _verify,
                   ),
                   const SizedBox(height: 16),
                   Row(

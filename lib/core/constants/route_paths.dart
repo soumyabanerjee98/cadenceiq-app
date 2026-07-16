@@ -3,6 +3,7 @@ abstract final class RoutePaths {
   static const onboarding = '/onboarding';
   static const login = '/login';
   static const signup = '/signup';
+  static const otp = '/otp';
   static const forgotPassword = '/forgot-password';
 
   static const dashboard = '/dashboard';

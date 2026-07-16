@@ -82,6 +82,14 @@ final TextTheme textTheme = const TextTheme(
 );
 
 abstract final class AppTheme {
+  static Brightness of(BuildContext context) {
+    final brightness = MediaQuery.platformBrightnessOf(context);
+    return brightness;
+  }
+
+  static bool isDarkMode(BuildContext context) =>
+      of(context) == Brightness.dark;
+
   static ThemeData light() {
     return ThemeData(
       useMaterial3: true,

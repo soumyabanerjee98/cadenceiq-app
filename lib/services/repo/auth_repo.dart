@@ -44,6 +44,40 @@ class AuthRepository {
     }
   }
 
+  Future<ApiResponse> sendOtp({
+    required String email,
+    required String reason,
+  }) async {
+    try {
+      final Map<String, String> payload = {"email": email, "reason": reason};
+      final res = await dio.post(ApiUrl.sendOtp, data: payload);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(errorMessage: dio.extractError(dioErr)),
+      );
+    }
+  }
+
+  Future<ApiResponse> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    try {
+      final Map<String, String> payload = {"email": email, "otp": otp};
+      final res = await dio.post(ApiUrl.verifyOtp, data: payload);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(errorMessage: dio.extractError(dioErr)),
+      );
+    }
+  }
+
   Future<ApiResponse> getProfile() async {
     try {
       final res = await dio.get(ApiUrl.profile);

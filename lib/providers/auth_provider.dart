@@ -1,6 +1,8 @@
 import 'package:cadenceiq_app/core/constants/route_paths.dart';
 import 'package:cadenceiq_app/core/navigation/app_router.dart';
 import 'package:cadenceiq_app/core/network/dio.dart';
+import 'package:cadenceiq_app/core/utils/formatters.dart';
+import 'package:cadenceiq_app/features/auth/otp_screen.dart';
 import 'package:cadenceiq_app/providers/activity_provider.dart';
 import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:cadenceiq_app/services/repo/auth_repo.dart';
@@ -59,6 +61,47 @@ class AuthProvider extends ChangeNotifier {
       email: email,
       password: password,
     );
+    if (res.response != null) {
+      _state = AuthState.authenticated;
+    } else {
+      _state = AuthState.error;
+      _errorMessage = res.error?.errorMessage;
+    }
+    notifyListeners();
+    return res;
+  }
+
+  Future<ApiResponse> sendOtp({
+    required String email,
+    required OtpReason reason,
+  }) async {
+    _state = AuthState.loading;
+    _errorMessage = null;
+    notifyListeners();
+
+    final ApiResponse res = await _repository.sendOtp(
+      email: email,
+      reason: Formatters.otpReason(reason),
+    );
+    if (res.response != null) {
+      _state = AuthState.authenticated;
+    } else {
+      _state = AuthState.error;
+      _errorMessage = res.error?.errorMessage;
+    }
+    notifyListeners();
+    return res;
+  }
+
+  Future<ApiResponse> verifyOtp({
+    required String email,
+    required String otp,
+  }) async {
+    _state = AuthState.loading;
+    _errorMessage = null;
+    notifyListeners();
+
+    final ApiResponse res = await _repository.verifyOtp(email: email, otp: otp);
     if (res.response != null) {
       _state = AuthState.authenticated;
     } else {

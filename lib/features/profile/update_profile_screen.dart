@@ -215,9 +215,9 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   ),
                   CustomNumberPicker(
                     label: "Age",
-                    min: 10,
+                    min: 18,
                     max: 100,
-                    initialValue: age ?? 10,
+                    initialValue: age,
                     prefixIcon: Icon(Icons.cake_outlined),
                     suffixText: "years",
                     onChanged: (value) => setState(() {

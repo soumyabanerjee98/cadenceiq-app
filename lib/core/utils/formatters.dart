@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/features/auth/otp_screen.dart';
 import 'package:intl/intl.dart';
 
 abstract final class Formatters {
@@ -47,4 +48,17 @@ abstract final class Formatters {
   static String watts(num w) => '${w.round()} W';
   static String bpm(int? hr) => '${hr ?? "-"} bpm';
   static String calories(int c) => '$c kcal';
+
+  static String otpReason(OtpReason reason) {
+    switch (reason) {
+      case OtpReason.registration:
+        return "registration";
+      case OtpReason.forgotPassword:
+        return "forgot-password";
+      case OtpReason.resetPassword:
+        return "reset-password";
+      default:
+        return "";
+    }
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:cadenceiq_app/features/activities/sync_activities_list.dart';
 import 'package:cadenceiq_app/features/auth/oauth.dart';
+import 'package:cadenceiq_app/features/auth/otp_screen.dart';
 import 'package:cadenceiq_app/features/profile/update_profile_screen.dart';
 import 'package:cadenceiq_app/features/settings/strava_connect.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,13 @@ class AppRouter {
         GoRoute(
           path: RoutePaths.signup,
           builder: (_, __) => const SignupScreen(),
+        ),
+        GoRoute(
+          path: RoutePaths.otp,
+          builder: (_, state) {
+            final args = state.extra as OtpScreenArgs;
+            return OTPScreen(args: args);
+          },
         ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {

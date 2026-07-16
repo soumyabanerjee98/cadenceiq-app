@@ -16,10 +16,10 @@ class CustomNumberPicker extends StatefulWidget {
   });
 
   final String label;
-  final int initialValue;
+  final int? initialValue;
   final int min;
   final int max;
-  final ValueChanged<int> onChanged;
+  final ValueChanged<int?> onChanged;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final String? suffixText;
@@ -30,7 +30,7 @@ class CustomNumberPicker extends StatefulWidget {
 }
 
 class _CustomNumberPickerState extends State<CustomNumberPicker> {
-  late int value;
+  late int? value;
   late final TextEditingController controller;
 
   @override
@@ -38,7 +38,9 @@ class _CustomNumberPickerState extends State<CustomNumberPicker> {
     super.initState();
     value = widget.initialValue;
     controller = TextEditingController(
-      text: widget.suffixText == null
+      text: value == null
+          ? "-"
+          : widget.suffixText == null
           ? "$value"
           : "$value ${widget.suffixText}",
     );
@@ -51,7 +53,7 @@ class _CustomNumberPickerState extends State<CustomNumberPicker> {
   }
 
   Future<void> _showPicker() async {
-    int temp = value;
+    int? temp = value;
 
     await showModalBottomSheet(
       context: context,
@@ -91,7 +93,7 @@ class _CustomNumberPickerState extends State<CustomNumberPicker> {
                   child: CupertinoPicker(
                     itemExtent: 44,
                     scrollController: FixedExtentScrollController(
-                      initialItem: value - widget.min,
+                      initialItem: value == null ? 0 : (value! - widget.min),
                     ),
                     onSelectedItemChanged: (index) {
                       temp = widget.min + index;
@@ -130,7 +132,8 @@ class _CustomNumberPickerState extends State<CustomNumberPicker> {
           labelText: widget.label,
           prefixIcon: widget.prefixIcon,
           suffixIcon:
-              widget.suffixIcon ?? const Icon(Icons.keyboard_arrow_up_rounded),
+              widget.suffixIcon ??
+              const Icon(Icons.keyboard_arrow_down_rounded),
         ),
       ),
     );
