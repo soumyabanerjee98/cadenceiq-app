@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cadenceiq_app/core/theme/app_colors.dart';
+import 'package:cadenceiq_app/core/theme/app_theme.dart';
 import 'package:cadenceiq_app/core/utils/responsive.dart';
 import 'package:cadenceiq_app/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq_app/core/widgets/otp_pin.dart';
@@ -172,6 +173,26 @@ class _OTPScreenState extends State<OTPScreen> {
                   label: "Verify",
                   isLoading: (auth.state == AuthState.loading) && loading,
                   onPressed: _verify,
+                ),
+                const SizedBox(height: 32),
+                Text.rich(
+                  TextSpan(
+                    text: "Please check your",
+                    children: [
+                      TextSpan(
+                        text: " spam folder ",
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: AppColors.error,
+                        ),
+                      ),
+                      TextSpan(text: "in case you have not received in inbox!"),
+                    ],
+                  ),
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: AppTheme.isDarkMode(context)
+                        ? AppColors.darkTextSecondary
+                        : AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
