@@ -2,6 +2,7 @@ import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cadenceiq_app/core/constants/route_paths.dart';
@@ -10,8 +11,26 @@ import 'package:cadenceiq_app/core/utils/responsive.dart';
 import 'package:cadenceiq_app/providers/auth_provider.dart';
 import 'package:cadenceiq_app/providers/settings_provider.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  PackageInfo? packageInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      PackageInfo info = await PackageInfo.fromPlatform();
+      setState(() {
+        packageInfo = info;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +144,7 @@ class SettingsScreen extends StatelessWidget {
           _SettingsTile(
             icon: Icons.info_outline,
             title: 'About CadenceIQ',
-            subtitle: 'Version 1.0.0',
+            subtitle: 'Version ${packageInfo?.version}',
             onTap: () {},
           ),
           _SettingsTile(
@@ -134,12 +153,21 @@ class SettingsScreen extends StatelessWidget {
             onTap: () {},
           ),
           const SizedBox(height: 32),
-          PrimaryButton(
+          SecondaryButton(
             label: "Log Out",
             onPressed: () {
               context.read<AuthProvider>().logout(context: context);
             },
             icon: Icons.logout,
+            paddingDisable: true,
+          ),
+          const SizedBox(height: 16),
+          PrimaryButton(
+            label: "Delete Account",
+            onPressed: () {},
+            icon: Icons.delete_outline,
+            paddingDisable: true,
+            danger: true,
           ),
         ],
       ),

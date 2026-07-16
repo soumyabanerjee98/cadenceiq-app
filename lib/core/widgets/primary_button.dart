@@ -23,6 +23,8 @@ class PrimaryButton extends StatefulWidget {
     this.icon,
     this.expand = true,
     this.shine = false,
+    this.paddingDisable = false,
+    this.danger = false,
   });
 
   final String label;
@@ -31,6 +33,8 @@ class PrimaryButton extends StatefulWidget {
   final IconData? icon;
   final bool expand;
   final bool shine;
+  final bool paddingDisable;
+  final bool danger;
 
   @override
   State<PrimaryButton> createState() => _PrimaryButtonState();
@@ -99,8 +103,15 @@ class _PrimaryButtonState extends State<PrimaryButton>
             ],
           );
 
+    final themeStyle = Theme.of(context).elevatedButtonTheme.style;
+
     Widget button = ElevatedButton(
       onPressed: widget.isLoading ? null : widget.onPressed,
+      style: themeStyle?.copyWith(
+        backgroundColor: widget.danger
+            ? WidgetStatePropertyAll(AppColors.error)
+            : null,
+      ),
       child: child,
     );
 
@@ -157,7 +168,9 @@ class _PrimaryButtonState extends State<PrimaryButton>
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.symmetric(
+        vertical: widget.paddingDisable == true ? 0 : 16,
+      ),
       child: widget.expand == true
           ? SizedBox(width: double.infinity, child: button)
           : button,
@@ -172,12 +185,14 @@ class SecondaryButton extends StatelessWidget {
     required this.onPressed,
     this.icon,
     this.expand = true,
+    this.paddingDisable = false,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final IconData? icon;
   final bool expand;
+  final bool paddingDisable;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +208,7 @@ class SecondaryButton extends StatelessWidget {
       ),
     );
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 16),
+      padding: EdgeInsets.symmetric(vertical: paddingDisable == true ? 0 : 16),
       child: expand ? SizedBox(width: double.infinity, child: button) : button,
     );
   }
