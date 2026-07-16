@@ -156,8 +156,8 @@ class _SyncStravaActivityState extends State<SyncStravaActivity> {
             else if (activities.isEmpty)
               const SliverFillRemaining(
                 child: EmptyStateWidget(
-                  title: 'No activities yet',
-                  message: 'Your rides will appear here once recorded.',
+                  title: 'No activities found!',
+                  message: 'Start recording activities on Strava.',
                   icon: Icons.directions_bike_outlined,
                 ),
               )

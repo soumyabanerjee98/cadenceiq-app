@@ -1,4 +1,5 @@
 import 'package:cadenceiq_app/core/constants/route_paths.dart';
+import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -76,7 +77,7 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
             else if (provider.activities.isEmpty)
               const SliverFillRemaining(
                 child: EmptyStateWidget(
-                  title: 'No activities yet',
+                  title: 'No activities yet!',
                   message: 'Your rides will appear here once recorded.',
                   icon: Icons.directions_bike_outlined,
                 ),
@@ -129,6 +130,7 @@ class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     final provider = context.watch<ActivityProvider>();
+    final dashboard = context.watch<DashboardProvider>();
 
     final padding = Responsive.horizontalPadding(context);
 
@@ -148,14 +150,27 @@ class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
                 ),
               ),
               IconButton(
-                onPressed: () async {
-                  final res = await context.push<bool>(RoutePaths.syncActivity);
-                  if (res == true) {
-                    provider.refresh();
-                  }
-                },
-                icon: Icon(Icons.sync, color: AppColors.primary),
-                tooltip: "Sync New Activities",
+                onPressed: dashboard.user?.stravaConnected == true
+                    ? () async {
+                        final res = await context.push<bool>(
+                          RoutePaths.syncActivity,
+                        );
+                        if (res == true) {
+                          provider.refresh();
+                        }
+                      }
+                    : null,
+                icon: Icon(
+                  dashboard.user?.stravaConnected == true
+                      ? Icons.sync_rounded
+                      : Icons.sync_lock_rounded,
+                  color: dashboard.user?.stravaConnected == true
+                      ? AppColors.primary
+                      : AppColors.warning,
+                ),
+                tooltip: dashboard.user?.stravaConnected == true
+                    ? "Sync New Activities"
+                    : "Strava Not Connected",
               ),
             ],
           ),
