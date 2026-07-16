@@ -103,4 +103,18 @@ class AuthRepository {
       );
     }
   }
+
+  Future<ApiResponse> deleteProfile(String password) async {
+    try {
+      final Map<String, String> payload = {"password": password};
+      final res = await dio.delete(ApiUrl.deleteAccount, data: payload);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(errorMessage: dio.extractError(dioErr)),
+      );
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:cadenceiq_app/core/components/text_form_field.dart';
+import 'package:cadenceiq_app/core/widgets/text_form_field.dart';
 import 'package:cadenceiq_app/features/auth/otp_screen.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/material.dart';

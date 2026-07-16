@@ -32,6 +32,7 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
+  bool resendLoading = false;
   bool loading = false;
   String otp = '';
 
@@ -80,8 +81,16 @@ class _OTPScreenState extends State<OTPScreen> {
   }
 
   Future<void> _resend() async {
+    setState(() {
+      resendLoading = true;
+    });
     final auth = context.read<AuthProvider>();
     await auth.sendOtp(email: widget.args.email, reason: widget.args.reason);
+    if (mounted) {
+      setState(() {
+        resendLoading = false;
+      });
+    }
     if (auth.isAuthenticated) {
       _start();
     }
@@ -135,15 +144,19 @@ class _OTPScreenState extends State<OTPScreen> {
                     _verify();
                   },
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     _remaining > 0
                         ? Text("Resend OTP in $_formattedTime")
                         : TextButton(
-                            onPressed: _resend,
-                            child: Text("Resend OTP"),
+                            onPressed: !resendLoading ? _resend : null,
+                            child: Text(
+                              resendLoading
+                                  ? "Requesting new OTP"
+                                  : "Resend OTP",
+                            ),
                           ),
                   ],
                 ),

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cadenceiq_app/core/assets/assets.dart';
-import 'package:cadenceiq_app/core/components/text_form_field.dart';
+import 'package:cadenceiq_app/core/widgets/text_form_field.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

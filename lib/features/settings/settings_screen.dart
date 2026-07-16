@@ -1,3 +1,5 @@
+import 'package:cadenceiq_app/core/widgets/delete_account.dart';
+import 'package:cadenceiq_app/core/widgets/dialog.dart';
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,30 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   PackageInfo? packageInfo;
+
+  void _callDeleteAccount() async {
+    final res = await AppDialog.show(
+      context,
+      title: "Delete Account",
+      description: "Are you sure to delete your account?",
+      actionText: "Delete",
+      isDanger: true,
+      barrierDismissible: true,
+    );
+    if (res == true) {
+      _callDeleteProfileBottomSheet();
+    }
+  }
+
+  void _callDeleteProfileBottomSheet() async {
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      builder: (_) {
+        return DeleteAccount();
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -164,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 16),
           PrimaryButton(
             label: "Delete Account",
-            onPressed: () {},
+            onPressed: _callDeleteAccount,
             icon: Icons.delete_outline,
             paddingDisable: true,
             danger: true,

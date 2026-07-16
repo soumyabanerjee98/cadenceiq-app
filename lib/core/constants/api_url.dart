@@ -2,7 +2,7 @@ const String environment = "UAT";
 
 const Map<String, String> baseUrl = {
   "UAT":
-      "https://bd39-2409-40d0-295-8f09-b0f8-8091-4e3-a0e1.ngrok-free.app/api",
+      "https://3cd8-2409-40d0-3019-d689-9c39-d880-dbbc-7565.ngrok-free.app/api",
   "LIVE": "https://cadenceiq.onrender.com/api",
 };
 
@@ -17,6 +17,7 @@ abstract final class ApiUrl {
   static const profile = '/auth/profile';
   static const updateProfile = '/auth/update-profile';
   static const refreshToken = '/auth/refresh-token';
+  static const deleteAccount = '/auth/delete-account';
 
   // activity
   static const activities = '/activity/get-activities';

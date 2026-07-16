@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:cadenceiq_app/core/assets/assets.dart';
-import 'package:cadenceiq_app/core/components/loading.dart';
+import 'package:cadenceiq_app/core/widgets/loading.dart';
 import 'package:cadenceiq_app/core/constants/app_strings.dart';
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:cadenceiq_app/services/mock/mock_data.dart';

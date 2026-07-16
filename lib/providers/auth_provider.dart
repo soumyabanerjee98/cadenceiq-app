@@ -112,6 +112,22 @@ class AuthProvider extends ChangeNotifier {
     return res;
   }
 
+  Future<ApiResponse> deleteAccount({required String password}) async {
+    _state = AuthState.loading;
+    _errorMessage = null;
+    notifyListeners();
+
+    final ApiResponse res = await _repository.deleteProfile(password);
+    if (res.response != null) {
+      logout();
+    } else {
+      _state = AuthState.error;
+      _errorMessage = res.error?.errorMessage;
+    }
+    notifyListeners();
+    return res;
+  }
+
   void logout({BuildContext? context}) async {
     _state = AuthState.unauthenticated;
     await LocalStorage.removeUserProfile();

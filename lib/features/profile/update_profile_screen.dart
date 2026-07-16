@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:cadenceiq_app/core/components/number_picker.dart';
-import 'package:cadenceiq_app/core/components/text_form_field.dart';
+import 'package:cadenceiq_app/core/widgets/number_picker.dart';
+import 'package:cadenceiq_app/core/widgets/text_form_field.dart';
 import 'package:cadenceiq_app/core/theme/app_colors.dart';
 import 'package:cadenceiq_app/core/utils/mediapicker.dart';
 import 'package:cadenceiq_app/core/utils/responsive.dart';
