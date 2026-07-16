@@ -57,8 +57,6 @@ abstract final class Formatters {
         return "forgot-password";
       case OtpReason.resetPassword:
         return "reset-password";
-      default:
-        return "";
     }
   }
 }
