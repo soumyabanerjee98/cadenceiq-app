@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/widgets/text_form_field.dart';
 import 'package:cadenceiq_app/core/widgets/training_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
   ExperienceLevel _level = ExperienceLevel.beginner;
-  final _requestController = TextEditingController();
+  String _request = '';
   final PageController _controller = PageController();
   int currentPage = 0;
 
@@ -43,7 +44,6 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
 
   @override
   void dispose() {
-    _requestController.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -136,7 +136,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       startDate: _startDate,
       endDate: _endDate,
       level: _level,
-      request: _requestController.text,
+      request: _request,
     );
     _nextPage();
   }
@@ -147,8 +147,8 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       "endDate": _endDate.toIso8601String().split("T")[0],
       "experienceLevel": _level.name,
     };
-    if (_requestController.text.isNotEmpty) {
-      payload.addAll({"customGoalRequirements": _requestController.text});
+    if (_request.isNotEmpty) {
+      payload.addAll({"customGoalRequirements": _request});
     }
     print(payload);
   }
@@ -280,15 +280,17 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           );
         }),
         const SizedBox(height: 16),
-        TextFormField(
-          controller: _requestController,
+        CustomTextFormField(
+          label: "Describe your goal (Optional)",
+          hintText:
+              'e.g. Prepare for a 160km gran fondo in June with focus on climbing and endurance...',
+          initialValue: _request,
           maxLines: 5,
-          decoration: const InputDecoration(
-            labelText: 'Describe your goal (Optional)',
-            hintText:
-                'e.g. Prepare for a 160km gran fondo in June with focus on climbing and endurance...',
-            alignLabelWithHint: true,
-          ),
+          onChanged: (value) {
+            setState(() {
+              _request = value;
+            });
+          },
         ),
       ],
     );
@@ -327,6 +329,14 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         ),
         const SizedBox(height: 24),
         TrainingCalendar(plans: provider.target?.plan ?? []),
+        const SizedBox(height: 18),
+        Row(
+          spacing: 8,
+          children: [
+            Icon(Icons.lightbulb_circle_outlined, color: AppColors.warning),
+            Text("Tap on the events to view details"),
+          ],
+        ),
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,

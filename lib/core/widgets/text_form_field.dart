@@ -9,6 +9,8 @@ class CustomTextFormField extends StatefulWidget {
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final bool obsecureText;
+  final int? maxLines;
+  final String? hintText;
   const CustomTextFormField({
     super.key,
     required this.label,
@@ -18,6 +20,8 @@ class CustomTextFormField extends StatefulWidget {
     this.suffixIcon,
     this.keyboardType,
     this.validator,
+    this.maxLines,
+    this.hintText,
     this.obsecureText = false,
   });
 
@@ -54,8 +58,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       child: TextFormField(
         controller: _controller,
         onChanged: widget.onChanged,
+        maxLines: widget.maxLines,
         decoration: InputDecoration(
           labelText: widget.label,
+          hintText: widget.hintText,
+          alignLabelWithHint: true,
           prefixIcon: widget.prefixIcon,
           suffixIcon: widget.obsecureText
               ? IconButton(

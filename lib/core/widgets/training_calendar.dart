@@ -167,7 +167,7 @@ class _PlanBottomSheet extends StatelessWidget {
                     Expanded(
                       child: _Metric(
                         icon: Icons.bolt,
-                        title: "Load",
+                        title: "TSS",
                         value: plan.targetLoad.toString(),
                       ),
                     ),
@@ -424,9 +424,14 @@ class _TrainingCalendarState extends State<TrainingCalendar> {
           },
 
           onTap: (p0) {
-            final index = p0.appointments?.first.id;
-            final PrePlan plan = widget.plans[index];
-            showPlanBottomSheet(context, plan);
+            final List<dynamic>? list = p0.appointments;
+            if (list == null) return;
+            if (list.isEmpty) return;
+            final index = p0.appointments?.first?.id;
+            if (index != null) {
+              final PrePlan plan = widget.plans[index];
+              showPlanBottomSheet(context, plan);
+            }
           },
         ),
       ],

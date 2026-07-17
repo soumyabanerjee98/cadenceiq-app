@@ -38,26 +38,29 @@ class CadenceIQApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => SettingsProvider()),
-        ChangeNotifierProvider(create: (_) => DashboardProvider()),
-        ChangeNotifierProvider(create: (_) => ActivityProvider()),
-        ChangeNotifierProvider(create: (_) => GoalProvider()),
-        ChangeNotifierProvider(create: (_) => SummaryProvider()),
-      ],
-      child: Consumer<SettingsProvider>(
-        builder: (context, settings, _) {
-          return MaterialApp.router(
-            title: AppStrings.appName,
-            debugShowCheckedModeBanner: false,
-            theme: AppTheme.light(),
-            darkTheme: AppTheme.dark(),
-            themeMode: ThemeMode.system,
-            routerConfig: router,
-          );
-        },
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => AuthProvider()),
+          ChangeNotifierProvider(create: (_) => SettingsProvider()),
+          ChangeNotifierProvider(create: (_) => DashboardProvider()),
+          ChangeNotifierProvider(create: (_) => ActivityProvider()),
+          ChangeNotifierProvider(create: (_) => GoalProvider()),
+          ChangeNotifierProvider(create: (_) => SummaryProvider()),
+        ],
+        child: Consumer<SettingsProvider>(
+          builder: (context, settings, _) {
+            return MaterialApp.router(
+              title: AppStrings.appName,
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.light(),
+              darkTheme: AppTheme.dark(),
+              themeMode: ThemeMode.system,
+              routerConfig: router,
+            );
+          },
+        ),
       ),
     );
   }
