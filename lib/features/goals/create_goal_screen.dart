@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/widgets/training_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -294,6 +295,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Widget _buildCalendarPage() {
+    provider = context.watch<GoalProvider>();
     final padding = Responsive.horizontalPadding(context);
     final TextStyle? normal = Theme.of(context).textTheme.bodyMedium?.copyWith(
       color: AppColors.textSecondary,
@@ -323,6 +325,8 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           ),
           style: normal,
         ),
+        const SizedBox(height: 24),
+        TrainingCalendar(plans: provider.target?.plan ?? []),
         const SizedBox(height: 24),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
