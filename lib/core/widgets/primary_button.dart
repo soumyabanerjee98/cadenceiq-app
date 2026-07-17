@@ -1,5 +1,7 @@
+import 'package:cadenceiq_app/core/assets/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lottie/lottie.dart';
 
 import '../theme/app_colors.dart';
 
@@ -25,6 +27,7 @@ class PrimaryButton extends StatefulWidget {
     this.shine = false,
     this.paddingDisable = false,
     this.danger = false,
+    this.ai = false,
   });
 
   final String label;
@@ -35,14 +38,16 @@ class PrimaryButton extends StatefulWidget {
   final bool shine;
   final bool paddingDisable;
   final bool danger;
+  final bool ai;
 
   @override
   State<PrimaryButton> createState() => _PrimaryButtonState();
 }
 
 class _PrimaryButtonState extends State<PrimaryButton>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController _controller;
+  late final AnimationController _lottieController;
 
   @override
   void initState() {
@@ -52,6 +57,10 @@ class _PrimaryButtonState extends State<PrimaryButton>
       vsync: this,
       duration: const Duration(seconds: 5),
     );
+
+    if (widget.ai) {
+      _lottieController = AnimationController(vsync: this);
+    }
 
     if (widget.shine) {
       _controller.repeat();
@@ -72,19 +81,33 @@ class _PrimaryButtonState extends State<PrimaryButton>
   @override
   void dispose() {
     _controller.dispose();
+    _lottieController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final child = widget.isLoading
-        ? const SizedBox(
+        ? SizedBox(
             height: 22,
             width: 22,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: Colors.white,
-            ),
+            child: widget.ai
+                ? Transform.scale(
+                    scale: 2.0,
+                    child: Lottie.asset(
+                      AppLotties.aiLoading,
+                      controller: _lottieController,
+                      onLoaded: (composition) {
+                        _lottieController
+                          ..duration = composition.duration
+                          ..repeat();
+                      },
+                    ),
+                  )
+                : CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
           )
         : Row(
             mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
@@ -92,6 +115,9 @@ class _PrimaryButtonState extends State<PrimaryButton>
             children: [
               if (widget.icon != null) ...[
                 Icon(widget.icon, size: 20),
+                const SizedBox(width: 8),
+              ] else if (widget.ai) ...[
+                Icon(Icons.auto_awesome, size: 20),
                 const SizedBox(width: 8),
               ],
               Text(
@@ -110,6 +136,8 @@ class _PrimaryButtonState extends State<PrimaryButton>
       style: themeStyle?.copyWith(
         backgroundColor: widget.danger
             ? WidgetStatePropertyAll(AppColors.error)
+            : widget.ai
+            ? WidgetStatePropertyAll(AppColors.ai)
             : null,
       ),
       child: child,

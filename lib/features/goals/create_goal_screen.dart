@@ -141,17 +141,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     _nextPage();
   }
 
-  Future<void> _generatePlan() async {
-    Map<String, String> payload = {
-      "startDate": _startDate.toIso8601String().split("T")[0],
-      "endDate": _endDate.toIso8601String().split("T")[0],
-      "experienceLevel": _level.name,
-    };
-    if (_request.isNotEmpty) {
-      payload.addAll({"customGoalRequirements": _request});
-    }
-    print(payload);
-  }
+  Future<void> _generatePlan() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +153,8 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         minimum: const EdgeInsets.all(16),
         child: PrimaryButton(
           label: currentPage == 0 ? 'Generate Training Plan' : 'Set Goal',
-          icon: currentPage == 0 ? Icons.auto_awesome : null,
+          ai: currentPage == 0,
+          shine: currentPage == 0,
           isLoading: provider.isGenerating,
           onPressed: _action,
         ),

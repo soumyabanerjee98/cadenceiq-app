@@ -15,6 +15,7 @@ abstract final class AppColors {
 
   static const Color border = Color(0xFFE8E8E8);
   static const Color divider = Color(0xFFEEEEEE);
+  static const Color ai = Color(0xFF6366F1);
 
   static const Color success = Color(0xFF2ECC71);
   static const Color warning = Color(0xFFF39C12);
