@@ -39,6 +39,7 @@ class GoalProvider extends ChangeNotifier {
     required String request,
   }) async {
     _isGenerating = true;
+    _target = null;
     notifyListeners();
     try {
       final res = await _repository.buildPlan(

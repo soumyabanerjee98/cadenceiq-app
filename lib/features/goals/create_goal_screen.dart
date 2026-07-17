@@ -23,6 +23,7 @@ class CreateGoalScreen extends StatefulWidget {
 }
 
 class _CreateGoalScreenState extends State<CreateGoalScreen> {
+  late GoalProvider provider;
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
   ExperienceLevel _level = ExperienceLevel.beginner;
@@ -32,6 +33,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
 
   @override
   void initState() {
+    provider = context.read<GoalProvider>();
     setState(() {
       _level = widget.args.experienceLevel;
     });
@@ -129,15 +131,12 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Future<void> _buildPlan() async {
-    Map<String, String> payload = {
-      "startDate": _startDate.toIso8601String().split("T")[0],
-      "endDate": _endDate.toIso8601String().split("T")[0],
-      "experienceLevel": _level.name,
-    };
-    if (_requestController.text.isNotEmpty) {
-      payload.addAll({"customGoalRequirements": _requestController.text});
-    }
-    print(payload);
+    await provider.buildPlan(
+      startDate: _startDate,
+      endDate: _endDate,
+      level: _level,
+      request: _requestController.text,
+    );
     _nextPage();
   }
 
@@ -155,7 +154,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<GoalProvider>();
+    provider = context.watch<GoalProvider>();
 
     return Scaffold(
       appBar: const CadenceAppBar(showBack: true, title: 'Create Goal'),
