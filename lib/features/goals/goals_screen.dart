@@ -1,5 +1,3 @@
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/theme/app_theme.dart';
 import 'package:cadenceiq_app/core/utils/snackbar.dart';
 import 'package:cadenceiq_app/core/widgets/floating_action_button.dart';
 import 'package:cadenceiq_app/features/goals/create_goal_screen.dart';
@@ -12,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:cadenceiq_app/core/constants/route_paths.dart';
 import 'package:cadenceiq_app/core/utils/responsive.dart';
 import 'package:cadenceiq_app/core/widgets/goal_card.dart';
-import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:cadenceiq_app/models/goal.dart';
 import 'package:cadenceiq_app/providers/goal_provider.dart';
 
