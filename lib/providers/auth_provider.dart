@@ -128,20 +128,10 @@ class AuthProvider extends ChangeNotifier {
     return res;
   }
 
-  void logout({BuildContext? context}) async {
+  void logout() async {
     _state = AuthState.unauthenticated;
     await LocalStorage.removeUserProfile();
     await TokenStorage.clear();
-    reset();
-    if (context != null) {
-      final ActivityProvider activityProvider = context
-          .read<ActivityProvider>();
-      final DashboardProvider dashboardProvider = context
-          .read<DashboardProvider>();
-      activityProvider.reset();
-      dashboardProvider.reset();
-    }
-
     rootNavigatorKey.currentContext?.go(RoutePaths.login);
     notifyListeners();
   }
@@ -153,5 +143,14 @@ class AuthProvider extends ChangeNotifier {
 
   void clearErrors() {
     _errorMessage = null;
+  }
+
+  void cleanUpProviders({required BuildContext context}) {
+    reset();
+    final ActivityProvider activityProvider = context.read<ActivityProvider>();
+    final DashboardProvider dashboardProvider = context
+        .read<DashboardProvider>();
+    activityProvider.reset();
+    dashboardProvider.reset();
   }
 }

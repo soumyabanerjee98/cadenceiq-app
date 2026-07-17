@@ -33,6 +33,7 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
+  late AuthProvider auth;
   bool resendLoading = false;
   bool loading = false;
   String otp = '';
@@ -69,7 +70,6 @@ class _OTPScreenState extends State<OTPScreen> {
     setState(() {
       loading = true;
     });
-    final auth = context.read<AuthProvider>();
     await auth.verifyOtp(email: widget.args.email, otp: otp);
     if (mounted) {
       setState(() {
@@ -85,7 +85,6 @@ class _OTPScreenState extends State<OTPScreen> {
     setState(() {
       resendLoading = true;
     });
-    final auth = context.read<AuthProvider>();
     await auth.sendOtp(email: widget.args.email, reason: widget.args.reason);
     if (mounted) {
       setState(() {
@@ -99,6 +98,7 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   void initState() {
+    auth = context.read<AuthProvider>();
     _start();
     super.initState();
   }
@@ -112,7 +112,7 @@ class _OTPScreenState extends State<OTPScreen> {
   @override
   Widget build(BuildContext context) {
     final padding = Responsive.horizontalPadding(context);
-    final auth = context.watch<AuthProvider>();
+    auth = context.watch<AuthProvider>();
     return Scaffold(
       appBar: CadenceAppBar(showBack: true),
       body: SafePage(

@@ -28,6 +28,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
   bool syncing = false;
   bool reload = false;
   late Activity activity;
+  late ActivityProvider provider;
 
   Future<void> _resync() async {
     setState(() {
@@ -60,8 +61,9 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
 
   @override
   void initState() {
+    provider = context.read<ActivityProvider>();
     setState(() {
-      activity = context.read<ActivityProvider>().getById(widget.activityId);
+      activity = provider.getById(widget.activityId);
     });
     super.initState();
   }
@@ -69,6 +71,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final imperial = context.watch<SettingsProvider>().useImperial;
+    provider = context.watch<ActivityProvider>();
     final padding = Responsive.horizontalPadding(context);
 
     return PopScope(

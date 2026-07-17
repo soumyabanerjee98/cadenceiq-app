@@ -23,6 +23,7 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+  late DashboardProvider dashboard;
   final AuthRepository _repo = AuthRepository();
   final _formKey = GlobalKey<FormState>();
 
@@ -52,7 +53,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _updateProfile() async {
-    final dashboard = context.read<DashboardProvider>();
     setState(() {
       loading = true;
     });
@@ -86,18 +86,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   @override
   void initState() {
-    final user = context.read<DashboardProvider>().user;
+    dashboard = context.read<DashboardProvider>();
     setState(() {
-      name = user?.name;
-      age = user?.age;
-      existingImage = user?.avatarUrl;
+      name = dashboard.user?.name;
+      age = dashboard.user?.age;
+      existingImage = dashboard.user?.avatarUrl;
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<DashboardProvider>().user;
+    dashboard = context.watch<DashboardProvider>();
     final padding = Responsive.horizontalPadding(context);
     return Scaffold(
       appBar: CadenceAppBar(showBack: true, title: 'Update Profile'),
@@ -142,7 +142,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                       }
 
                                       return Text(
-                                        user?.initials ?? "",
+                                        dashboard.user?.initials ?? "",
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 36,
@@ -152,7 +152,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                                     },
                                 errorBuilder: (_, __, ___) => Center(
                                   child: Text(
-                                    user?.initials ?? "",
+                                    dashboard.user?.initials ?? "",
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 36,
@@ -163,7 +163,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               )
                             : Center(
                                 child: Text(
-                                  user?.initials ?? "",
+                                  dashboard.user?.initials ?? "",
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 36,

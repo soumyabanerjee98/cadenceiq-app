@@ -27,10 +27,10 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
+  late AuthProvider auth;
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
-    final auth = context.read<AuthProvider>();
     final res = await auth.login(email, password);
     if (auth.isAuthenticated) {
       final accessToken = res.response['accessToken'];
@@ -44,14 +44,20 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void navigateToSignup() {
-    final auth = context.read<AuthProvider>();
     auth.clearErrors();
     context.go(RoutePaths.signup);
   }
 
   @override
+  void initState() {
+    auth = context.read<AuthProvider>();
+    auth.cleanUpProviders(context: context);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthProvider>();
+    auth = context.watch<AuthProvider>();
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(

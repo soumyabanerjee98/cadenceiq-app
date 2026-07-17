@@ -16,15 +16,21 @@ class DeleteAccount extends StatefulWidget {
 
 class _DeleteAccountState extends State<DeleteAccount> {
   String password = '';
+  late AuthProvider auth;
 
   Future<void> _deleteAccount() async {
-    final auth = context.read<AuthProvider>();
     auth.deleteAccount(password: password);
   }
 
   @override
+  void initState() {
+    auth = context.read<AuthProvider>();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthProvider>();
+    auth = context.watch<AuthProvider>();
     final padding = Responsive.horizontalPadding(context);
     return SafeArea(
       top: false,

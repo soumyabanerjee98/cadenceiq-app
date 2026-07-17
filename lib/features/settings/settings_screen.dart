@@ -62,6 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsProvider>();
     final profile = context.watch<DashboardProvider>();
+    final auth = context.watch<AuthProvider>();
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(
@@ -182,7 +183,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SecondaryButton(
             label: "Log Out",
             onPressed: () {
-              context.read<AuthProvider>().logout(context: context);
+              auth.logout();
             },
             icon: Icons.logout,
             paddingDisable: true,

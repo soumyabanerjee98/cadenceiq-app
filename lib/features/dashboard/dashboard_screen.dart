@@ -29,6 +29,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
+  late DashboardProvider dashboard;
   late final AnimationController _controller;
   late final String tagline;
   final _random = Random();
@@ -41,7 +42,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   void initState() {
-    final dashboard = context.read<DashboardProvider>();
+    dashboard = context.read<DashboardProvider>();
     _controller = AnimationController(vsync: this);
     tagline = getRandomGoalTagline();
     super.initState();
@@ -58,7 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   @override
   Widget build(BuildContext context) {
-    final dashboard = context.watch<DashboardProvider>();
+    dashboard = context.watch<DashboardProvider>();
     final settings = context.watch<SettingsProvider>();
     final padding = Responsive.horizontalPadding(context);
     final user = dashboard.user;
@@ -372,13 +373,45 @@ class _DashboardScreenState extends State<DashboardScreen>
                   PrimaryButton(
                     label: "Create Goal",
                     expand: false,
-                    onPressed: () => context.push(RoutePaths.createGoal),
-                    shine: true,
+                    onPressed: dashboard.user?.stravaConnected == true
+                        ? () => context.push(RoutePaths.createGoal)
+                        : null,
+                    shine: dashboard.user?.stravaConnected == true,
                   ),
                 ],
                 const SizedBox(height: 20),
                 _SectionTitle(title: AppStrings.quickActions),
                 const SizedBox(height: 12),
+                if (dashboard.user?.stravaConnected != true) ...[
+                  Row(
+                    spacing: 8,
+                    children: [
+                      Icon(
+                        Icons.warning_amber_outlined,
+                        color: AppColors.warning,
+                      ),
+                      Text(
+                        "Strava not connected!",
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.error,
+                            ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    "Connect Strava to create goal and sync activities!",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  PrimaryButton(
+                    label: "Connect Strava",
+                    expand: false,
+                    onPressed: () => context.push(RoutePaths.connectStrava),
+                    shine: true,
+                  ),
+                ],
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,

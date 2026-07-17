@@ -19,6 +19,7 @@ class StravaConnect extends StatefulWidget {
 
 class _StravaConnectState extends State<StravaConnect> {
   bool loading = false;
+  late DashboardProvider profile;
 
   Future<void> _connect() async {
     final settings = context.read<SettingsProvider>();
@@ -35,13 +36,12 @@ class _StravaConnectState extends State<StravaConnect> {
 
   Future<void> _disconnect() async {
     final settings = context.read<SettingsProvider>();
-    final dashboard = context.read<DashboardProvider>();
     setState(() {
       loading = true;
     });
     final res = await settings.disconnectStrava();
     if (res == true) {
-      await dashboard.refresh();
+      await profile.refresh();
     }
     if (mounted) {
       setState(() {
@@ -51,7 +51,6 @@ class _StravaConnectState extends State<StravaConnect> {
   }
 
   Future<void> _action() async {
-    final profile = context.read<DashboardProvider>();
     if (profile.user?.stravaConnected == true) {
       _disconnect();
     } else {
@@ -60,10 +59,16 @@ class _StravaConnectState extends State<StravaConnect> {
   }
 
   @override
+  void initState() {
+    profile = context.read<DashboardProvider>();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final padding = Responsive.horizontalPadding(context);
     final size = MediaQuery.of(context).size;
-    final profile = context.watch<DashboardProvider>();
+    profile = context.watch<DashboardProvider>();
     return Scaffold(
       appBar: CadenceAppBar(showBack: true, title: "Strava"),
       bottomNavigationBar: SafeArea(

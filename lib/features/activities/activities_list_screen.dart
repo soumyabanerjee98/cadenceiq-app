@@ -20,6 +20,7 @@ class ActivitiesListScreen extends StatefulWidget {
 
 class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
   final ScrollController _scrollController = ScrollController();
+  late ActivityProvider activity;
 
   void _onScroll() {
     if (!_scrollController.hasClients) return;
@@ -28,15 +29,16 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
 
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - threshold) {
-      context.read<ActivityProvider>().loadMore();
+      activity.loadMore();
     }
   }
 
   @override
   void initState() {
     super.initState();
+    activity = context.read<ActivityProvider>();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ActivityProvider>().load();
+      activity.load();
     });
     _scrollController.addListener(_onScroll);
   }
@@ -51,12 +53,12 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<ActivityProvider>();
     final padding = Responsive.horizontalPadding(context);
+    activity = context.watch<ActivityProvider>();
 
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: () => provider.refresh(),
+        onRefresh: () => activity.refresh(),
         child: CustomScrollView(
           controller: _scrollController,
           physics: AlwaysScrollableScrollPhysics(),
@@ -65,16 +67,16 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
               pinned: true,
               delegate: ActivitiesHeaderDelegate(),
             ),
-            if (provider.state == LoadState.loading)
+            if (activity.state == LoadState.loading)
               const SliverFillRemaining(child: SkeletonList())
-            else if (provider.state == LoadState.error)
+            else if (activity.state == LoadState.error)
               SliverFillRemaining(
                 child: ErrorStateWidget(
-                  message: provider.errorMessage ?? 'Failed to load',
-                  onRetry: provider.refresh,
+                  message: activity.errorMessage ?? 'Failed to load',
+                  onRetry: activity.refresh,
                 ),
               )
-            else if (provider.activities.isEmpty)
+            else if (activity.activities.isEmpty)
               const SliverFillRemaining(
                 child: EmptyStateWidget(
                   title: 'No activities yet!',
@@ -87,22 +89,22 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
                 padding: EdgeInsets.all(padding),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, i) {
-                    final activity = provider.activities[i];
+                    final singleActivity = activity.activities[i];
                     return ActivityCard(
-                      activity: activity,
+                      activity: singleActivity,
                       onTap: () async {
                         final reload = await context.push<bool>(
-                          '/activities/${activity.id}',
+                          '/activities/${singleActivity.id}',
                         );
                         if (reload == true) {
-                          provider.refresh();
+                          activity.refresh();
                         }
                       },
                     );
-                  }, childCount: provider.activities.length),
+                  }, childCount: activity.activities.length),
                 ),
               ),
-            if (provider.state == LoadState.loadingMore)
+            if (activity.state == LoadState.loadingMore)
               const SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.all(24),

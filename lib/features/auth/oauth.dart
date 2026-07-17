@@ -14,9 +14,11 @@ class OAuthResultScreen extends StatefulWidget {
 
 class _OAuthResultScreenState extends State<OAuthResultScreen> {
   bool _loading = true;
+  late DashboardProvider dashboard;
 
   @override
   void initState() {
+    dashboard = context.read<DashboardProvider>();
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _reloadProfile();
@@ -25,7 +27,6 @@ class _OAuthResultScreenState extends State<OAuthResultScreen> {
 
   Future<void> _reloadProfile() async {
     if (widget.success) {
-      final dashboard = context.read<DashboardProvider>();
       await dashboard.refresh();
     }
 

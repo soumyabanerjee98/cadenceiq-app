@@ -22,6 +22,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
+  late AuthProvider auth;
   String name = '';
   String email = '';
   String password = '';
@@ -29,7 +30,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _verify() async {
     if (!_formKey.currentState!.validate()) return;
-    final auth = context.read<AuthProvider>();
     await auth.sendOtp(email: email, reason: OtpReason.registration);
     if (auth.isAuthenticated && mounted) {
       context.push(
@@ -45,7 +45,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _signup() async {
     if (!_formKey.currentState!.validate()) return;
-    final auth = context.read<AuthProvider>();
     final res = await auth.signup(name: name, email: email, password: password);
     if (auth.isAuthenticated) {
       final accessToken = res.response['accessToken'];
@@ -54,19 +53,30 @@ class _SignupScreenState extends State<SignupScreen> {
         accessToken: accessToken,
         refreshToken: refreshToken,
       );
-      if (mounted) context.go(RoutePaths.dashboard);
+      if (mounted) {
+        await context.push(RoutePaths.connectStrava);
+      }
+      if (mounted) {
+        context.go(RoutePaths.dashboard);
+      }
     }
   }
 
   void navigateToLogin() {
-    final auth = context.read<AuthProvider>();
     auth.clearErrors();
     context.go(RoutePaths.login);
   }
 
   @override
+  void initState() {
+    auth = context.read<AuthProvider>();
+    auth.cleanUpProviders(context: context);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final auth = context.watch<AuthProvider>();
+    auth = context.watch<AuthProvider>();
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(
