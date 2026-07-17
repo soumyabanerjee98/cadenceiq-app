@@ -44,7 +44,7 @@ class CadenceIQApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
         ChangeNotifierProvider(create: (_) => DashboardProvider()),
         ChangeNotifierProvider(create: (_) => ActivityProvider()),
-        ChangeNotifierProvider(create: (_) => GoalProvider()..load()),
+        ChangeNotifierProvider(create: (_) => GoalProvider()),
         ChangeNotifierProvider(create: (_) => SummaryProvider()),
       ],
       child: Consumer<SettingsProvider>(

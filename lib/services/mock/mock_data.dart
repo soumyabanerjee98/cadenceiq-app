@@ -29,18 +29,6 @@ abstract final class MockData {
     zone: 'Z3-Z4',
   );
 
-  static final List<PlannedSession> _plannedSessions = List.generate(12, (i) {
-    final date = DateTime.now().add(Duration(days: i * 2 - 4));
-    return PlannedSession(
-      id: 'session-$i',
-      title: _sessionTitles[i % _sessionTitles.length],
-      date: date,
-      duration: Duration(minutes: 45 + (i * 10) % 60),
-      targetLoad: 55.0 + (i * 7) % 40,
-      isCompleted: i < 5,
-    );
-  });
-
   static const _sessionTitles = [
     'Endurance Ride',
     'Sweet Spot',
@@ -48,65 +36,6 @@ abstract final class MockData {
     'VO2 Intervals',
     'Long Ride',
     'Hill Repeats',
-  ];
-
-  static final activeGoal = Goal(
-    id: 'goal-active-1',
-    title: 'Gran Fondo Preparation',
-    startDate: DateTime(2026, 3, 1),
-    endDate: DateTime(2026, 6, 15),
-    experienceLevel: ExperienceLevel.intermediate,
-    currentLoad: 420,
-    targetLoad: 480,
-    adjustedLoad: 445,
-    progress: 0.62,
-    status: GoalStatus.active,
-    description:
-        'Build endurance and climbing strength for a 160km gran fondo.',
-    goalRequest:
-        'Prepare for a hilly 160km gran fondo in June with focus on sustained power.',
-    plannedSessions: _plannedSessions,
-  );
-
-  static final List<Goal> goals = [
-    activeGoal,
-    Goal(
-      id: 'goal-active-2',
-      title: 'FTP Builder',
-      startDate: DateTime(2026, 4, 1),
-      endDate: DateTime(2026, 5, 30),
-      experienceLevel: ExperienceLevel.advanced,
-      currentLoad: 380,
-      targetLoad: 420,
-      adjustedLoad: 400,
-      progress: 0.28,
-      status: GoalStatus.active,
-      description: 'Increase functional threshold power by 5%.',
-    ),
-    Goal(
-      id: 'goal-past-1',
-      title: 'Spring Century',
-      startDate: DateTime(2025, 1, 15),
-      endDate: DateTime(2025, 4, 20),
-      experienceLevel: ExperienceLevel.intermediate,
-      currentLoad: 450,
-      targetLoad: 450,
-      adjustedLoad: 448,
-      progress: 1.0,
-      status: GoalStatus.completed,
-    ),
-    Goal(
-      id: 'goal-past-2',
-      title: 'Winter Base Building',
-      startDate: DateTime(2024, 11, 1),
-      endDate: DateTime(2025, 2, 28),
-      experienceLevel: ExperienceLevel.intermediate,
-      currentLoad: 380,
-      targetLoad: 400,
-      adjustedLoad: 395,
-      progress: 1.0,
-      status: GoalStatus.completed,
-    ),
   ];
 
   static final List<Activity> activities = _generateActivities();

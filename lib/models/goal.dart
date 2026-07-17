@@ -1,62 +1,213 @@
 enum ExperienceLevel { beginner, intermediate, advanced, elite }
 
-enum GoalStatus { active, completed, upcoming }
+enum PlanType {
+  rest,
+  recovery,
+  endurance,
+  easy,
+  tempo,
+  threshold,
+  vo2,
+  sprint,
+  long,
+}
 
-class PlannedSession {
-  const PlannedSession({
-    required this.id,
-    required this.title,
+enum GoalStatus { ontrack, overtrained, undertrained }
+
+class PrePlan {
+  const PrePlan({
     required this.date,
-    required this.duration,
+    required this.type,
+    required this.title,
+    required this.description,
     required this.targetLoad,
-    required this.isCompleted,
+    required this.targetDistance,
+    required this.targetDuration,
+    required this.instructions,
+  });
+
+  final DateTime date;
+  final PlanType type;
+  final String title;
+  final String description;
+  final num targetLoad;
+  final int targetDistance; // km
+  final Duration targetDuration; // minutes
+  final String instructions;
+
+  factory PrePlan.fromJson(Map<String, dynamic> json) {
+    return PrePlan(
+      date: DateTime.parse(json['date']),
+      type: PlanType.values.firstWhere((e) => e.name == json["type"]),
+      title: json['title'],
+      description: json['description'],
+      targetLoad: json['targetLoad'],
+      targetDistance: json['targetDistance'],
+      targetDuration: Duration(minutes: json['targetDuration']),
+      instructions: json['instructions'],
+    );
+  }
+}
+
+class TrainingTarget {
+  const TrainingTarget({
+    required this.currentLoad,
+    required this.targetLoad,
+    required this.adjustedLoad,
+    required this.fatigue,
+    required this.fitness,
+    required this.readiness,
+    required this.plan,
+  });
+  final num currentLoad;
+  final num targetLoad;
+  final num adjustedLoad;
+  final num fatigue;
+  final num fitness;
+  final num readiness;
+  final List<PrePlan> plan;
+
+  factory TrainingTarget.fromJson(Map<String, dynamic> json) {
+    return TrainingTarget(
+      currentLoad: json["currentLoad"],
+      targetLoad: json["targetLoad"],
+      adjustedLoad: json["adjustedLoad"],
+      fatigue: json["fatigue"],
+      fitness: json["fitness"],
+      readiness: json["readiness"],
+      plan: (json["plan"] as List).map((e) => PrePlan.fromJson(e)).toList(),
+    );
+  }
+}
+
+class Plan {
+  const Plan({
+    required this.id,
+    required this.date,
+    required this.type,
+    required this.title,
+    required this.description,
+    this.instructions = '',
+    required this.targetLoad,
+    required this.targetDistance,
+    required this.targetDuration,
+    required this.completed,
+    this.completedAt,
+    required this.actualLoad,
+    required this.createdAt,
   });
 
   final String id;
-  final String title;
   final DateTime date;
-  final Duration duration;
+  final PlanType type;
+  final String title;
+  final String description;
+  final String? instructions;
   final double targetLoad;
-  final bool isCompleted;
+  final double targetDistance; // km
+  final Duration targetDuration; // minutes
+  final bool completed;
+  final DateTime? completedAt;
+  final num actualLoad;
+  final DateTime createdAt;
+
+  factory Plan.fromJson(Map<String, dynamic> json) {
+    return Plan(
+      id: json['id'],
+      date: DateTime.parse(json['date']),
+      type: PlanType.values.firstWhere((e) => e.name == json["type"]),
+      title: json['title'],
+      description: json['description'],
+      instructions: json['instructions'] ?? "",
+      targetLoad: json["targetLoad"],
+      targetDistance: json["targetDistance"],
+      targetDuration: Duration(minutes: json["targetDuration"]),
+      completed: json["completed"],
+      completedAt: json["completedAt"] != null
+          ? DateTime.parse(json["completedAt"])
+          : null,
+      actualLoad: json["actualLoad"],
+      createdAt: DateTime.parse(json["createdAt"]),
+    );
+  }
 }
 
 class Goal {
   const Goal({
     required this.id,
-    required this.title,
     required this.startDate,
     required this.endDate,
+    required this.title,
     required this.experienceLevel,
+    this.customGoalRequest = '',
     required this.currentLoad,
     required this.targetLoad,
     required this.adjustedLoad,
-    required this.progress,
+    required this.fatigue,
+    required this.fitness,
+    required this.readiness,
     required this.status,
-    this.description = '',
-    this.goalRequest = '',
-    this.plannedSessions = const [],
+    required this.isActive,
+    required this.isCompleted,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.completion,
+    this.plans = const [],
   });
 
   final String id;
-  final String title;
   final DateTime startDate;
   final DateTime endDate;
+  final String title;
   final ExperienceLevel experienceLevel;
+  final String? customGoalRequest;
   final double currentLoad;
   final double targetLoad;
   final double adjustedLoad;
-  final double progress;
+  final double fatigue;
+  final double fitness;
+  final double readiness;
   final GoalStatus status;
-  final String description;
-  final String goalRequest;
-  final List<PlannedSession> plannedSessions;
+  final bool isActive;
+  final bool isCompleted;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final List<Plan> plans;
+  final num completion;
 
-  int get daysRemaining => endDate.difference(DateTime.now()).inDays.clamp(0, 999);
+  factory Goal.fromJson(Map<String, dynamic> json) {
+    return Goal(
+      id: json['id'],
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
+      title: json['title'],
+      experienceLevel: ExperienceLevel.values.firstWhere(
+        (e) => e.name == json["experienceLevel"],
+      ),
+      customGoalRequest: json['customGoalRequest'] ?? "",
+      currentLoad: json['currentLoad'],
+      targetLoad: json["targetLoad"],
+      adjustedLoad: json['adjustedLoad'],
+      fatigue: json["fatigue"],
+      fitness: json["fitness"],
+      readiness: json["readiness"],
+      status: GoalStatus.values.firstWhere((e) => e.name == json["status"]),
+      isActive: json["isActive"],
+      isCompleted: json["isCompleted"],
+      completion: json['completion'],
+      createdAt: DateTime.parse(json["createdAt"]),
+      updatedAt: DateTime.parse(json["updatedAt"]),
+      plans: (json["plan"] as List).map((e) => Plan.fromJson(e)).toList(),
+    );
+  }
+
+  int get daysRemaining =>
+      endDate.difference(DateTime.now()).inDays.clamp(0, 999);
 
   String get experienceLabel => switch (experienceLevel) {
-        ExperienceLevel.beginner => 'Beginner',
-        ExperienceLevel.intermediate => 'Intermediate',
-        ExperienceLevel.advanced => 'Advanced',
-        ExperienceLevel.elite => 'Elite',
-      };
+    ExperienceLevel.beginner => 'Beginner',
+    ExperienceLevel.intermediate => 'Intermediate',
+    ExperienceLevel.advanced => 'Advanced',
+    ExperienceLevel.elite => 'Elite',
+  };
 }

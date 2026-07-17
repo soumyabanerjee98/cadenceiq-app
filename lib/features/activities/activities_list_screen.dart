@@ -37,9 +37,6 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
   void initState() {
     super.initState();
     activity = context.read<ActivityProvider>();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      activity.load();
-    });
     _scrollController.addListener(_onScroll);
   }
 

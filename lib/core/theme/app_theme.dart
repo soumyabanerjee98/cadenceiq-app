@@ -208,6 +208,33 @@ abstract final class AppTheme {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
+      tabBarTheme: const TabBarThemeData(
+        indicatorColor: AppColors.primary,
+        indicatorSize: TabBarIndicatorSize.label,
+
+        labelColor: AppColors.primary,
+        unselectedLabelColor: Colors.grey,
+
+        labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+
+        dividerColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 4,
+        focusElevation: 6,
+        hoverElevation: 6,
+        highlightElevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
+      ),
     );
   }
 
@@ -233,6 +260,8 @@ abstract final class AppTheme {
       ),
       appBarTheme: AppBarTheme(
         elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
         backgroundColor: AppColors.darkBackground,
         foregroundColor: AppColors.darkTextPrimary,
         titleTextStyle: GoogleFonts.inter(
@@ -263,6 +292,10 @@ abstract final class AppTheme {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -295,6 +328,7 @@ abstract final class AppTheme {
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.darkTextSecondary,
         type: BottomNavigationBarType.fixed,
+        elevation: 8,
       ),
       navigationBarTheme: NavigationBarThemeData(
         indicatorColor: AppColors.primary,
@@ -308,6 +342,46 @@ abstract final class AppTheme {
           }
           return const IconThemeData(color: AppColors.darkTextSecondary);
         }),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.darkSurface,
+        selectedColor: AppColors.primary.withValues(alpha: 0.15),
+        labelStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.primary),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: Colors.transparent),
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      tabBarTheme: const TabBarThemeData(
+        indicatorColor: AppColors.primary,
+        indicatorSize: TabBarIndicatorSize.label,
+
+        labelColor: Colors.white,
+        unselectedLabelColor: Colors.white60,
+
+        labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+
+        dividerColor: Colors.transparent,
+        splashFactory: NoSplash.splashFactory,
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
+        elevation: 4,
+        focusElevation: 6,
+        hoverElevation: 6,
+        highlightElevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
       ),
     );
   }

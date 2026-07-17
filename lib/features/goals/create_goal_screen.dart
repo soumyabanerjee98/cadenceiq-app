@@ -27,6 +27,8 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
   ExperienceLevel _level = ExperienceLevel.beginner;
   final _requestController = TextEditingController();
+  final PageController _controller = PageController();
+  int currentPage = 0;
 
   @override
   void initState() {
@@ -39,6 +41,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   @override
   void dispose() {
     _requestController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -95,7 +98,50 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     }
   }
 
-  Future<void> _generate() async {
+  void _action() {
+    switch (currentPage) {
+      case 0:
+        _buildPlan();
+        break;
+      case 1:
+        _generatePlan();
+        break;
+      default:
+    }
+  }
+
+  void _nextPage() {
+    setState(() {
+      _controller.nextPage(
+        duration: Durations.medium4,
+        curve: Curves.decelerate,
+      );
+    });
+  }
+
+  void _previousPage() {
+    setState(() {
+      _controller.previousPage(
+        duration: Durations.medium4,
+        curve: Curves.decelerate,
+      );
+    });
+  }
+
+  Future<void> _buildPlan() async {
+    Map<String, String> payload = {
+      "startDate": _startDate.toIso8601String().split("T")[0],
+      "endDate": _endDate.toIso8601String().split("T")[0],
+      "experienceLevel": _level.name,
+    };
+    if (_requestController.text.isNotEmpty) {
+      payload.addAll({"customGoalRequirements": _requestController.text});
+    }
+    print(payload);
+    _nextPage();
+  }
+
+  Future<void> _generatePlan() async {
     Map<String, String> payload = {
       "startDate": _startDate.toIso8601String().split("T")[0],
       "endDate": _endDate.toIso8601String().split("T")[0],
@@ -110,6 +156,34 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<GoalProvider>();
+
+    return Scaffold(
+      appBar: const CadenceAppBar(showBack: true, title: 'Create Goal'),
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.all(16),
+        child: PrimaryButton(
+          label: currentPage == 0 ? 'Generate Training Plan' : 'Set Goal',
+          icon: currentPage == 0 ? Icons.auto_awesome : null,
+          isLoading: provider.isGenerating,
+          onPressed: _action,
+        ),
+      ),
+      body: SafePage(
+        child: PageView(
+          controller: _controller,
+          onPageChanged: (value) {
+            setState(() {
+              currentPage = value;
+            });
+          },
+          physics: NeverScrollableScrollPhysics(),
+          children: [_buildPlanPage(), _buildCalendarPage()],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlanPage() {
     final padding = Responsive.horizontalPadding(context);
     final TextStyle? normal = Theme.of(context).textTheme.bodyMedium?.copyWith(
       color: AppColors.textSecondary,
@@ -121,117 +195,143 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           height: 1.5,
           fontWeight: FontWeight.w600,
         );
-
-    return Scaffold(
-      appBar: const CadenceAppBar(showBack: true, title: 'Create Goal'),
-      bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.all(16),
-        child: PrimaryButton(
-          label: 'Generate Training Plan',
-          icon: Icons.auto_awesome,
-          isLoading: provider.isGenerating,
-          onPressed: _generate,
+    return ListView(
+      padding: EdgeInsets.all(padding),
+      children: [
+        Text.rich(
+          TextSpan(
+            text: "Tell us about your goal and our ",
+            children: [
+              TextSpan(text: "AI coach ", style: highlight),
+              TextSpan(text: "will build a "),
+              TextSpan(text: "personalized ", style: highlight),
+              TextSpan(text: "training plan."),
+            ],
+          ),
+          style: normal,
         ),
-      ),
-      body: SafePage(
-        child: ListView(
-          padding: EdgeInsets.all(padding),
+        const SizedBox(height: 12),
+        Text.rich(
+          TextSpan(
+            text: "We will collect ",
+            children: [
+              TextSpan(text: "30 days ", style: highlight),
+              TextSpan(text: "of your "),
+              TextSpan(text: "Strava ", style: highlight),
+              TextSpan(text: "history and generate a "),
+              TextSpan(text: "tailored plan ", style: highlight),
+              TextSpan(text: "suitable for you."),
+            ],
+          ),
+          style: normal,
+        ),
+        const SizedBox(height: 12),
+        Text.rich(
+          TextSpan(
+            text: "Your ",
+            children: [
+              TextSpan(text: "minimum ", style: highlight),
+              TextSpan(text: "and "),
+              TextSpan(text: "maximum ", style: highlight),
+              TextSpan(text: "training range will be "),
+              TextSpan(text: "7 days ", style: highlight),
+              TextSpan(text: "and "),
+              TextSpan(text: "6 months ", style: highlight),
+              TextSpan(text: "respectively."),
+            ],
+          ),
+          style: normal,
+        ),
+        const SizedBox(height: 24),
+        _DateField(
+          label: 'Start Date',
+          date: _startDate,
+          onTap: () => _pickDate(true),
+        ),
+        const SizedBox(height: 16),
+        _DateField(
+          label: 'End Date',
+          date: _endDate,
+          onTap: () => _pickDate(false),
+        ),
+        const SizedBox(height: 24),
+        Text(
+          'Experience Level',
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'This is based on your Strava history',
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: 8),
+        ...ExperienceLevel.values.map((level) {
+          return RadioListTile<ExperienceLevel>(
+            title: Text(_levelLabel(level)),
+            value: level,
+            groupValue: _level,
+            activeColor: AppColors.primary,
+            onChanged: (v) => setState(() => _level = v!),
+            contentPadding: EdgeInsets.zero,
+          );
+        }),
+        const SizedBox(height: 16),
+        TextFormField(
+          controller: _requestController,
+          maxLines: 5,
+          decoration: const InputDecoration(
+            labelText: 'Describe your goal (Optional)',
+            hintText:
+                'e.g. Prepare for a 160km gran fondo in June with focus on climbing and endurance...',
+            alignLabelWithHint: true,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCalendarPage() {
+    final padding = Responsive.horizontalPadding(context);
+    final TextStyle? normal = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color: AppColors.textSecondary,
+      height: 1.5,
+    );
+    final TextStyle? highlight = Theme.of(context).textTheme.bodyMedium
+        ?.copyWith(
+          color: AppColors.primary,
+          height: 1.5,
+          fontWeight: FontWeight.w600,
+        );
+    return ListView(
+      padding: EdgeInsets.all(padding),
+      children: [
+        Text.rich(
+          TextSpan(
+            text: "Here is your ",
+            children: [
+              TextSpan(text: "tailored plan ", style: highlight),
+              TextSpan(
+                text:
+                    "for selected range. If you want to rebuild the plan, press ",
+              ),
+              TextSpan(text: "\"Rebuild Plan\" ", style: highlight),
+              TextSpan(text: "below."),
+            ],
+          ),
+          style: normal,
+        ),
+        const SizedBox(height: 24),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text.rich(
-              TextSpan(
-                text: "Tell us about your goal and our ",
-                children: [
-                  TextSpan(text: "AI coach ", style: highlight),
-                  TextSpan(text: "will build a "),
-                  TextSpan(text: "personalized ", style: highlight),
-                  TextSpan(text: "training plan."),
-                ],
-              ),
-              style: normal,
-            ),
-            const SizedBox(height: 12),
-            Text.rich(
-              TextSpan(
-                text: "We will collect ",
-                children: [
-                  TextSpan(text: "30 days ", style: highlight),
-                  TextSpan(text: "of your "),
-                  TextSpan(text: "Strava ", style: highlight),
-                  TextSpan(text: "history and generate a "),
-                  TextSpan(text: "tailored plan ", style: highlight),
-                  TextSpan(text: "suitable for you."),
-                ],
-              ),
-              style: normal,
-            ),
-            const SizedBox(height: 12),
-            Text.rich(
-              TextSpan(
-                text: "Your ",
-                children: [
-                  TextSpan(text: "minimum ", style: highlight),
-                  TextSpan(text: "and "),
-                  TextSpan(text: "maximum ", style: highlight),
-                  TextSpan(text: "training range will be "),
-                  TextSpan(text: "7 days ", style: highlight),
-                  TextSpan(text: "and "),
-                  TextSpan(text: "6 months ", style: highlight),
-                  TextSpan(text: "respectively."),
-                ],
-              ),
-              style: normal,
-            ),
-            const SizedBox(height: 24),
-            _DateField(
-              label: 'Start Date',
-              date: _startDate,
-              onTap: () => _pickDate(true),
-            ),
-            const SizedBox(height: 16),
-            _DateField(
-              label: 'End Date',
-              date: _endDate,
-              onTap: () => _pickDate(false),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Experience Level',
-              style: Theme.of(
-                context,
-              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'This is based on your Strava history',
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: 8),
-            ...ExperienceLevel.values.map((level) {
-              return RadioListTile<ExperienceLevel>(
-                title: Text(_levelLabel(level)),
-                value: level,
-                groupValue: _level,
-                activeColor: AppColors.primary,
-                onChanged: (v) => setState(() => _level = v!),
-                contentPadding: EdgeInsets.zero,
-              );
-            }),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _requestController,
-              maxLines: 5,
-              decoration: const InputDecoration(
-                labelText: 'Describe your goal (Optional)',
-                hintText:
-                    'e.g. Prepare for a 160km gran fondo in June with focus on climbing and endurance...',
-                alignLabelWithHint: true,
-              ),
-            ),
+            TextButton(onPressed: _previousPage, child: Text("Rebuild Plan")),
           ],
         ),
-      ),
+      ],
     );
   }
 

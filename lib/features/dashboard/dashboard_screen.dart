@@ -7,6 +7,8 @@ import 'package:cadenceiq_app/core/constants/app_strings.dart';
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
 import 'package:cadenceiq_app/features/goals/create_goal_screen.dart';
 import 'package:cadenceiq_app/models/goal.dart';
+import 'package:cadenceiq_app/providers/activity_provider.dart';
+import 'package:cadenceiq_app/providers/goal_provider.dart';
 import 'package:cadenceiq_app/services/mock/mock_data.dart';
 import 'package:cadenceiq_app/services/repo/activity_repo.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +36,8 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen>
     with TickerProviderStateMixin {
   late DashboardProvider dashboard;
+  late GoalProvider goal;
+  late ActivityProvider activity;
   late final AnimationController _controller;
   late final String tagline;
   final _random = Random();
@@ -82,11 +86,17 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   void initState() {
     dashboard = context.read<DashboardProvider>();
+    goal = context.read<GoalProvider>();
+    activity = context.read<ActivityProvider>();
     _controller = AnimationController(vsync: this);
     tagline = getRandomGoalTagline();
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      dashboard.refresh();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await dashboard.refresh();
+      await activity.load();
+      if (dashboard.user?.goal != null) {
+        goal.load();
+      }
     });
   }
 
@@ -103,7 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     final padding = Responsive.horizontalPadding(context);
     final user = dashboard.user;
     final metrics = MockData.metrics;
-    final goal = MockData.activeGoal;
+    final goal = context.watch<GoalProvider>().activeGoal;
     final session = MockData.todaySession;
 
     if (user == null) return AppLoading();
@@ -248,10 +258,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ),
                   const SizedBox(height: 8),
                   ProgressCard(
-                    title: goal.title,
-                    progress: goal.progress,
-                    daysRemaining: goal.daysRemaining,
-                    onTap: () => context.push('/goals/${goal.id}'),
+                    title: goal?.title ?? "",
+                    progress: double.parse((goal?.completion).toString()),
+                    daysRemaining: goal?.daysRemaining,
+                    onTap: () => context.push('/goals/${goal?.id}'),
                   ),
                   const SizedBox(height: 20),
                   _SectionTitle(title: AppStrings.trainingMetrics),

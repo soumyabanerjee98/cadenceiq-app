@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
@@ -31,9 +32,9 @@ class EmptyStateWidget extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             if (message != null) ...[
@@ -41,14 +42,18 @@ class EmptyStateWidget extends StatelessWidget {
               Text(
                 message!,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                  color: AppColors.textSecondary,
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
             if (actionLabel != null && onAction != null) ...[
               const SizedBox(height: 24),
-              PrimaryButton(label: actionLabel!, onPressed: onAction, expand: false),
+              PrimaryButton(
+                label: actionLabel!,
+                onPressed: onAction,
+                expand: false,
+              ),
             ],
           ],
         ),
@@ -58,11 +63,7 @@ class EmptyStateWidget extends StatelessWidget {
 }
 
 class ErrorStateWidget extends StatelessWidget {
-  const ErrorStateWidget({
-    super.key,
-    required this.message,
-    this.onRetry,
-  });
+  const ErrorStateWidget({super.key, required this.message, this.onRetry});
 
   final String message;
   final VoidCallback? onRetry;
@@ -79,21 +80,25 @@ class ErrorStateWidget extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Something went wrong',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             Text(
               message,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 24),
-              PrimaryButton(label: 'Try Again', onPressed: onRetry, expand: false),
+              PrimaryButton(
+                label: 'Try Again',
+                onPressed: onRetry,
+                expand: false,
+              ),
             ],
           ],
         ),
@@ -103,11 +108,7 @@ class ErrorStateWidget extends StatelessWidget {
 }
 
 class SkeletonLoader extends StatefulWidget {
-  const SkeletonLoader({
-    super.key,
-    this.height = 100,
-    this.borderRadius = 12,
-  });
+  const SkeletonLoader({super.key, this.height = 100, this.borderRadius = 12});
 
   final double height;
   final double borderRadius;
@@ -147,11 +148,17 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
             gradient: LinearGradient(
               begin: Alignment(-1 + _controller.value * 2, 0),
               end: Alignment(1 + _controller.value * 2, 0),
-              colors: [
-                AppColors.surface,
-                AppColors.surfaceVariant,
-                AppColors.surface,
-              ],
+              colors: AppTheme.isDarkMode(context)
+                  ? [
+                      AppColors.darkSurface,
+                      AppColors.darkSurfaceVariant,
+                      AppColors.darkSurface,
+                    ]
+                  : [
+                      AppColors.surface,
+                      AppColors.surfaceVariant,
+                      AppColors.surface,
+                    ],
             ),
           ),
         );

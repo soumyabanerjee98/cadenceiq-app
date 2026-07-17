@@ -1,5 +1,3 @@
-import 'package:cadenceiq_app/models/goal.dart';
-
 class UserProfile {
   const UserProfile({
     required this.id,
@@ -27,7 +25,7 @@ class UserProfile {
   final int? age;
   final int? maxHr;
   final int? restingHr;
-  final Goal? goal;
+  final String? goal;
   final num atl;
   final num ctl;
   final num tsb;

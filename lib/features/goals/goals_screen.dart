@@ -1,3 +1,10 @@
+import 'package:cadenceiq_app/core/theme/app_colors.dart';
+import 'package:cadenceiq_app/core/theme/app_theme.dart';
+import 'package:cadenceiq_app/core/utils/snackbar.dart';
+import 'package:cadenceiq_app/core/widgets/floating_action_button.dart';
+import 'package:cadenceiq_app/features/goals/create_goal_screen.dart';
+import 'package:cadenceiq_app/features/goals/goal_detail_screen.dart';
+import 'package:cadenceiq_app/services/repo/activity_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -19,14 +26,46 @@ class GoalsScreen extends StatefulWidget {
 class _GoalsScreenState extends State<GoalsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool loading = false;
+  final ActivityRepository _repository = ActivityRepository();
+
+  Future<void> _navigateToGoal() async {
+    setState(() {
+      loading = true;
+    });
+    final res = await _repository.fetchExperienceLevel();
+    setState(() {
+      loading = false;
+    });
+    if (res.response != null) {
+      final Map<String, ExperienceLevel> record = {
+        'beginner': ExperienceLevel.beginner,
+        'intermediate': ExperienceLevel.intermediate,
+        'advanced': ExperienceLevel.advanced,
+        'elite': ExperienceLevel.elite,
+      };
+      final ExperienceLevel? level = record[res.response['level']];
+      if (level != null) {
+        if (!mounted) return;
+        context.push(
+          RoutePaths.createGoal,
+          extra: CreateGoalScreenArgs(experienceLevel: level),
+        );
+      }
+      return;
+    }
+    if (!mounted) return;
+    AppSnackbar.show(
+      context,
+      message: res.error?.errorMessage ?? "Something went wrong! Try again",
+      status: SnackbarStatus.error,
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<GoalProvider>().load();
-    });
   }
 
   @override
@@ -51,14 +90,9 @@ class _GoalsScreenState extends State<GoalsScreen>
                   Expanded(
                     child: Text(
                       'Goals',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.w700),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () => context.push(RoutePaths.createGoal),
-                    icon: const Icon(Icons.add_circle, color: Color(0xFFFC4C02)),
                   ),
                 ],
               ),
@@ -70,7 +104,7 @@ class _GoalsScreenState extends State<GoalsScreen>
               TabBar(
                 controller: _tabController,
                 tabs: const [
-                  Tab(text: 'Current Goals'),
+                  Tab(text: 'Current Goal'),
                   Tab(text: 'Past Goals'),
                 ],
               ),
@@ -80,10 +114,9 @@ class _GoalsScreenState extends State<GoalsScreen>
         body: TabBarView(
           controller: _tabController,
           children: [
-            _GoalList(
-              goals: provider.activeGoals,
-              emptyMessage: 'No active goals. Create one to get started!',
-              padding: padding,
+            _GoalDetails(
+              goal: provider.activeGoal,
+              emptyMessage: 'No active goal. Create one to get started!',
             ),
             _GoalList(
               goals: provider.pastGoals,
@@ -93,13 +126,29 @@ class _GoalsScreenState extends State<GoalsScreen>
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push(RoutePaths.createGoal),
-        backgroundColor: const Color(0xFFFC4C02),
-        icon: const Icon(Icons.add),
-        label: const Text('New Goal'),
-      ),
+      floatingActionButton: provider.activeGoal == null
+          ? AppFAB.extended(
+              icon: Icons.add,
+              label: 'Create Goal',
+              isLoading: loading,
+              onPressed: _navigateToGoal,
+            )
+          : null,
     );
+  }
+}
+
+class _GoalDetails extends StatelessWidget {
+  final Goal? goal;
+  final String emptyMessage;
+  const _GoalDetails({required this.goal, required this.emptyMessage});
+
+  @override
+  Widget build(BuildContext context) {
+    if (goal == null) {
+      return Center(child: Text(emptyMessage, textAlign: TextAlign.center));
+    }
+    return GoalDetails(goal: goal!);
   }
 }
 
@@ -117,23 +166,7 @@ class _GoalList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (goals.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.all(padding),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(emptyMessage, textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              PrimaryButton(
-                label: 'Create Goal',
-                onPressed: () => context.push(RoutePaths.createGoal),
-                expand: false,
-              ),
-            ],
-          ),
-        ),
-      );
+      return Center(child: Text(emptyMessage, textAlign: TextAlign.center));
     }
     return ListView.builder(
       padding: EdgeInsets.all(padding),
@@ -160,9 +193,13 @@ class _TabBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   Widget build(context, shrinkOffset, overlapsContent) {
-    return Material(color: Theme.of(context).scaffoldBackgroundColor, child: tabBar);
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: tabBar,
+    );
   }
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => false;
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
+      false;
 }
