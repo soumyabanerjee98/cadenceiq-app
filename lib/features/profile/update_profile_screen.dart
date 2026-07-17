@@ -74,7 +74,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     if (res.response != null) {
       await dashboard.refresh();
       if (mounted) {
-        AppSnackbar.show(context, message: "Profile updated successfully!");
+        AppSnackbar.show(
+          context,
+          message: "Profile updated successfully!",
+          status: SnackbarStatus.success,
+        );
       }
     }
     if (mounted) {

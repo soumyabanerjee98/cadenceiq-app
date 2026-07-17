@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cadenceiq_app/core/theme/app_colors.dart';
@@ -10,8 +9,14 @@ import 'package:cadenceiq_app/core/widgets/safe_page.dart';
 import 'package:cadenceiq_app/models/goal.dart';
 import 'package:cadenceiq_app/providers/goal_provider.dart';
 
+class CreateGoalScreenArgs {
+  const CreateGoalScreenArgs({required this.experienceLevel});
+  final ExperienceLevel experienceLevel;
+}
+
 class CreateGoalScreen extends StatefulWidget {
-  const CreateGoalScreen({super.key});
+  final CreateGoalScreenArgs args;
+  const CreateGoalScreen({super.key, required this.args});
 
   @override
   State<CreateGoalScreen> createState() => _CreateGoalScreenState();
@@ -19,9 +24,17 @@ class CreateGoalScreen extends StatefulWidget {
 
 class _CreateGoalScreenState extends State<CreateGoalScreen> {
   DateTime _startDate = DateTime.now();
-  DateTime _endDate = DateTime.now().add(const Duration(days: 90));
-  ExperienceLevel _level = ExperienceLevel.intermediate;
+  DateTime _endDate = DateTime.now().add(const Duration(days: 7));
+  ExperienceLevel _level = ExperienceLevel.beginner;
   final _requestController = TextEditingController();
+
+  @override
+  void initState() {
+    setState(() {
+      _level = widget.args.experienceLevel;
+    });
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -30,128 +43,204 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Future<void> _pickDate(bool isStart) async {
-    final initial = isStart ? _startDate : _endDate;
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: initial,
-      firstDate: DateTime(2024),
-      lastDate: DateTime(2028),
-    );
-    if (picked != null) {
+    final today = DateTime.now();
+    final todayOnly = DateTime(today.year, today.month, today.day);
+
+    if (isStart) {
+      final picked = await showDatePicker(
+        context: context,
+        initialDate: _startDate.isBefore(todayOnly) ? todayOnly : _startDate,
+        firstDate: todayOnly,
+        lastDate: DateTime(todayOnly.year, todayOnly.month + 6, todayOnly.day),
+      );
+
+      if (picked == null) return;
+
       setState(() {
-        if (isStart) {
-          _startDate = picked;
-          if (_endDate.isBefore(_startDate)) {
-            _endDate = _startDate.add(const Duration(days: 30));
-          }
-        } else {
-          _endDate = picked;
+        _startDate = picked;
+
+        final minEnd = _startDate.add(const Duration(days: 7));
+        final maxEnd = DateTime(
+          _startDate.year,
+          _startDate.month + 6,
+          _startDate.day,
+        );
+
+        if (_endDate.isBefore(minEnd)) {
+          _endDate = minEnd;
+        } else if (_endDate.isAfter(maxEnd)) {
+          _endDate = maxEnd;
         }
+      });
+    } else {
+      final minEnd = _startDate.add(const Duration(days: 7));
+      final maxEnd = DateTime(
+        _startDate.year,
+        _startDate.month + 6,
+        _startDate.day,
+      );
+
+      final picked = await showDatePicker(
+        context: context,
+        initialDate: _endDate.isBefore(minEnd) ? minEnd : _endDate,
+        firstDate: minEnd,
+        lastDate: maxEnd,
+      );
+
+      if (picked == null) return;
+
+      setState(() {
+        _endDate = picked;
       });
     }
   }
 
   Future<void> _generate() async {
-    if (_requestController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please describe your training goal')),
-      );
-      return;
+    Map<String, String> payload = {
+      "startDate": _startDate.toIso8601String().split("T")[0],
+      "endDate": _endDate.toIso8601String().split("T")[0],
+      "experienceLevel": _level.name,
+    };
+    if (_requestController.text.isNotEmpty) {
+      payload.addAll({"customGoalRequirements": _requestController.text});
     }
-
-    final provider = context.read<GoalProvider>();
-    final goal = await provider.createGoal(
-      startDate: _startDate,
-      endDate: _endDate,
-      level: _level,
-      request: _requestController.text.trim(),
-    );
-
-    if (!mounted) return;
-    if (goal != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Training plan generated!')),
-      );
-      context.pop();
-    }
+    print(payload);
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<GoalProvider>();
     final padding = Responsive.horizontalPadding(context);
+    final TextStyle? normal = Theme.of(context).textTheme.bodyMedium?.copyWith(
+      color: AppColors.textSecondary,
+      height: 1.5,
+    );
+    final TextStyle? highlight = Theme.of(context).textTheme.bodyMedium
+        ?.copyWith(
+          color: AppColors.primary,
+          height: 1.5,
+          fontWeight: FontWeight.w600,
+        );
 
     return Scaffold(
       appBar: const CadenceAppBar(showBack: true, title: 'Create Goal'),
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.all(16),
+        child: PrimaryButton(
+          label: 'Generate Training Plan',
+          icon: Icons.auto_awesome,
+          isLoading: provider.isGenerating,
+          onPressed: _generate,
+        ),
+      ),
       body: SafePage(
         child: ListView(
-        padding: EdgeInsets.all(padding),
-        children: [
-          Text(
-            'Tell us about your goal and our AI coach will build a personalized training plan.',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
-                  height: 1.5,
-                ),
-          ),
-          const SizedBox(height: 24),
-          _DateField(
-            label: 'Start Date',
-            date: _startDate,
-            onTap: () => _pickDate(true),
-          ),
-          const SizedBox(height: 16),
-          _DateField(
-            label: 'End Date',
-            date: _endDate,
-            onTap: () => _pickDate(false),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Experience Level',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 8),
-          ...ExperienceLevel.values.map((level) {
-            return RadioListTile<ExperienceLevel>(
-              title: Text(_levelLabel(level)),
-              value: level,
-              groupValue: _level,
-              activeColor: AppColors.primary,
-              onChanged: (v) => setState(() => _level = v!),
-              contentPadding: EdgeInsets.zero,
-            );
-          }),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: _requestController,
-            maxLines: 5,
-            decoration: const InputDecoration(
-              labelText: 'Describe your goal',
-              hintText:
-                  'e.g. Prepare for a 160km gran fondo in June with focus on climbing and endurance...',
-              alignLabelWithHint: true,
+          padding: EdgeInsets.all(padding),
+          children: [
+            Text.rich(
+              TextSpan(
+                text: "Tell us about your goal and our ",
+                children: [
+                  TextSpan(text: "AI coach ", style: highlight),
+                  TextSpan(text: "will build a "),
+                  TextSpan(text: "personalized ", style: highlight),
+                  TextSpan(text: "training plan."),
+                ],
+              ),
+              style: normal,
             ),
-          ),
-          const SizedBox(height: 32),
-          PrimaryButton(
-            label: 'Generate Training Plan',
-            icon: Icons.auto_awesome,
-            isLoading: provider.isGenerating,
-            onPressed: _generate,
-          ),
-        ],
+            const SizedBox(height: 12),
+            Text.rich(
+              TextSpan(
+                text: "We will collect ",
+                children: [
+                  TextSpan(text: "30 days ", style: highlight),
+                  TextSpan(text: "of your "),
+                  TextSpan(text: "Strava ", style: highlight),
+                  TextSpan(text: "history and generate a "),
+                  TextSpan(text: "tailored plan ", style: highlight),
+                  TextSpan(text: "suitable for you."),
+                ],
+              ),
+              style: normal,
+            ),
+            const SizedBox(height: 12),
+            Text.rich(
+              TextSpan(
+                text: "Your ",
+                children: [
+                  TextSpan(text: "minimum ", style: highlight),
+                  TextSpan(text: "and "),
+                  TextSpan(text: "maximum ", style: highlight),
+                  TextSpan(text: "training range will be "),
+                  TextSpan(text: "7 days ", style: highlight),
+                  TextSpan(text: "and "),
+                  TextSpan(text: "6 months ", style: highlight),
+                  TextSpan(text: "respectively."),
+                ],
+              ),
+              style: normal,
+            ),
+            const SizedBox(height: 24),
+            _DateField(
+              label: 'Start Date',
+              date: _startDate,
+              onTap: () => _pickDate(true),
+            ),
+            const SizedBox(height: 16),
+            _DateField(
+              label: 'End Date',
+              date: _endDate,
+              onTap: () => _pickDate(false),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Experience Level',
+              style: Theme.of(
+                context,
+              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'This is based on your Strava history',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 8),
+            ...ExperienceLevel.values.map((level) {
+              return RadioListTile<ExperienceLevel>(
+                title: Text(_levelLabel(level)),
+                value: level,
+                groupValue: _level,
+                activeColor: AppColors.primary,
+                onChanged: (v) => setState(() => _level = v!),
+                contentPadding: EdgeInsets.zero,
+              );
+            }),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _requestController,
+              maxLines: 5,
+              decoration: const InputDecoration(
+                labelText: 'Describe your goal (Optional)',
+                hintText:
+                    'e.g. Prepare for a 160km gran fondo in June with focus on climbing and endurance...',
+                alignLabelWithHint: true,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
   String _levelLabel(ExperienceLevel level) => switch (level) {
-        ExperienceLevel.beginner => 'Beginner (< 1 year)',
-        ExperienceLevel.intermediate => 'Intermediate (1-3 years)',
-        ExperienceLevel.advanced => 'Advanced (3-5 years)',
-        ExperienceLevel.elite => 'Elite (5+ years)',
-      };
+    ExperienceLevel.beginner => 'Beginner (< 1 year)',
+    ExperienceLevel.intermediate => 'Intermediate (1-3 years)',
+    ExperienceLevel.advanced => 'Advanced (3-5 years)',
+    ExperienceLevel.elite => 'Elite (5+ years)',
+  };
 }
 
 class _DateField extends StatelessWidget {

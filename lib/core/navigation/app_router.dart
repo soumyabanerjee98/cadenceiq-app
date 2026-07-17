@@ -135,7 +135,10 @@ class AppRouter {
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.createGoal,
-          builder: (_, __) => const CreateGoalScreen(),
+          builder: (_, state) {
+            final args = state.extra as CreateGoalScreenArgs;
+            return CreateGoalScreen(args: args);
+          },
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,

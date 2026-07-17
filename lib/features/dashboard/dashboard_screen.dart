@@ -1,10 +1,14 @@
 import 'dart:math';
 
 import 'package:cadenceiq_app/core/assets/assets.dart';
+import 'package:cadenceiq_app/core/utils/snackbar.dart';
 import 'package:cadenceiq_app/core/widgets/loading.dart';
 import 'package:cadenceiq_app/core/constants/app_strings.dart';
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
+import 'package:cadenceiq_app/features/goals/create_goal_screen.dart';
+import 'package:cadenceiq_app/models/goal.dart';
 import 'package:cadenceiq_app/services/mock/mock_data.dart';
+import 'package:cadenceiq_app/services/repo/activity_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
@@ -33,11 +37,46 @@ class _DashboardScreenState extends State<DashboardScreen>
   late final AnimationController _controller;
   late final String tagline;
   final _random = Random();
+  bool loading = false;
+  final ActivityRepository _repository = ActivityRepository();
 
   String getRandomGoalTagline() {
     return AppStrings.goalTaglines[_random.nextInt(
       AppStrings.goalTaglines.length,
     )];
+  }
+
+  Future<void> _navigateToGoal() async {
+    setState(() {
+      loading = true;
+    });
+    final res = await _repository.fetchExperienceLevel();
+    setState(() {
+      loading = false;
+    });
+    if (res.response != null) {
+      final Map<String, ExperienceLevel> record = {
+        'beginner': ExperienceLevel.beginner,
+        'intermediate': ExperienceLevel.intermediate,
+        'advanced': ExperienceLevel.advanced,
+        'elite': ExperienceLevel.elite,
+      };
+      final ExperienceLevel? level = record[res.response['level']];
+      if (level != null) {
+        if (!mounted) return;
+        context.push(
+          RoutePaths.createGoal,
+          extra: CreateGoalScreenArgs(experienceLevel: level),
+        );
+      }
+      return;
+    }
+    if (!mounted) return;
+    AppSnackbar.show(
+      context,
+      message: res.error?.errorMessage ?? "Something went wrong! Try again",
+      status: SnackbarStatus.error,
+    );
   }
 
   @override
@@ -325,11 +364,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                         _controller.addStatusListener((status) async {
                           if (status == AnimationStatus.completed && mounted) {
                             await Future.delayed(const Duration(seconds: 2));
-                            _controller.forward(from: 0);
+                            if (mounted) _controller.forward(from: 0);
                           }
                         });
 
-                        _controller.forward();
+                        if (mounted) _controller.forward();
                       },
                     ),
                   ),
@@ -374,9 +413,10 @@ class _DashboardScreenState extends State<DashboardScreen>
                     label: "Create Goal",
                     expand: false,
                     onPressed: dashboard.user?.stravaConnected == true
-                        ? () => context.push(RoutePaths.createGoal)
+                        ? _navigateToGoal
                         : null,
                     shine: dashboard.user?.stravaConnected == true,
+                    isLoading: loading,
                   ),
                 ],
                 const SizedBox(height: 20),

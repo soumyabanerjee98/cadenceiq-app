@@ -88,4 +88,17 @@ class ActivityRepository {
       );
     }
   }
+
+  Future<ApiResponse> fetchExperienceLevel() async {
+    try {
+      final res = await dio.get(ApiUrl.fetchExperience);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(errorMessage: dio.extractError(dioErr)),
+      );
+    }
+  }
 }
