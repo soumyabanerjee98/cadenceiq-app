@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/network/dio.dart';
 import 'package:cadenceiq_app/services/repo/goal_repo.dart';
 import 'package:flutter/foundation.dart';
 
@@ -32,27 +33,43 @@ class GoalProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> buildPlan({
+  void reset() {
+    _isGenerating = false;
+    _isLoading = false;
+    _errorMessage = null;
+    _active = null;
+    _target = null;
+    _past = [];
+  }
+
+  Future<ApiResponse> buildPlan({
     required DateTime startDate,
     required DateTime endDate,
     required ExperienceLevel level,
     required String request,
   }) async {
-    _isGenerating = true;
+    _isGenerating = false;
+    _errorMessage = null;
     _target = null;
     notifyListeners();
     try {
+      _isGenerating = true;
+      String dynamicRequest = "I want to train for endurance.";
+      if (request.isNotEmpty) {
+        dynamicRequest = "$dynamicRequest $request";
+      }
       final res = await _repository.buildPlan(
         startDate: startDate,
         endDate: endDate,
         level: level,
-        request: request,
+        request: dynamicRequest,
       );
       if (res.response != null) {
         _target = TrainingTarget.fromJson(res.response);
       } else {
         _errorMessage = res.error?.errorMessage;
       }
+      return res;
     } finally {
       _isGenerating = false;
       notifyListeners();

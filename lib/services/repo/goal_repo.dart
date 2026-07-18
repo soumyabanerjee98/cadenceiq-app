@@ -10,17 +10,15 @@ class GoalRepository {
     required DateTime startDate,
     required DateTime endDate,
     required ExperienceLevel level,
-    String? request,
+    required String request,
   }) async {
     try {
       Map<String, String> payload = {
         "startDate": startDate.toIso8601String().split("T")[0],
         "endDate": endDate.toIso8601String().split("T")[0],
         "experienceLevel": level.name,
+        "customGoalRequirements": request,
       };
-      if (request != null && request.isNotEmpty) {
-        payload.addAll({"customGoalRequirements": request});
-      }
       final res = await dio.post(ApiUrl.buildPlan, data: payload);
       return ApiResponse(statusCode: res.statusCode, response: res.data);
     } on DioException catch (dioErr) {

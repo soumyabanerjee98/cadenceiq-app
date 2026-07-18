@@ -81,7 +81,9 @@ class _PrimaryButtonState extends State<PrimaryButton>
   @override
   void dispose() {
     _controller.dispose();
-    _lottieController.dispose();
+    if (widget.ai) {
+      _lottieController.dispose();
+    }
     super.dispose();
   }
 

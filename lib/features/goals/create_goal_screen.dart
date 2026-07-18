@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/utils/snackbar.dart';
 import 'package:cadenceiq_app/core/widgets/text_form_field.dart';
 import 'package:cadenceiq_app/core/widgets/training_calendar.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Future<void> _pickDate(bool isStart) async {
+    final int monthGap = 1;
     final today = DateTime.now();
     final todayOnly = DateTime(today.year, today.month, today.day);
 
@@ -57,7 +59,11 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         context: context,
         initialDate: _startDate.isBefore(todayOnly) ? todayOnly : _startDate,
         firstDate: todayOnly,
-        lastDate: DateTime(todayOnly.year, todayOnly.month + 6, todayOnly.day),
+        lastDate: DateTime(
+          todayOnly.year,
+          todayOnly.month + monthGap,
+          todayOnly.day,
+        ),
       );
 
       if (picked == null) return;
@@ -68,7 +74,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         final minEnd = _startDate.add(const Duration(days: 7));
         final maxEnd = DateTime(
           _startDate.year,
-          _startDate.month + 6,
+          _startDate.month + monthGap,
           _startDate.day,
         );
 
@@ -82,7 +88,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       final minEnd = _startDate.add(const Duration(days: 7));
       final maxEnd = DateTime(
         _startDate.year,
-        _startDate.month + 6,
+        _startDate.month + monthGap,
         _startDate.day,
       );
 
@@ -132,13 +138,21 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Future<void> _buildPlan() async {
-    await provider.buildPlan(
+    final res = await provider.buildPlan(
       startDate: _startDate,
       endDate: _endDate,
       level: _level,
       request: _request,
     );
-    _nextPage();
+    if (res.response != null) {
+      _nextPage();
+    } else {
+      if (!mounted) return;
+      AppSnackbar.show(
+        context,
+        message: res.error?.errorMessage ?? "Something went wrong!",
+      );
+    }
   }
 
   Future<void> _generatePlan() async {}
@@ -227,7 +241,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               TextSpan(text: "training range will be "),
               TextSpan(text: "7 days ", style: highlight),
               TextSpan(text: "and "),
-              TextSpan(text: "6 months ", style: highlight),
+              TextSpan(text: "1 month ", style: highlight),
               TextSpan(text: "respectively."),
             ],
           ),

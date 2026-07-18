@@ -5,6 +5,7 @@ import 'package:cadenceiq_app/core/utils/formatters.dart';
 import 'package:cadenceiq_app/features/auth/otp_screen.dart';
 import 'package:cadenceiq_app/providers/activity_provider.dart';
 import 'package:cadenceiq_app/providers/dashboard_provider.dart';
+import 'package:cadenceiq_app/providers/goal_provider.dart';
 import 'package:cadenceiq_app/services/repo/auth_repo.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/material.dart';
@@ -150,7 +151,9 @@ class AuthProvider extends ChangeNotifier {
     final ActivityProvider activityProvider = context.read<ActivityProvider>();
     final DashboardProvider dashboardProvider = context
         .read<DashboardProvider>();
+    final GoalProvider goalProvider = context.read<GoalProvider>();
     activityProvider.reset();
     dashboardProvider.reset();
+    goalProvider.reset();
   }
 }
