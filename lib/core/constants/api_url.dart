@@ -1,13 +1,9 @@
-const String environment = "UAT";
-
-const Map<String, String> baseUrl = {
-  "UAT":
-      "https://825b-2409-40d0-3019-d689-6919-3982-ddd1-eedd.ngrok-free.app/api",
-  "LIVE": "https://cadenceiq.onrender.com/api",
-};
+import 'package:flutter/foundation.dart';
 
 abstract final class ApiUrl {
-  static final String base = baseUrl[environment]!;
+  static final String base = kReleaseMode
+      ? "https://cadenceiq.onrender.com/api"
+      : "https://024b-2409-40d0-e3-eae8-2599-8b6f-b0ad-c748.ngrok-free.app/api";
 
   // auth
   static const login = '/auth/login';
