@@ -13,6 +13,7 @@ import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:cadenceiq_app/services/repo/auth_repo.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
@@ -79,6 +80,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           message: "Profile updated successfully!",
           status: SnackbarStatus.success,
         );
+        context.pop();
       }
     }
     if (mounted) {

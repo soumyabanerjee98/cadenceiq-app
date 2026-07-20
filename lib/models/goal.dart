@@ -1,3 +1,6 @@
+import 'package:cadenceiq_app/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
+
 enum ExperienceLevel { beginner, intermediate, advanced, elite }
 
 enum PlanType {
@@ -10,6 +13,60 @@ enum PlanType {
   vo2,
   sprint,
   long,
+}
+
+Color planColor(PlanType type) {
+  switch (type) {
+    case PlanType.rest:
+      return Colors.grey;
+
+    case PlanType.recovery:
+      return Colors.teal;
+
+    case PlanType.easy:
+      return Colors.green;
+
+    case PlanType.endurance:
+      return Colors.blue;
+
+    case PlanType.tempo:
+      return Colors.orange;
+
+    case PlanType.threshold:
+      return Colors.deepOrange;
+
+    case PlanType.vo2:
+      return Colors.red;
+
+    case PlanType.sprint:
+      return Colors.purple;
+
+    case PlanType.long:
+      return AppColors.primary;
+  }
+}
+
+IconData planIcon(PlanType type) {
+  switch (type) {
+    case PlanType.rest:
+      return Icons.hotel;
+    case PlanType.recovery:
+      return Icons.favorite;
+    case PlanType.easy:
+      return Icons.directions_bike;
+    case PlanType.endurance:
+      return Icons.route;
+    case PlanType.tempo:
+      return Icons.speed;
+    case PlanType.threshold:
+      return Icons.local_fire_department;
+    case PlanType.vo2:
+      return Icons.monitor_heart;
+    case PlanType.sprint:
+      return Icons.flash_on;
+    case PlanType.long:
+      return Icons.landscape;
+  }
 }
 
 enum GoalStatus { ontrack, overtrained, undertrained }

@@ -54,15 +54,11 @@ class GoalProvider extends ChangeNotifier {
     notifyListeners();
     try {
       _isGenerating = true;
-      String dynamicRequest = "I want to train for endurance.";
-      if (request.isNotEmpty) {
-        dynamicRequest = "$dynamicRequest $request";
-      }
       final res = await _repository.buildPlan(
         startDate: startDate,
         endDate: endDate,
         level: level,
-        request: dynamicRequest,
+        request: request,
       );
       if (res.response != null) {
         _target = TrainingTarget.fromJson(res.response);

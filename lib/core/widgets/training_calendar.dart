@@ -4,37 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-Color _planColor(PlanType type) {
-  switch (type) {
-    case PlanType.rest:
-      return Colors.grey;
-
-    case PlanType.recovery:
-      return Colors.teal;
-
-    case PlanType.easy:
-      return Colors.green;
-
-    case PlanType.endurance:
-      return Colors.blue;
-
-    case PlanType.tempo:
-      return Colors.orange;
-
-    case PlanType.threshold:
-      return Colors.deepOrange;
-
-    case PlanType.vo2:
-      return Colors.red;
-
-    case PlanType.sprint:
-      return Colors.purple;
-
-    case PlanType.long:
-      return AppColors.primary;
-  }
-}
-
 class TrainingCalendarSource extends CalendarDataSource {
   TrainingCalendarSource(List<PrePlan> plans) {
     appointments = plans
@@ -44,7 +13,7 @@ class TrainingCalendarSource extends CalendarDataSource {
             startTime: plan.date,
             endTime: plan.date.add(const Duration(hours: 1)),
             subject: plan.title,
-            color: _planColor(plan.type),
+            color: planColor(plan.type),
             isAllDay: true,
             notes: plan.description,
           ),
@@ -126,8 +95,8 @@ class _PlanBottomSheet extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    backgroundColor: _color(plan.type),
-                    child: Icon(_icon(plan.type), color: Colors.white),
+                    backgroundColor: planColor(plan.type),
+                    child: Icon(planIcon(plan.type), color: Colors.white),
                   ),
 
                   const SizedBox(width: 16),
@@ -156,42 +125,44 @@ class _PlanBottomSheet extends StatelessWidget {
 
               const SizedBox(height: 28),
 
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(16),
+              if (plan.type != PlanType.rest) ...[
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _Metric(
+                          icon: Icons.bolt,
+                          title: "TSS",
+                          value: plan.targetLoad.toString(),
+                        ),
+                      ),
+
+                      Expanded(
+                        child: _Metric(
+                          icon: Icons.route,
+                          title: "Distance",
+                          value: "${plan.targetDistance} km",
+                        ),
+                      ),
+
+                      Expanded(
+                        child: _Metric(
+                          icon: Icons.schedule,
+                          title: "Duration",
+                          value: _format(plan.targetDuration),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _Metric(
-                        icon: Icons.bolt,
-                        title: "TSS",
-                        value: plan.targetLoad.toString(),
-                      ),
-                    ),
 
-                    Expanded(
-                      child: _Metric(
-                        icon: Icons.route,
-                        title: "Distance",
-                        value: "${plan.targetDistance} km",
-                      ),
-                    ),
-
-                    Expanded(
-                      child: _Metric(
-                        icon: Icons.schedule,
-                        title: "Duration",
-                        value: _format(plan.targetDuration),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 28),
+                const SizedBox(height: 28),
+              ],
 
               Text("Instructions", style: theme.textTheme.titleMedium),
 
@@ -236,52 +207,6 @@ class _PlanBottomSheet extends StatelessWidget {
     }
 
     return "${d.inHours}h ${d.inMinutes.remainder(60)}m";
-  }
-
-  Color _color(PlanType type) {
-    switch (type) {
-      case PlanType.rest:
-        return Colors.grey;
-      case PlanType.recovery:
-        return Colors.teal;
-      case PlanType.easy:
-        return Colors.green;
-      case PlanType.endurance:
-        return Colors.blue;
-      case PlanType.tempo:
-        return Colors.orange;
-      case PlanType.threshold:
-        return Colors.deepOrange;
-      case PlanType.vo2:
-        return Colors.red;
-      case PlanType.sprint:
-        return Colors.purple;
-      case PlanType.long:
-        return Colors.indigo;
-    }
-  }
-
-  IconData _icon(PlanType type) {
-    switch (type) {
-      case PlanType.rest:
-        return Icons.hotel;
-      case PlanType.recovery:
-        return Icons.favorite;
-      case PlanType.easy:
-        return Icons.directions_bike;
-      case PlanType.endurance:
-        return Icons.route;
-      case PlanType.tempo:
-        return Icons.speed;
-      case PlanType.threshold:
-        return Icons.local_fire_department;
-      case PlanType.vo2:
-        return Icons.monitor_heart;
-      case PlanType.sprint:
-        return Icons.flash_on;
-      case PlanType.long:
-        return Icons.landscape;
-    }
   }
 }
 

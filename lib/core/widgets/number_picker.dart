@@ -65,28 +65,9 @@ class _CustomNumberPickerState extends State<CustomNumberPicker> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Text(
-                        widget.label,
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const Spacer(),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            value = temp;
-                            controller.text = widget.suffixText == null
-                                ? "$value"
-                                : "$value ${widget.suffixText}";
-                          });
-
-                          widget.onChanged(value);
-                          Navigator.pop(context);
-                        },
-                        child: const Text("Done"),
-                      ),
-                    ],
+                  child: Text(
+                    widget.label,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ),
                 Expanded(
@@ -108,6 +89,27 @@ class _CustomNumberPickerState extends State<CustomNumberPicker> {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+                SafeArea(
+                  minimum: const EdgeInsets.fromLTRB(24, 8, 24, 32),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          value = temp;
+                          controller.text = widget.suffixText == null
+                              ? "$value"
+                              : "$value ${widget.suffixText}";
+                        });
+
+                        widget.onChanged(value);
+                        Navigator.pop(context);
+                      },
+                      child: const Text("Done"),
                     ),
                   ),
                 ),

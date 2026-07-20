@@ -27,6 +27,7 @@ class CreateGoalScreen extends StatefulWidget {
 
 class _CreateGoalScreenState extends State<CreateGoalScreen> {
   late GoalProvider provider;
+  final _formKey = GlobalKey<FormState>();
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
   ExperienceLevel _level = ExperienceLevel.beginner;
@@ -138,6 +139,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Future<void> _buildPlan() async {
+    if (!_formKey.currentState!.validate()) return;
     final res = await provider.buildPlan(
       startDate: _startDate,
       endDate: _endDate,
@@ -248,6 +250,51 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           style: normal,
         ),
         const SizedBox(height: 24),
+        Text(
+          'Describe your goal',
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Tell us about your goal, briefly explain what you want to achieve',
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: 8),
+        Form(
+          key: _formKey,
+          child: CustomTextFormField(
+            label: "Describe your goal",
+            hintText:
+                'e.g. Prepare for a 160km gran fondo in June with focus on climbing and endurance...',
+            initialValue: _request,
+            maxLines: 5,
+            onChanged: (value) {
+              setState(() {
+                _request = value;
+              });
+            },
+            validator: (v) => v == null || v.isEmpty ? 'Enter a goal' : null,
+          ),
+        ),
+        const SizedBox(height: 24),
+        Text(
+          'Select a range',
+          style: Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Select start date and end date of your goal',
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: 24),
         _DateField(
           label: 'Start Date',
           date: _startDate,
@@ -274,28 +321,11 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
         ),
         const SizedBox(height: 8),
-        ...ExperienceLevel.values.map((level) {
-          return RadioListTile<ExperienceLevel>(
-            title: Text(_levelLabel(level)),
-            value: level,
-            groupValue: _level,
-            activeColor: AppColors.primary,
-            onChanged: (v) => setState(() => _level = v!),
-            contentPadding: EdgeInsets.zero,
-          );
-        }),
-        const SizedBox(height: 16),
-        CustomTextFormField(
-          label: "Describe your goal (Optional)",
-          hintText:
-              'e.g. Prepare for a 160km gran fondo in June with focus on climbing and endurance...',
-          initialValue: _request,
-          maxLines: 5,
-          onChanged: (value) {
-            setState(() {
-              _request = value;
-            });
-          },
+        Text(
+          _levelLabel(_level),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium!.copyWith(color: AppColors.primary),
         ),
       ],
     );
@@ -354,10 +384,10 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   String _levelLabel(ExperienceLevel level) => switch (level) {
-    ExperienceLevel.beginner => 'Beginner (< 1 year)',
-    ExperienceLevel.intermediate => 'Intermediate (1-3 years)',
-    ExperienceLevel.advanced => 'Advanced (3-5 years)',
-    ExperienceLevel.elite => 'Elite (5+ years)',
+    ExperienceLevel.beginner => 'Beginner',
+    ExperienceLevel.intermediate => 'Intermediate',
+    ExperienceLevel.advanced => 'Advanced',
+    ExperienceLevel.elite => 'Elite',
   };
 }
 
