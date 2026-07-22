@@ -1,7 +1,11 @@
+import 'package:cadenceiq_app/core/navigation/app_router.dart';
+import 'package:cadenceiq_app/providers/activity_provider.dart';
+import 'package:cadenceiq_app/providers/goal_provider.dart';
 import 'package:cadenceiq_app/services/repo/auth_repo.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cadenceiq_app/models/user_profile.dart';
+import 'package:provider/provider.dart';
 
 class DashboardProvider extends ChangeNotifier {
   DashboardProvider({AuthRepository? repository})
@@ -30,9 +34,13 @@ class DashboardProvider extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
+    final activity = rootNavigatorKey.currentContext!.read<ActivityProvider>();
+    final goal = rootNavigatorKey.currentContext!.read<GoalProvider>();
     _isLoading = true;
     notifyListeners();
     await getProfile();
+    await activity.load();
+    await goal.load();
     _isLoading = false;
     notifyListeners();
   }

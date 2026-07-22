@@ -7,7 +7,6 @@ class UserProfile {
     this.age,
     this.maxHr,
     this.restingHr,
-    this.goal,
     this.atl = 0,
     this.ctl = 0,
     this.tsb = 0,
@@ -25,7 +24,6 @@ class UserProfile {
   final int? age;
   final int? maxHr;
   final int? restingHr;
-  final String? goal;
   final num atl;
   final num ctl;
   final num tsb;
@@ -52,7 +50,6 @@ class UserProfile {
       age: json["age"],
       maxHr: json["maxHR"],
       restingHr: json["restingHR"],
-      goal: json["goal"],
       atl: json["metrics"]["atl"],
       ctl: json["metrics"]["ctl"],
       tsb: json["metrics"]["tsb"],
@@ -73,7 +70,6 @@ class UserProfile {
       "age": age,
       "maxHR": maxHr,
       "restingHR": restingHr,
-      "goal": goal,
       "metrics": {"atl": atl, "ctl": ctl, "tsb": tsb},
       "settings": {"stravaConnected": stravaConnected},
       "stats": {

@@ -93,10 +93,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await dashboard.refresh();
-      await activity.load();
-      if (dashboard.user?.goal != null) {
-        goal.load();
-      }
     });
   }
 
@@ -109,11 +105,12 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   Widget build(BuildContext context) {
     dashboard = context.watch<DashboardProvider>();
+    goal = context.watch<GoalProvider>();
     final settings = context.watch<SettingsProvider>();
     final padding = Responsive.horizontalPadding(context);
     final user = dashboard.user;
     final metrics = MockData.metrics;
-    final goal = context.watch<GoalProvider>().activeGoal;
+
     final session = MockData.todaySession;
 
     if (user == null) return AppLoading();
@@ -204,7 +201,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             padding: EdgeInsets.all(padding),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                if (dashboard.user?.goal != null) ...[
+                if (goal.activeGoal != null) ...[
                   LayoutBuilder(
                     builder: (context, constraints) {
                       final isWide = constraints.maxWidth > 500;
@@ -258,10 +255,12 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ),
                   const SizedBox(height: 8),
                   ProgressCard(
-                    title: goal?.title ?? "",
-                    progress: double.parse((goal?.completion).toString()),
-                    daysRemaining: goal?.daysRemaining,
-                    onTap: () => context.push('/goals/${goal?.id}'),
+                    title: goal.activeGoal?.title ?? "",
+                    progress: double.parse(
+                      (goal.activeGoal?.completion).toString(),
+                    ),
+                    daysRemaining: goal.activeGoal?.daysRemaining,
+                    onTap: () => context.push('/goals/${goal.activeGoal?.id}'),
                   ),
                   const SizedBox(height: 20),
                   _SectionTitle(title: AppStrings.trainingMetrics),
@@ -271,21 +270,21 @@ class _DashboardScreenState extends State<DashboardScreen>
                       Expanded(
                         child: _MetricTile(
                           label: 'Current Load',
-                          value: Formatters.load(metrics.currentLoad),
+                          value: Formatters.load(goal.activeGoal!.currentLoad),
                         ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: _MetricTile(
                           label: 'Target Load',
-                          value: Formatters.load(metrics.targetLoad),
+                          value: Formatters.load(goal.activeGoal!.targetLoad),
                         ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: _MetricTile(
                           label: 'Adjusted',
-                          value: Formatters.load(metrics.adjustedLoad),
+                          value: Formatters.load(goal.activeGoal!.adjustedLoad),
                           highlight: true,
                         ),
                       ),

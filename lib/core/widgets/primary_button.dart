@@ -58,9 +58,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
       duration: const Duration(seconds: 5),
     );
 
-    if (widget.ai) {
-      _lottieController = AnimationController(vsync: this);
-    }
+    _lottieController = AnimationController(vsync: this);
 
     if (widget.shine) {
       _controller.repeat();
@@ -81,9 +79,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
   @override
   void dispose() {
     _controller.dispose();
-    if (widget.ai) {
-      _lottieController.dispose();
-    }
+    _lottieController.dispose();
     super.dispose();
   }
 

@@ -169,7 +169,6 @@ class _CreateGoalScreenState extends State<CreateGoalScreen>
   }
 
   Future<void> _generateInsight() async {
-    if (!_formKey.currentState!.validate()) return;
     final res = await provider.buildPlanInsight();
     if (res) {
       _nextPage();
