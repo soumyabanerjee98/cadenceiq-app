@@ -211,8 +211,13 @@ class _PlanBottomSheet extends StatelessWidget {
 }
 
 class TrainingCalendar extends StatefulWidget {
+  final VoidCallback onRebuild;
   final List<PrePlan> plans;
-  const TrainingCalendar({super.key, required this.plans});
+  const TrainingCalendar({
+    super.key,
+    required this.onRebuild,
+    required this.plans,
+  });
 
   @override
   State<TrainingCalendar> createState() => _TrainingCalendarState();
@@ -248,26 +253,33 @@ class _TrainingCalendarState extends State<TrainingCalendar> {
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          spacing: 8,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _ChoiceChip(
-              label: "Month",
-              selected: _controller.view == CalendarView.month,
-              onTap: () {
-                setState(() {
-                  _controller.view = CalendarView.month;
-                });
-              },
+            TextButton(
+              onPressed: widget.onRebuild,
+              child: Text("Rebuild Plan"),
             ),
-            _ChoiceChip(
-              label: "Schedule",
-              selected: _controller.view == CalendarView.schedule,
-              onTap: () {
-                setState(() {
-                  _controller.view = CalendarView.schedule;
-                });
-              },
+            Row(
+              children: [
+                _ChoiceChip(
+                  label: "Month",
+                  selected: _controller.view == CalendarView.month,
+                  onTap: () {
+                    setState(() {
+                      _controller.view = CalendarView.month;
+                    });
+                  },
+                ),
+                _ChoiceChip(
+                  label: "Schedule",
+                  selected: _controller.view == CalendarView.schedule,
+                  onTap: () {
+                    setState(() {
+                      _controller.view = CalendarView.schedule;
+                    });
+                  },
+                ),
+              ],
             ),
           ],
         ),

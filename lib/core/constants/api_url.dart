@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 abstract final class ApiUrl {
   static final String base = kReleaseMode
       ? "https://cadenceiq.onrender.com/api"
-      : "https://024b-2409-40d0-e3-eae8-2599-8b6f-b0ad-c748.ngrok-free.app/api";
+      : "https://7aa7-2409-40d0-122f-dc3d-868-64f9-5a83-43c.ngrok-free.app/api";
 
   // auth
   static const login = '/auth/login';
@@ -24,6 +24,7 @@ abstract final class ApiUrl {
 
   // goal
   static const buildPlan = '/activity/get-plan';
+  static const buildPlanInsight = '/activity/get-plan-insights';
   static const getCurrentGoal = '/goal/current-goal';
   static const getPastGoals = '/goal/past-goals';
 

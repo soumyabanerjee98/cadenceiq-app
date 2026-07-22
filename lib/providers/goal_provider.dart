@@ -12,16 +12,20 @@ class GoalProvider extends ChangeNotifier {
 
   bool _isGenerating = false;
   bool _isLoading = false;
+  bool _isPlanInsightLoading = false;
   String? _errorMessage;
   TrainingTarget? _target;
+  PlanInsight? _insight;
   Goal? _active;
   List<Goal> _past = [];
 
   bool get isGenerating => _isGenerating;
   bool get isLoading => _isLoading;
+  bool get isPlanInsightLoading => _isPlanInsightLoading;
   String? get errorMessage => _errorMessage;
   Goal? get activeGoal => _active;
   TrainingTarget? get target => _target;
+  PlanInsight? get insight => _insight;
   List<Goal> get pastGoals => _past;
 
   Goal? getById(String id) => (_active != null ? [_active, ..._past] : _past)
@@ -33,12 +37,19 @@ class GoalProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void prepareNewGoal() {
+    _target = null;
+    _insight = null;
+  }
+
   void reset() {
     _isGenerating = false;
     _isLoading = false;
+    _isPlanInsightLoading = false;
     _errorMessage = null;
     _active = null;
     _target = null;
+    _insight = null;
     _past = [];
   }
 
@@ -65,9 +76,43 @@ class GoalProvider extends ChangeNotifier {
       } else {
         _errorMessage = res.error?.errorMessage;
       }
+      notifyListeners();
       return res;
+    } catch (e) {
+      _isGenerating = false;
+      _errorMessage = e.toString();
+      return ApiResponse(
+        statusCode: 500,
+        response: null,
+        error: ServerError(
+          errorMessage: _errorMessage ?? "Something went wrong!",
+        ),
+      );
     } finally {
       _isGenerating = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> buildPlanInsight() async {
+    _isPlanInsightLoading = false;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      _isPlanInsightLoading = true;
+      final res = await _repository.buildPlanInsight(target: _target!);
+      if (res.response != null) {
+        _insight = PlanInsight.fromJson(res.response);
+      } else {
+        _errorMessage = res.error?.errorMessage;
+      }
+      notifyListeners();
+    } catch (e) {
+      _isPlanInsightLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+    } finally {
+      _isPlanInsightLoading = false;
       notifyListeners();
     }
   }

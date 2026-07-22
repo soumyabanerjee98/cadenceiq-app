@@ -78,4 +78,7 @@ abstract final class AppStrings {
   static const navGoals = 'Goals';
   static const navSummaries = 'Summaries';
   static const navSettings = 'Settings';
+
+  // common
+  static const aiInsight = "AI Insight";
 }

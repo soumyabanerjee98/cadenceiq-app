@@ -104,6 +104,19 @@ class PrePlan {
       instructions: json['instructions'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "date": date.toIso8601String().split("T")[0],
+      "type": type.name,
+      "title": title,
+      "description": description,
+      "targetLoad": targetLoad,
+      "targetDistance": targetDistance,
+      "targetDuration": targetDuration.inMinutes,
+      "instructions": instructions,
+    };
+  }
 }
 
 class TrainingTarget {
@@ -134,6 +147,18 @@ class TrainingTarget {
       readiness: json["readiness"],
       plan: (json["plan"] as List).map((e) => PrePlan.fromJson(e)).toList(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "currentLoad": currentLoad,
+      "targetLoad": targetLoad,
+      "adjustedLoad": adjustedLoad,
+      "fatigue": fatigue,
+      "fitness": fitness,
+      "readiness": readiness,
+      "plan": plan.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
@@ -185,6 +210,28 @@ class Plan {
           : null,
       actualLoad: json["actualLoad"],
       createdAt: DateTime.parse(json["createdAt"]),
+    );
+  }
+}
+
+class PlanInsight {
+  const PlanInsight({
+    required this.summary,
+    required this.risk,
+    required this.recommendations,
+  });
+
+  final String summary;
+  final String risk;
+  final List<String> recommendations;
+
+  factory PlanInsight.fromJson(Map<String, dynamic> json) {
+    return PlanInsight(
+      summary: json['summary'],
+      risk: json['risk'],
+      recommendations: (json["recommendations"] as List)
+          .map((e) => e.toString())
+          .toList(),
     );
   }
 }

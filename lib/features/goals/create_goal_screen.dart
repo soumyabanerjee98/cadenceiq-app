@@ -1,4 +1,6 @@
 import 'package:cadenceiq_app/core/utils/snackbar.dart';
+import 'package:cadenceiq_app/core/widgets/ai_action_button.dart';
+import 'package:cadenceiq_app/core/widgets/plan_insight_card.dart';
 import 'package:cadenceiq_app/core/widgets/text_form_field.dart';
 import 'package:cadenceiq_app/core/widgets/training_calendar.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +27,8 @@ class CreateGoalScreen extends StatefulWidget {
   State<CreateGoalScreen> createState() => _CreateGoalScreenState();
 }
 
-class _CreateGoalScreenState extends State<CreateGoalScreen> {
+class _CreateGoalScreenState extends State<CreateGoalScreen>
+    with TickerProviderStateMixin {
   late GoalProvider provider;
   final _formKey = GlobalKey<FormState>();
   DateTime _startDate = DateTime.now();
@@ -34,10 +37,12 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   String _request = '';
   final PageController _controller = PageController();
   int currentPage = 0;
+  late final AnimationController _lottieController;
 
   @override
   void initState() {
     provider = context.read<GoalProvider>();
+    _lottieController = AnimationController(vsync: this);
     setState(() {
       _level = widget.args.experienceLevel;
     });
@@ -47,6 +52,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    _lottieController.dispose();
     super.dispose();
   }
 
@@ -130,6 +136,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   void _previousPage() {
+    provider.prepareNewGoal();
     setState(() {
       _controller.previousPage(
         duration: Durations.medium4,
@@ -153,6 +160,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       AppSnackbar.show(
         context,
         message: res.error?.errorMessage ?? "Something went wrong!",
+        status: SnackbarStatus.error,
       );
     }
   }
@@ -363,8 +371,13 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           style: normal,
         ),
         const SizedBox(height: 24),
-        TrainingCalendar(plans: provider.target?.plan ?? []),
-        const SizedBox(height: 18),
+        if (provider.target != null) ...[
+          TrainingCalendar(
+            plans: provider.target!.plan,
+            onRebuild: () => _previousPage(),
+          ),
+          const SizedBox(height: 18),
+        ],
         Row(
           spacing: 8,
           children: [
@@ -373,12 +386,18 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           ],
         ),
         const SizedBox(height: 24),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            TextButton(onPressed: _previousPage, child: Text("Rebuild Plan")),
-          ],
-        ),
+        if (provider.insight != null)
+          PlanInsightCard(insight: provider.insight!)
+        else
+          Row(
+            children: [
+              AiActionButton(
+                loading: provider.isPlanInsightLoading,
+                onPressed: provider.buildPlanInsight,
+                label: "Generate AI Insight",
+              ),
+            ],
+          ),
       ],
     );
   }
