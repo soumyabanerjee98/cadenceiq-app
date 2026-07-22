@@ -1,5 +1,7 @@
 import 'package:cadenceiq_app/core/constants/api_url.dart';
 import 'package:cadenceiq_app/core/env/env.dart';
+import 'package:cadenceiq_app/core/navigation/app_router.dart';
+import 'package:cadenceiq_app/core/utils/snackbar.dart';
 import 'package:cadenceiq_app/providers/auth_provider.dart';
 import 'package:cadenceiq_app/store/store.dart';
 import 'package:dio/dio.dart';
@@ -67,6 +69,10 @@ class ApiInterceptor extends QueuedInterceptor {
       handler.resolve(retryResponse);
     } catch (e) {
       final AuthProvider auth = AuthProvider();
+      AppSnackbar.show(
+        rootNavigatorKey.currentContext!,
+        message: "Token Expired!",
+      );
       auth.logout();
     }
 

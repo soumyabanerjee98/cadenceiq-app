@@ -25,6 +25,7 @@ abstract final class ApiUrl {
   // goal
   static const buildPlan = '/activity/get-plan';
   static const buildPlanInsight = '/activity/get-plan-insights';
+  static const createGoal = '/goal/create-goal';
   static const getCurrentGoal = '/goal/current-goal';
   static const getPastGoals = '/goal/past-goals';
 

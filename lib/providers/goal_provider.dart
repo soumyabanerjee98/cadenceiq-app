@@ -1,8 +1,10 @@
-import 'package:cadenceiq_app/core/network/dio.dart';
+import 'package:cadenceiq_app/core/navigation/app_router.dart';
+import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:cadenceiq_app/services/repo/goal_repo.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:cadenceiq_app/models/goal.dart';
+import 'package:provider/provider.dart';
 
 class GoalProvider extends ChangeNotifier {
   GoalProvider({GoalRepository? repository})
@@ -53,7 +55,7 @@ class GoalProvider extends ChangeNotifier {
     _past = [];
   }
 
-  Future<ApiResponse> buildPlan({
+  Future<bool> buildPlan({
     required DateTime startDate,
     required DateTime endDate,
     required ExperienceLevel level,
@@ -73,28 +75,67 @@ class GoalProvider extends ChangeNotifier {
       );
       if (res.response != null) {
         _target = TrainingTarget.fromJson(res.response);
+        notifyListeners();
+        return true;
       } else {
         _errorMessage = res.error?.errorMessage;
+        notifyListeners();
+        return false;
       }
-      notifyListeners();
-      return res;
     } catch (e) {
       _isGenerating = false;
       _errorMessage = e.toString();
-      return ApiResponse(
-        statusCode: 500,
-        response: null,
-        error: ServerError(
-          errorMessage: _errorMessage ?? "Something went wrong!",
-        ),
-      );
+      notifyListeners();
+      return false;
     } finally {
       _isGenerating = false;
       notifyListeners();
     }
   }
 
-  Future<void> buildPlanInsight() async {
+  Future<bool> createGoal({
+    required DateTime startDate,
+    required DateTime endDate,
+    required ExperienceLevel level,
+    required String request,
+    required String title,
+  }) async {
+    _isGenerating = false;
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      _isGenerating = true;
+      final res = await _repository.createGoal(
+        startDate: startDate,
+        endDate: endDate,
+        experienceLevel: level,
+        customGoalRequest: request,
+        title: title,
+        target: _target!,
+      );
+      if (res.response != null) {
+        final dashboard = rootNavigatorKey.currentContext!
+            .read<DashboardProvider>();
+        await getCurrentGoal();
+        await dashboard.refresh();
+        notifyListeners();
+        return true;
+      } else {
+        _errorMessage = res.error?.errorMessage;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _isGenerating = false;
+      _errorMessage = e.toString();
+      return false;
+    } finally {
+      _isGenerating = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> buildPlanInsight() async {
     _isPlanInsightLoading = false;
     _errorMessage = null;
     notifyListeners();
@@ -103,14 +144,18 @@ class GoalProvider extends ChangeNotifier {
       final res = await _repository.buildPlanInsight(target: _target!);
       if (res.response != null) {
         _insight = PlanInsight.fromJson(res.response);
+        notifyListeners();
+        return true;
       } else {
         _errorMessage = res.error?.errorMessage;
+        notifyListeners();
+        return false;
       }
-      notifyListeners();
     } catch (e) {
       _isPlanInsightLoading = false;
       _errorMessage = e.toString();
       notifyListeners();
+      return false;
     } finally {
       _isPlanInsightLoading = false;
       notifyListeners();

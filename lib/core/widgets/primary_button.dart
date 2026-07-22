@@ -94,16 +94,22 @@ class _PrimaryButtonState extends State<PrimaryButton>
             height: 22,
             width: 22,
             child: widget.ai
-                ? Transform.scale(
-                    scale: 2.0,
-                    child: Lottie.asset(
-                      AppLotties.aiLoading,
-                      controller: _lottieController,
-                      onLoaded: (composition) {
-                        _lottieController
-                          ..duration = composition.duration
-                          ..repeat();
-                      },
+                ? ColorFiltered(
+                    colorFilter: ColorFilter.mode(
+                      AppColors.ai,
+                      BlendMode.srcIn,
+                    ),
+                    child: Transform.scale(
+                      scale: 2.0,
+                      child: Lottie.asset(
+                        AppLotties.aiLoading,
+                        controller: _lottieController,
+                        onLoaded: (composition) {
+                          _lottieController
+                            ..duration = composition.duration
+                            ..repeat();
+                        },
+                      ),
                     ),
                   )
                 : CircularProgressIndicator(
@@ -136,7 +142,9 @@ class _PrimaryButtonState extends State<PrimaryButton>
     Widget button = ElevatedButton(
       onPressed: widget.isLoading ? null : widget.onPressed,
       style: themeStyle?.copyWith(
-        backgroundColor: widget.danger
+        backgroundColor: widget.isLoading
+            ? null
+            : widget.danger
             ? WidgetStatePropertyAll(AppColors.error)
             : widget.ai
             ? WidgetStatePropertyAll(AppColors.ai)

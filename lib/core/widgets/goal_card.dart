@@ -118,7 +118,7 @@ class _StatusChip extends StatelessWidget {
 class _LoadMetric extends StatelessWidget {
   const _LoadMetric({required this.label, required this.value});
   final String label;
-  final double value;
+  final num value;
 
   @override
   Widget build(BuildContext context) {

@@ -185,12 +185,12 @@ class Plan {
   final String title;
   final String description;
   final String? instructions;
-  final double targetLoad;
-  final double targetDistance; // km
+  final num targetLoad;
+  final num targetDistance; // km
   final Duration targetDuration; // minutes
   final bool completed;
   final DateTime? completedAt;
-  final num actualLoad;
+  final num? actualLoad;
   final DateTime createdAt;
 
   factory Plan.fromJson(Map<String, dynamic> json) {
@@ -265,12 +265,12 @@ class Goal {
   final String title;
   final ExperienceLevel experienceLevel;
   final String? customGoalRequest;
-  final double currentLoad;
-  final double targetLoad;
-  final double adjustedLoad;
-  final double fatigue;
-  final double fitness;
-  final double readiness;
+  final num currentLoad;
+  final num targetLoad;
+  final num adjustedLoad;
+  final num fatigue;
+  final num fitness;
+  final num readiness;
   final GoalStatus status;
   final bool isActive;
   final bool isCompleted;

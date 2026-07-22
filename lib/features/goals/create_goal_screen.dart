@@ -1,9 +1,11 @@
+import 'package:cadenceiq_app/core/constants/route_paths.dart';
 import 'package:cadenceiq_app/core/utils/snackbar.dart';
 import 'package:cadenceiq_app/core/widgets/ai_action_button.dart';
 import 'package:cadenceiq_app/core/widgets/plan_insight_card.dart';
 import 'package:cadenceiq_app/core/widgets/text_form_field.dart';
 import 'package:cadenceiq_app/core/widgets/training_calendar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cadenceiq_app/core/theme/app_colors.dart';
@@ -31,6 +33,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen>
     with TickerProviderStateMixin {
   late GoalProvider provider;
   final _formKey = GlobalKey<FormState>();
+  String _title = '';
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
   ExperienceLevel _level = ExperienceLevel.beginner;
@@ -120,7 +123,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen>
         _buildPlan();
         break;
       case 1:
-        _generatePlan();
+        _createGoal();
         break;
       default:
     }
@@ -153,19 +156,53 @@ class _CreateGoalScreenState extends State<CreateGoalScreen>
       level: _level,
       request: _request,
     );
-    if (res.response != null) {
+    if (res) {
       _nextPage();
     } else {
       if (!mounted) return;
       AppSnackbar.show(
         context,
-        message: res.error?.errorMessage ?? "Something went wrong!",
+        message: provider.errorMessage ?? "Something went wrong!",
         status: SnackbarStatus.error,
       );
     }
   }
 
-  Future<void> _generatePlan() async {}
+  Future<void> _generateInsight() async {
+    if (!_formKey.currentState!.validate()) return;
+    final res = await provider.buildPlanInsight();
+    if (res) {
+      _nextPage();
+    } else {
+      if (!mounted) return;
+      AppSnackbar.show(
+        context,
+        message: provider.errorMessage ?? "Something went wrong!",
+        status: SnackbarStatus.error,
+      );
+    }
+  }
+
+  Future<void> _createGoal() async {
+    final res = await provider.createGoal(
+      startDate: _startDate,
+      endDate: _endDate,
+      level: _level,
+      request: _request,
+      title: _title,
+    );
+    if (res) {
+      if (!mounted) return;
+      context.go(RoutePaths.goals);
+    } else {
+      if (!mounted) return;
+      AppSnackbar.show(
+        context,
+        message: provider.errorMessage ?? "Something went wrong!",
+        status: SnackbarStatus.error,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -258,51 +295,40 @@ class _CreateGoalScreenState extends State<CreateGoalScreen>
           style: normal,
         ),
         const SizedBox(height: 24),
-        Text(
-          'Describe your goal',
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Tell us about your goal, briefly explain what you want to achieve',
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
-        ),
-        const SizedBox(height: 8),
         Form(
           key: _formKey,
-          child: CustomTextFormField(
-            label: "Describe your goal",
-            hintText:
-                'e.g. Prepare for a 160km gran fondo in June with focus on climbing and endurance...',
-            initialValue: _request,
-            maxLines: 5,
-            onChanged: (value) {
-              setState(() {
-                _request = value;
-              });
-            },
-            validator: (v) => v == null || v.isEmpty ? 'Enter a goal' : null,
+          child: Column(
+            children: [
+              CustomTextFormField(
+                label: "Title of goal",
+                hintText: 'e.g. 300 BRM Training',
+                initialValue: _title,
+                onChanged: (value) {
+                  setState(() {
+                    _title = value;
+                  });
+                },
+                validator: (v) =>
+                    v == null || v.isEmpty ? 'Enter a title' : null,
+              ),
+              CustomTextFormField(
+                label: "Describe your goal",
+                hintText:
+                    'e.g. Prepare for a 300 BRM next month with focus on endurance...',
+                initialValue: _request,
+                maxLines: 5,
+                onChanged: (value) {
+                  setState(() {
+                    _request = value;
+                  });
+                },
+                validator: (v) =>
+                    v == null || v.isEmpty ? 'Enter a goal' : null,
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 24),
-        Text(
-          'Select a range',
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Select start date and end date of your goal',
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
-        ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
         _DateField(
           label: 'Start Date',
           date: _startDate,
@@ -393,7 +419,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen>
             children: [
               AiActionButton(
                 loading: provider.isPlanInsightLoading,
-                onPressed: provider.buildPlanInsight,
+                onPressed: _generateInsight,
                 label: "Generate AI Insight",
               ),
             ],
