@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/utils/date.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -228,12 +229,20 @@ class _SessionTile extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: session.completed
               ? AppColors.success.withOpacity(0.15)
-              : AppColors.surfaceVariant,
+              : !DateHelper.isPastToday(session.date)
+              ? AppColors.surfaceVariant
+              : AppColors.error.withOpacity(0.15),
           child: Icon(
-            session.completed ? Icons.check : Icons.schedule,
+            session.completed
+                ? Icons.check
+                : !DateHelper.isPastToday(session.date)
+                ? Icons.schedule
+                : Icons.close,
             color: session.completed
                 ? AppColors.success
-                : AppColors.textTertiary,
+                : !DateHelper.isPastToday(session.date)
+                ? AppColors.textTertiary
+                : AppColors.error,
             size: 20,
           ),
         ),
@@ -244,6 +253,15 @@ class _SessionTile extends StatelessWidget {
         subtitle: Text(
           '${Formatters.shortDate(session.date)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
         ),
+        trailing: DateHelper.isToday(session.date)
+            ? Text(
+                "Active",
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: AppColors.success,
+                  fontWeight: FontWeight.w600,
+                ),
+              )
+            : null,
       ),
     );
   }

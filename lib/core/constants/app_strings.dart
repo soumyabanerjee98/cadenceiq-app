@@ -42,7 +42,7 @@ abstract final class AppStrings {
   static const trainingMetrics = 'Training Metrics';
   static const weeklyLoad = 'Weekly Load Trend';
   static const zoneDistribution = 'Zone Distribution';
-  static const todaysSession = "Today's Session";
+  static const todaysSession = "Today's Plan";
   static const quickActions = 'Quick Actions';
   static const goalTaglines = [
     "Every journey begins with a goal.",

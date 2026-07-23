@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cadenceiq_app/core/assets/assets.dart';
+import 'package:cadenceiq_app/core/utils/date.dart';
 import 'package:cadenceiq_app/core/utils/snackbar.dart';
 import 'package:cadenceiq_app/core/widgets/loading.dart';
 import 'package:cadenceiq_app/core/constants/app_strings.dart';
@@ -9,7 +10,6 @@ import 'package:cadenceiq_app/features/goals/create_goal_screen.dart';
 import 'package:cadenceiq_app/models/goal.dart';
 import 'package:cadenceiq_app/providers/activity_provider.dart';
 import 'package:cadenceiq_app/providers/goal_provider.dart';
-import 'package:cadenceiq_app/services/mock/mock_data.dart';
 import 'package:cadenceiq_app/services/repo/activity_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -109,8 +109,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     final settings = context.watch<SettingsProvider>();
     final padding = Responsive.horizontalPadding(context);
     final user = dashboard.user;
-
-    final session = MockData.todaySession;
+    final Plan? session = goal.activeGoal?.plans.firstWhere(
+      (e) => DateHelper.isToday(e.date),
+    );
 
     if (user == null) return AppLoading();
 
@@ -307,59 +308,77 @@ class _DashboardScreenState extends State<DashboardScreen>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  _SectionTitle(title: AppStrings.todaysSession),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.12),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(
-                              Icons.fitness_center,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                  if (session != null) ...[
+                    const SizedBox(height: 20),
+                    _SectionTitle(title: AppStrings.todaysSession),
+                    Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
                               children: [
-                                Text(
-                                  session.title,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16,
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primary.withOpacity(0.12),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '${Formatters.duration(session.duration)} · ${Formatters.distanceKm(session.distanceKm, imperial: settings.useImperial)} · TSS ${Formatters.load(session.targetLoad)}',
-                                  style: const TextStyle(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                Text(
-                                  session.zone,
-                                  style: const TextStyle(
+                                  child: const Icon(
+                                    Icons.directions_bike_rounded,
                                     color: AppColors.primary,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
                                   ),
+                                ),
+                                const SizedBox(width: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      session.title,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '${Formatters.distanceKm(double.parse(session.targetDistance.toString()), imperial: settings.useImperial)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
+                                      style: const TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ),
-                        ],
+                            CircleAvatar(
+                              backgroundColor: session.completed
+                                  ? AppColors.success.withOpacity(0.15)
+                                  : !DateHelper.isPastToday(session.date)
+                                  ? AppColors.surfaceVariant
+                                  : AppColors.error.withOpacity(0.15),
+                              child: Icon(
+                                session.completed
+                                    ? Icons.check
+                                    : !DateHelper.isPastToday(session.date)
+                                    ? Icons.schedule
+                                    : Icons.close,
+                                color: session.completed
+                                    ? AppColors.success
+                                    : !DateHelper.isPastToday(session.date)
+                                    ? AppColors.textTertiary
+                                    : AppColors.error,
+                                size: 20,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ] else ...[
                   ClipRRect(
                     borderRadius: BorderRadius.circular(14),
