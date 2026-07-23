@@ -51,7 +51,7 @@ class Activity {
     this.avgHr = 0,
     this.maxHr = 0,
     this.calories = 0,
-    this.avgPower = 0,
+    this.avgPower,
     this.splits = const [],
   });
 
@@ -68,7 +68,7 @@ class Activity {
   final int? avgHr;
   final int? maxHr;
   final int calories;
-  final num avgPower;
+  final num? avgPower;
   final List<ActivitySplit> splits;
 
   String get zoneLabel => switch (zone) {

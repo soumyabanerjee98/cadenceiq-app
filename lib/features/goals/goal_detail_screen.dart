@@ -267,6 +267,11 @@ class _SessionTileState extends State<_SessionTile>
   IconData get _statusIcon {
     if (widget.plan.completed) return Icons.check;
 
+    if (widget.plan.type == PlanType.rest &&
+        DateHelper.isPastToday(widget.plan.date)) {
+      return Icons.check;
+    }
+
     if (DateHelper.isPastToday(widget.plan.date)) {
       return Icons.close;
     }
@@ -280,6 +285,11 @@ class _SessionTileState extends State<_SessionTile>
 
   Color get _statusColor {
     if (widget.plan.completed) {
+      return AppColors.success;
+    }
+
+    if (widget.plan.type == PlanType.rest &&
+        DateHelper.isPastToday(widget.plan.date)) {
       return AppColors.success;
     }
 
@@ -355,29 +365,32 @@ class _SessionTileState extends State<_SessionTile>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 6),
+              if (widget.plan.type != PlanType.rest)
+                Text(
+                  "${Formatters.shortDate(widget.plan.date)} • "
+                  "${Formatters.duration(widget.plan.targetDuration)} • "
+                  "${widget.plan.targetDistance} km",
+                )
+              else
+                Text(Formatters.shortDate(widget.plan.date)),
+              if (widget.plan.type != PlanType.rest) ...[
+                const SizedBox(height: 10),
 
-              Text(
-                "${Formatters.shortDate(widget.plan.date)} • "
-                "${Formatters.duration(widget.plan.targetDuration)} • "
-                "${widget.plan.targetDistance} km",
-              ),
+                LinearProgressIndicator(
+                  value: completion,
+                  minHeight: 6,
+                  borderRadius: BorderRadius.circular(20),
+                  color: AppColors.info,
+                  backgroundColor: AppColors.divider,
+                ),
 
-              const SizedBox(height: 10),
+                const SizedBox(height: 6),
 
-              LinearProgressIndicator(
-                value: completion,
-                minHeight: 6,
-                borderRadius: BorderRadius.circular(20),
-                color: AppColors.info,
-                backgroundColor: AppColors.divider,
-              ),
-
-              const SizedBox(height: 6),
-
-              Text(
-                "${actualLoad.toStringAsFixed(0)} / ${widget.plan.targetLoad} TSS",
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
+                Text(
+                  "${actualLoad.toStringAsFixed(0)} / ${widget.plan.targetLoad} TSS",
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+              ],
             ],
           ),
 
@@ -408,66 +421,67 @@ class _SessionTileState extends State<_SessionTile>
 
                     Text(widget.plan.instructions!),
                   ],
+                  if (widget.plan.type != PlanType.rest) ...[
+                    const SizedBox(height: 20),
 
-                  const SizedBox(height: 20),
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _MetricCard(
-                          icon: Icons.route,
-                          title: "Distance",
-                          value: "${widget.plan.targetDistance} km",
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: _MetricCard(
-                          icon: Icons.schedule,
-                          title: "Duration",
-                          value: Formatters.duration(
-                            widget.plan.targetDuration,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _MetricCard(
+                            icon: Icons.route,
+                            title: "Distance",
+                            value: "${widget.plan.targetDistance} km",
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: _MetricCard(
-                          icon: Icons.bolt,
-                          title: "Target",
-                          value: "${widget.plan.targetLoad}",
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _MetricCard(
+                            icon: Icons.schedule,
+                            title: "Duration",
+                            value: Formatters.duration(
+                              widget.plan.targetDuration,
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  if (DateHelper.isToday(widget.plan.date) ||
-                      DateHelper.isPastToday(widget.plan.date)) ...[
-                    const SizedBox(height: 24),
-
-                    Text(
-                      "Activities",
-                      style: Theme.of(context).textTheme.titleSmall,
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _MetricCard(
+                            icon: Icons.bolt,
+                            title: "Target",
+                            value: "${widget.plan.targetLoad}",
+                          ),
+                        ),
+                      ],
                     ),
+                    if (DateHelper.isToday(widget.plan.date) ||
+                        DateHelper.isPastToday(widget.plan.date)) ...[
+                      const SizedBox(height: 24),
 
-                    const SizedBox(height: 12),
-
-                    if (widget.activities.isEmpty)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: AppColors.surfaceVariant,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          "No activity recorded.",
-                          textAlign: TextAlign.center,
-                        ),
-                      )
-                    else
-                      ...widget.activities.map(
-                        (activity) => ActivityCard(activity: activity),
+                      Text(
+                        "Activities",
+                        style: Theme.of(context).textTheme.titleSmall,
                       ),
+
+                      const SizedBox(height: 12),
+
+                      if (widget.activities.isEmpty)
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceVariant,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Text(
+                            "No activity recorded.",
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      else
+                        ...widget.activities.map(
+                          (activity) => ActivityCard(activity: activity),
+                        ),
+                    ],
                   ],
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:collection/collection.dart';
 
 import 'package:cadenceiq_app/core/assets/assets.dart';
 import 'package:cadenceiq_app/core/utils/date.dart';
@@ -109,7 +110,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     final settings = context.watch<SettingsProvider>();
     final padding = Responsive.horizontalPadding(context);
     final user = dashboard.user;
-    final Plan? session = goal.activeGoal?.plans.firstWhere(
+    final Plan? session = goal.activeGoal?.plans.firstWhereOrNull(
       (e) => DateHelper.isToday(e.date),
     );
 

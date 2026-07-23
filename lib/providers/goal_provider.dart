@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:cadenceiq_app/models/goal.dart';
 import 'package:provider/provider.dart';
+import 'package:collection/collection.dart';
 
 class GoalProvider extends ChangeNotifier {
   GoalProvider({GoalRepository? repository})
@@ -31,7 +32,7 @@ class GoalProvider extends ChangeNotifier {
   List<Goal> get pastGoals => _past;
 
   Goal? getById(String id) => (_active != null ? [_active, ..._past] : _past)
-      .firstWhere((e) => e?.id == id);
+      .firstWhereOrNull((e) => e?.id == id);
 
   Future<void> load() async {
     await getCurrentGoal();
