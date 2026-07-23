@@ -109,7 +109,6 @@ class _DashboardScreenState extends State<DashboardScreen>
     final settings = context.watch<SettingsProvider>();
     final padding = Responsive.horizontalPadding(context);
     final user = dashboard.user;
-    final metrics = MockData.metrics;
 
     final session = MockData.todaySession;
 
@@ -304,7 +303,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: ZoneDistributionChart(
-                        zones: metrics.zoneDistribution,
+                        zones: user.zoneDistribution,
                       ),
                     ),
                   ),

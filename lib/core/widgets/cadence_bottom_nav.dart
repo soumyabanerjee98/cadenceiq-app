@@ -1,5 +1,7 @@
+import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../theme/app_colors.dart';
 import 'safe_page.dart';
@@ -30,10 +32,14 @@ class CadenceBottomNav extends StatelessWidget {
           label: 'Dashboard',
         ),
         NavigationDestination(
-          icon: Icon(Icons.directions_bike_outlined,
-              color: AppColors.textTertiary),
-          selectedIcon:
-              const Icon(Icons.directions_bike, color: AppColors.primary),
+          icon: Icon(
+            Icons.directions_bike_outlined,
+            color: AppColors.textTertiary,
+          ),
+          selectedIcon: const Icon(
+            Icons.directions_bike,
+            color: AppColors.primary,
+          ),
           label: 'Activities',
         ),
         NavigationDestination(
@@ -56,7 +62,7 @@ class CadenceBottomNav extends StatelessWidget {
   }
 }
 
-class CadenceScaffold extends StatelessWidget {
+class CadenceScaffold extends StatefulWidget {
   const CadenceScaffold({
     super.key,
     required this.navigationShell,
@@ -67,10 +73,26 @@ class CadenceScaffold extends StatelessWidget {
   final Widget child;
 
   @override
+  State<CadenceScaffold> createState() => _CadenceScaffoldState();
+}
+
+class _CadenceScaffoldState extends State<CadenceScaffold> {
+  late DashboardProvider dashboard;
+
+  @override
+  void initState() {
+    dashboard = context.read<DashboardProvider>();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    dashboard = context.watch<DashboardProvider>();
     return Scaffold(
-      body: SafePage(child: child),
-      bottomNavigationBar: CadenceBottomNav(navigationShell: navigationShell),
+      body: SafePage(child: widget.child),
+      bottomNavigationBar: dashboard.user != null
+          ? CadenceBottomNav(navigationShell: widget.navigationShell)
+          : null,
     );
   }
 }

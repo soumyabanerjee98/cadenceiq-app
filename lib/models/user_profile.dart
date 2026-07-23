@@ -16,6 +16,7 @@ class UserProfile {
     this.totalHours = 0,
     this.goalsCompleted = 0,
     required this.weeklyLoad,
+    required this.zoneDistribution,
   });
 
   final String id;
@@ -34,6 +35,7 @@ class UserProfile {
   final num totalHours;
   final int goalsCompleted;
   final List<WeeklyLoad> weeklyLoad;
+  final Map<String, num> zoneDistribution;
 
   String get initials {
     final parts = name!.trim().split(' ');
@@ -63,6 +65,9 @@ class UserProfile {
       weeklyLoad: (json["stats"]["weeklyLoad"] as List)
           .map(((e) => WeeklyLoad.fromJson(e)))
           .toList(),
+      zoneDistribution:
+          (json["stats"]["zoneDistribution"] as Map<String, dynamic>)
+              .cast<String, num>(),
     );
   }
 
@@ -83,6 +88,7 @@ class UserProfile {
         "totalHours": totalHours,
         "goalsCompleted": goalsCompleted,
         "weeklyLoad": weeklyLoad.map((e) => e.toJson()).toList(),
+        "zoneDistribution": zoneDistribution,
       },
     };
   }

@@ -143,7 +143,7 @@ class WeeklyLoadChart extends StatelessWidget {
 class ZoneDistributionChart extends StatelessWidget {
   const ZoneDistributionChart({super.key, required this.zones});
 
-  final Map<String, double> zones;
+  final Map<String, num> zones;
 
   static const _colors = [
     AppColors.zone1,
