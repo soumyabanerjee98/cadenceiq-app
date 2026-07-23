@@ -1,4 +1,7 @@
 import 'package:cadenceiq_app/core/utils/date.dart';
+import 'package:cadenceiq_app/core/widgets/activity_card.dart';
+import 'package:cadenceiq_app/models/activity.dart';
+import 'package:cadenceiq_app/providers/activity_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,17 +36,31 @@ class GoalDetailScreen extends StatelessWidget {
   }
 }
 
-class GoalDetails extends StatelessWidget {
+class GoalDetails extends StatefulWidget {
   final Goal goal;
   const GoalDetails({super.key, required this.goal});
 
   @override
+  State<GoalDetails> createState() => _GoalDetailsState();
+}
+
+class _GoalDetailsState extends State<GoalDetails> {
+  late ActivityProvider activites;
+
+  @override
+  void initState() {
+    activites = context.read<ActivityProvider>();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final padding = Responsive.horizontalPadding(context);
+    activites = context.watch<ActivityProvider>();
     return ListView(
       padding: EdgeInsets.all(padding),
       children: [
-        _InfoCard(goal: goal),
+        _InfoCard(goal: widget.goal),
         const SizedBox(height: 20),
         Text(
           'Training Plan',
@@ -52,7 +69,7 @@ class GoalDetails extends StatelessWidget {
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 12),
-        _Timeline(goal: goal),
+        _Timeline(goal: widget.goal),
         const SizedBox(height: 20),
         Text(
           'Planned Sessions',
@@ -61,7 +78,14 @@ class GoalDetails extends StatelessWidget {
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 12),
-        ...goal.plans.map((s) => _SessionTile(session: s)),
+        ...widget.goal.plans.map(
+          (s) => _SessionTile(
+            plan: s,
+            activities: activites.activities
+                .where((e) => DateHelper.isSameDate(s.date, e.date))
+                .toList(),
+          ),
+        ),
       ],
     );
   }
@@ -79,13 +103,22 @@ class _InfoCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (goal.customGoalRequest != null) ...[
-              Text(
-                goal.customGoalRequest!,
-                style: const TextStyle(height: 1.5),
+            Text(goal.title, style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 16),
+            Text.rich(
+              TextSpan(
+                text: "Description: ",
+                children: [
+                  TextSpan(
+                    text: "\"${goal.customGoalRequest}\"",
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-            ],
+            ),
+            const SizedBox(height: 16),
             Row(
               children: [
                 _InfoChip(
@@ -217,51 +250,265 @@ class _Timeline extends StatelessWidget {
   }
 }
 
-class _SessionTile extends StatelessWidget {
-  const _SessionTile({required this.session});
-  final Plan session;
+class _SessionTile extends StatefulWidget {
+  const _SessionTile({required this.plan, required this.activities});
+
+  final Plan plan;
+  final List<Activity> activities;
+
+  @override
+  State<_SessionTile> createState() => _SessionTileState();
+}
+
+class _SessionTileState extends State<_SessionTile>
+    with SingleTickerProviderStateMixin {
+  bool expanded = false;
+
+  IconData get _statusIcon {
+    if (widget.plan.completed) return Icons.check;
+
+    if (DateHelper.isPastToday(widget.plan.date)) {
+      return Icons.close;
+    }
+
+    return Icons.schedule;
+  }
+
+  bool get _isFuture => widget.plan.date.isAfter(
+    DateTime.now().copyWith(hour: 23, minute: 59, second: 59),
+  );
+
+  Color get _statusColor {
+    if (widget.plan.completed) {
+      return AppColors.success;
+    }
+
+    if (_isFuture) {
+      return AppColors.textTertiary;
+    }
+
+    if (DateHelper.isPastToday(widget.plan.date)) {
+      return AppColors.error;
+    }
+
+    return AppColors.textTertiary;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final actualLoad = widget.activities.fold<num>(
+      0,
+      (sum, e) => sum + e.trainingLoad,
+    );
+
+    final completion = (actualLoad / widget.plan.targetLoad)
+        .clamp(0.0, 1.0)
+        .toDouble();
+
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: session.completed
-              ? AppColors.success.withOpacity(0.15)
-              : !DateHelper.isPastToday(session.date)
-              ? AppColors.surfaceVariant
-              : AppColors.error.withOpacity(0.15),
-          child: Icon(
-            session.completed
-                ? Icons.check
-                : !DateHelper.isPastToday(session.date)
-                ? Icons.schedule
-                : Icons.close,
-            color: session.completed
-                ? AppColors.success
-                : !DateHelper.isPastToday(session.date)
-                ? AppColors.textTertiary
-                : AppColors.error,
-            size: 20,
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          dividerColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+        ),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.all(16),
+          childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+
+          maintainState: true,
+
+          initiallyExpanded: false,
+
+          collapsedBackgroundColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+
+          shape: const RoundedRectangleBorder(),
+          collapsedShape: const RoundedRectangleBorder(),
+
+          leading: CircleAvatar(
+            backgroundColor: _statusColor.withValues(alpha: .12),
+            child: Icon(_statusIcon, color: _statusColor),
           ),
-        ),
-        title: Text(
-          session.title,
-          style: const TextStyle(fontWeight: FontWeight.w600),
-        ),
-        subtitle: Text(
-          '${Formatters.shortDate(session.date)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
-        ),
-        trailing: DateHelper.isToday(session.date)
-            ? Text(
-                "Active",
-                style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                  color: AppColors.success,
-                  fontWeight: FontWeight.w600,
+          collapsedIconColor: AppColors.primary,
+          title: Row(
+            spacing: 12,
+            children: [
+              Text(
+                widget.plan.title,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+              if (DateHelper.isToday(widget.plan.date))
+                Text(
+                  "Active",
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: AppColors.success,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              )
-            : null,
+            ],
+          ),
+
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 6),
+
+              Text(
+                "${Formatters.shortDate(widget.plan.date)} • "
+                "${Formatters.duration(widget.plan.targetDuration)} • "
+                "${widget.plan.targetDistance} km",
+              ),
+
+              const SizedBox(height: 10),
+
+              LinearProgressIndicator(
+                value: completion,
+                minHeight: 6,
+                borderRadius: BorderRadius.circular(20),
+                color: AppColors.info,
+                backgroundColor: AppColors.divider,
+              ),
+
+              const SizedBox(height: 6),
+
+              Text(
+                "${actualLoad.toStringAsFixed(0)} / ${widget.plan.targetLoad} TSS",
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+            ],
+          ),
+
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Description",
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  Text(widget.plan.description),
+
+                  if ((widget.plan.instructions ?? "").isNotEmpty) ...[
+                    const SizedBox(height: 20),
+
+                    Text(
+                      "Instructions",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    Text(widget.plan.instructions!),
+                  ],
+
+                  const SizedBox(height: 20),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _MetricCard(
+                          icon: Icons.route,
+                          title: "Distance",
+                          value: "${widget.plan.targetDistance} km",
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _MetricCard(
+                          icon: Icons.schedule,
+                          title: "Duration",
+                          value: Formatters.duration(
+                            widget.plan.targetDuration,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _MetricCard(
+                          icon: Icons.bolt,
+                          title: "Target",
+                          value: "${widget.plan.targetLoad}",
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (DateHelper.isToday(widget.plan.date) ||
+                      DateHelper.isPastToday(widget.plan.date)) ...[
+                    const SizedBox(height: 24),
+
+                    Text(
+                      "Activities",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    if (widget.activities.isEmpty)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceVariant,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          "No activity recorded.",
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    else
+                      ...widget.activities.map(
+                        (activity) => ActivityCard(activity: activity),
+                      ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MetricCard extends StatelessWidget {
+  const _MetricCard({
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String title;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final padding = Responsive.horizontalPadding(context);
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(padding),
+        child: Column(
+          children: [
+            Icon(icon),
+
+            const SizedBox(height: 8),
+
+            Text(value, style: Theme.of(context).textTheme.titleMedium),
+
+            const SizedBox(height: 4),
+
+            Text(title, style: Theme.of(context).textTheme.bodySmall),
+          ],
+        ),
       ),
     );
   }

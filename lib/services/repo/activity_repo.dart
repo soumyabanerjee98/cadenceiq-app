@@ -8,7 +8,7 @@ class ActivityRepository {
 
   Future<ApiResponse> fetch({
     required int currentPage,
-    int perPage = 10,
+    int perPage = 20,
     String? fromDate,
     String? toDate,
     String? search,
@@ -55,7 +55,7 @@ class ActivityRepository {
 
   Future<ApiResponse> fetchStravaActivities({
     required int currentPage,
-    int perPage = 10,
+    int perPage = 20,
   }) async {
     try {
       final Map<String, String> query = {
