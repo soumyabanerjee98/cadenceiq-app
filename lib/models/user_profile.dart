@@ -15,6 +15,7 @@ class UserProfile {
     this.totalDistance = 0,
     this.totalHours = 0,
     this.goalsCompleted = 0,
+    required this.weeklyLoad,
   });
 
   final String id;
@@ -32,6 +33,7 @@ class UserProfile {
   final num totalDistance;
   final num totalHours;
   final int goalsCompleted;
+  final List<WeeklyLoad> weeklyLoad;
 
   String get initials {
     final parts = name!.trim().split(' ');
@@ -58,6 +60,9 @@ class UserProfile {
       totalDistance: json["stats"]["totalDistance"],
       totalHours: json["stats"]["totalHours"],
       goalsCompleted: json["stats"]["goalsCompleted"],
+      weeklyLoad: (json["stats"]["weeklyLoad"] as List)
+          .map(((e) => WeeklyLoad.fromJson(e)))
+          .toList(),
     );
   }
 
@@ -77,7 +82,32 @@ class UserProfile {
         "totalDistance": totalDistance,
         "totalHours": totalHours,
         "goalsCompleted": goalsCompleted,
+        "weeklyLoad": weeklyLoad.map((e) => e.toJson()).toList(),
       },
+    };
+  }
+}
+
+class WeeklyLoad {
+  const WeeklyLoad({required this.date, required this.day, required this.load});
+
+  final DateTime date;
+  final String day;
+  final num load;
+
+  factory WeeklyLoad.fromJson(Map<String, dynamic> json) {
+    return WeeklyLoad(
+      date: DateTime.parse(json["date"]),
+      day: json["day"],
+      load: json["load"],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "date": date.toIso8601String().split("T")[0],
+      "day": day,
+      "load": load,
     };
   }
 }

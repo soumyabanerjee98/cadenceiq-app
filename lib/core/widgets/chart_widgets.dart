@@ -1,15 +1,13 @@
+import 'package:cadenceiq_app/models/user_profile.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
 
 class WeeklyLoadChart extends StatelessWidget {
-  const WeeklyLoadChart({
-    super.key,
-    required this.data,
-  });
+  const WeeklyLoadChart({super.key, required this.data});
 
-  final List<double> data;
+  final List<WeeklyLoad> data;
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +15,16 @@ class WeeklyLoadChart extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final maxY = data.reduce((a, b) => a > b ? a : b) * 1.2;
+    final maxY = data.reduce((a, b) => a.load > b.load ? a : b).load * 1.2;
 
     return SizedBox(
       height: 220,
       child: LineChart(
-        duration: const Duration(
-          milliseconds: 400,
-        ),
+        duration: const Duration(milliseconds: 400),
         curve: Curves.easeOut,
         LineChartData(
+          minX: 0,
+          maxX: (data.length - 1).toDouble(),
           minY: 0,
           maxY: maxY,
           lineTouchData: LineTouchData(
@@ -54,24 +52,16 @@ class WeeklyLoadChart extends StatelessWidget {
           gridData: FlGridData(
             show: true,
             drawVerticalLine: false,
-            getDrawingHorizontalLine: (_) => FlLine(
-              color: AppColors.border,
-              strokeWidth: 1,
-            ),
+            getDrawingHorizontalLine: (_) =>
+                FlLine(color: AppColors.border, strokeWidth: 1),
           ),
-          borderData: FlBorderData(
-            show: false,
-          ),
+          borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
             topTitles: const AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: false,
-              ),
+              sideTitles: SideTitles(showTitles: false),
             ),
             rightTitles: const AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: false,
-              ),
+              sideTitles: SideTitles(showTitles: false),
             ),
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
@@ -91,6 +81,8 @@ class WeeklyLoadChart extends StatelessWidget {
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
+                interval: 1,
+                reservedSize: 28,
                 getTitlesWidget: (value, _) {
                   final i = value.toInt();
 
@@ -101,7 +93,7 @@ class WeeklyLoadChart extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
-                      'W${i + 1}',
+                      data[i].day,
                       style: const TextStyle(
                         fontSize: 10,
                         color: AppColors.textTertiary,
@@ -116,23 +108,18 @@ class WeeklyLoadChart extends StatelessWidget {
             LineChartBarData(
               spots: List.generate(
                 data.length,
-                (i) => FlSpot(
-                  i.toDouble(),
-                  data[i],
-                ),
+                (i) =>
+                    FlSpot(i.toDouble(), double.parse(data[i].load.toString())),
               ),
               isCurved: true,
+              preventCurveOverShooting: true,
+              preventCurveOvershootingThreshold: 10,
               color: AppColors.primary,
               barWidth: 3,
               isStrokeCapRound: true,
               dotData: FlDotData(
                 show: true,
-                getDotPainter: (
-                  spot,
-                  percent,
-                  bar,
-                  index,
-                ) {
+                getDotPainter: (spot, percent, bar, index) {
                   return FlDotCirclePainter(
                     radius: 4,
                     color: AppColors.primary,
@@ -216,8 +203,10 @@ class ZoneDistributionChart extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(entries[i].key,
-                          style: const TextStyle(fontSize: 12)),
+                      Text(
+                        entries[i].key,
+                        style: const TextStyle(fontSize: 12),
+                      ),
                     ],
                   ),
                 );

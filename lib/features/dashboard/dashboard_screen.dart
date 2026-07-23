@@ -295,7 +295,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: WeeklyLoadChart(data: metrics.weeklyLoads),
+                      child: WeeklyLoadChart(data: user.weeklyLoad),
                     ),
                   ),
                   const SizedBox(height: 16),
