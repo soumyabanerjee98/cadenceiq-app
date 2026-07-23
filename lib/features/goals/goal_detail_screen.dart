@@ -502,7 +502,7 @@ class _MetricCard extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            Text(value, style: Theme.of(context).textTheme.titleMedium),
+            Text(value, style: Theme.of(context).textTheme.titleSmall),
 
             const SizedBox(height: 4),
 

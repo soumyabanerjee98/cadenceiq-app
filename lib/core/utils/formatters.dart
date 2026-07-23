@@ -14,8 +14,14 @@ abstract final class Formatters {
     final h = d.inHours;
     final m = d.inMinutes.remainder(60);
     final s = d.inSeconds.remainder(60);
-    if (h > 0) return '${h}h ${m}m';
-    if (m > 0) return '${m}m ${s}s';
+    if (h > 0) {
+      if (m > 0) return '${h}h ${m}m';
+      return '${h}h';
+    }
+    if (m > 0) {
+      if (s > 0) return '${m}m ${s}s';
+      return '${m}m';
+    }
     return '${s}s';
   }
 
