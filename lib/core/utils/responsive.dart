@@ -13,8 +13,10 @@ abstract final class Responsive {
     return ScreenSize.mobile;
   }
 
-  static bool isMobile(BuildContext context) => of(context) == ScreenSize.mobile;
-  static bool isTablet(BuildContext context) => of(context) == ScreenSize.tablet;
+  static bool isMobile(BuildContext context) =>
+      of(context) == ScreenSize.mobile;
+  static bool isTablet(BuildContext context) =>
+      of(context) == ScreenSize.tablet;
 
   static double horizontalPadding(BuildContext context) {
     return switch (of(context)) {
@@ -50,5 +52,14 @@ abstract final class Responsive {
         child: child,
       ),
     );
+  }
+
+  static Future<double> getWidgetHeight(GlobalKey key) async {
+    await WidgetsBinding.instance.endOfFrame;
+
+    final context = key.currentContext;
+    if (context == null) return 0;
+    final box = context.findRenderObject() as RenderBox;
+    return box.size.height;
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:cadenceiq_app/core/widgets/warning_card.dart';
 import 'package:collection/collection.dart';
 
 import 'package:cadenceiq_app/core/assets/assets.dart';
@@ -92,9 +93,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     _controller = AnimationController(vsync: this);
     tagline = getRandomGoalTagline();
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await dashboard.refresh();
-    });
+    dashboard.refresh();
   }
 
   @override
@@ -202,59 +201,73 @@ class _DashboardScreenState extends State<DashboardScreen>
             padding: EdgeInsets.all(padding),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                if (goal.activeGoal != null) ...[
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      final isWide = constraints.maxWidth > 500;
-                      final metricsRow = [
-                        MetricCard(
-                          label: AppStrings.currentFitness,
-                          value: (dashboard.user?.ctl ?? 0).toStringAsFixed(1),
-                          // trend: '+3.2 this week',
-                          color: AppColors.success,
-                          icon: Icons.trending_up,
-                        ),
-                        MetricCard(
-                          label: AppStrings.fatigue,
-                          value: (dashboard.user?.atl ?? 0).toStringAsFixed(1),
-                          color: AppColors.warning,
-                          icon: Icons.battery_alert,
-                        ),
-                        MetricCard(
-                          label: AppStrings.readiness,
-                          value: (dashboard.user?.tsb ?? 0).toStringAsFixed(1),
-                          // trend: 'Fresh',
-                          color: AppColors.info,
-                          icon: Icons.bolt,
-                        ),
-                      ];
-                      if (isWide) {
-                        return Row(
-                          children: metricsRow
-                              .map(
-                                (m) => Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: m,
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        );
-                      }
-                      return Column(
+                if (!user.stravaConnected)
+                  WarningCard(
+                    message: "Strava not connected!",
+                    action: () => context.push(RoutePaths.connectStrava),
+                    actionText: "Connect",
+                  ),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isWide = constraints.maxWidth > 500;
+                    final metricsRow = [
+                      MetricCard(
+                        label: AppStrings.currentFitness,
+                        value: (dashboard.user?.ctl ?? 0).toStringAsFixed(1),
+                        // trend: '+3.2 this week',
+                        color: AppColors.success,
+                        icon: Icons.trending_up,
+                      ),
+                      MetricCard(
+                        label: AppStrings.fatigue,
+                        value: (dashboard.user?.atl ?? 0).toStringAsFixed(1),
+                        color: AppColors.warning,
+                        icon: Icons.battery_alert,
+                      ),
+                      MetricCard(
+                        label: AppStrings.readiness,
+                        value: (dashboard.user?.tsb ?? 0).toStringAsFixed(1),
+                        // trend: 'Fresh',
+                        color: AppColors.info,
+                        icon: Icons.bolt,
+                      ),
+                    ];
+                    if (isWide) {
+                      return Row(
                         children: metricsRow
                             .map(
-                              (m) => Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: m,
+                              (m) => Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: m,
+                                ),
                               ),
                             )
                             .toList(),
                       );
-                    },
+                    }
+                    return Column(
+                      children: metricsRow
+                          .map(
+                            (m) => Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: m,
+                            ),
+                          )
+                          .toList(),
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+                _SectionTitle(title: AppStrings.weeklyLoad),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: WeeklyLoadChart(data: user.weeklyLoad),
                   ),
-                  const SizedBox(height: 8),
+                ),
+                const SizedBox(height: 16),
+                if (goal.activeGoal != null) ...[
                   ProgressCard(
                     title: goal.activeGoal?.title ?? "",
                     progress: double.parse(
@@ -292,14 +305,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                     ],
                   ),
                   const SizedBox(height: 20),
-                  _SectionTitle(title: AppStrings.weeklyLoad),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: WeeklyLoadChart(data: user.weeklyLoad),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
                   _SectionTitle(title: AppStrings.zoneDistribution),
                   Card(
                     child: Padding(
@@ -381,24 +386,21 @@ class _DashboardScreenState extends State<DashboardScreen>
                     ),
                   ],
                 ] else ...[
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
-                    child: Lottie.asset(
-                      AppLotties.noGoal,
-                      controller: _controller,
-                      onLoaded: (composition) {
-                        _controller.duration = composition.duration;
+                  Lottie.asset(
+                    AppLotties.noGoal,
+                    controller: _controller,
+                    onLoaded: (composition) {
+                      _controller.duration = composition.duration;
 
-                        _controller.addStatusListener((status) async {
-                          if (status == AnimationStatus.completed && mounted) {
-                            await Future.delayed(const Duration(seconds: 2));
-                            if (mounted) _controller.forward(from: 0);
-                          }
-                        });
+                      _controller.addStatusListener((status) async {
+                        if (status == AnimationStatus.completed && mounted) {
+                          await Future.delayed(const Duration(seconds: 2));
+                          if (mounted) _controller.forward(from: 0);
+                        }
+                      });
 
-                        if (mounted) _controller.forward();
-                      },
-                    ),
+                      if (mounted) _controller.forward();
+                    },
                   ),
                   const SizedBox(height: 20),
                   Center(

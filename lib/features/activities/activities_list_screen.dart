@@ -1,4 +1,5 @@
 import 'package:cadenceiq_app/core/constants/route_paths.dart';
+import 'package:cadenceiq_app/core/widgets/warning_card.dart';
 import 'package:cadenceiq_app/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -51,6 +52,7 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
   @override
   Widget build(BuildContext context) {
     final padding = Responsive.horizontalPadding(context);
+    final dashboard = context.watch<DashboardProvider>();
     activity = context.watch<ActivityProvider>();
 
     return Scaffold(
@@ -62,7 +64,7 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
           slivers: [
             SliverPersistentHeader(
               pinned: true,
-              delegate: ActivitiesHeaderDelegate(),
+              delegate: ActivitiesHeaderDelegate(dashboard: dashboard),
             ),
             if (activity.state == LoadState.loading)
               const SliverFillRemaining(child: SkeletonList())
@@ -116,11 +118,17 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
 }
 
 class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
-  @override
-  double get minExtent => kToolbarHeight + 150;
+  final DashboardProvider dashboard;
+
+  const ActivitiesHeaderDelegate({required this.dashboard});
 
   @override
-  double get maxExtent => kToolbarHeight + 150;
+  double get minExtent =>
+      kToolbarHeight + (dashboard.user?.stravaConnected == true ? 150 : 209);
+
+  @override
+  double get maxExtent =>
+      kToolbarHeight + (dashboard.user?.stravaConnected == true ? 150 : 209);
 
   @override
   Widget build(
@@ -129,7 +137,6 @@ class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) {
     final provider = context.watch<ActivityProvider>();
-    final dashboard = context.watch<DashboardProvider>();
 
     final padding = Responsive.horizontalPadding(context);
 
@@ -174,6 +181,12 @@ class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
             ],
           ),
           const SizedBox(height: 16),
+          if (dashboard.user?.stravaConnected == false)
+            WarningCard(
+              message: "Strava not connected!",
+              action: () => context.push(RoutePaths.connectStrava),
+              actionText: "Connect",
+            ),
           TextField(
             decoration: const InputDecoration(
               hintText: 'Search rides...',

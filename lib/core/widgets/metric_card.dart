@@ -43,9 +43,9 @@ class MetricCard extends StatelessWidget {
                 child: Text(
                   label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -58,11 +58,11 @@ class MetricCard extends StatelessWidget {
             textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
-                value,
+                value == "0.0" ? "-" : value,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: accent,
-                    ),
+                  fontWeight: FontWeight.w700,
+                  color: accent,
+                ),
               ),
               if (unit != null) ...[
                 const SizedBox(width: 4),
@@ -75,9 +75,9 @@ class MetricCard extends StatelessWidget {
             Text(
               trend!,
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: AppColors.success,
-                    fontWeight: FontWeight.w500,
-                  ),
+                color: AppColors.success,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
         ],
@@ -106,16 +106,16 @@ class StatTile extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           value,
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.textSecondary,
-              ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
           textAlign: TextAlign.center,
         ),
       ],

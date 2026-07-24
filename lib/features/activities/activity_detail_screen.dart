@@ -1,5 +1,6 @@
 import 'package:cadenceiq_app/core/widgets/activity_map.dart';
 import 'package:cadenceiq_app/core/widgets/primary_button.dart';
+import 'package:cadenceiq_app/core/widgets/warning_card.dart';
 import 'package:cadenceiq_app/models/activity.dart';
 import 'package:cadenceiq_app/services/repo/activity_repo.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +129,11 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                       '${activity.zoneLabel} · ${Formatters.date(activity.date)}',
                       style: const TextStyle(color: AppColors.textSecondary),
                     ),
-                    const SizedBox(height: 20),
+                    if (activity.maxHr == null || activity.avgHr == null)
+                      WarningCard(
+                        message: "HR Data not available!",
+                        icon: Icons.monitor_heart_outlined,
+                      ),
                     GridView.count(
                       crossAxisCount: 2,
                       shrinkWrap: true,
@@ -166,20 +171,22 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                           ),
                           icon: Icons.speed,
                         ),
-                        MetricCard(
-                          label: 'Avg HR',
-                          value: '${activity.avgHr ?? "-"}',
-                          unit: 'bpm',
-                          icon: Icons.favorite,
-                          color: AppColors.error,
-                        ),
-                        MetricCard(
-                          label: 'Max HR',
-                          value: '${activity.maxHr ?? "-"}',
-                          unit: 'bpm',
-                          icon: Icons.favorite_border,
-                          color: AppColors.error,
-                        ),
+                        if (activity.avgHr != null)
+                          MetricCard(
+                            label: 'Avg HR',
+                            value: '${activity.avgHr}',
+                            unit: 'bpm',
+                            icon: Icons.favorite,
+                            color: AppColors.error,
+                          ),
+                        if (activity.maxHr != null)
+                          MetricCard(
+                            label: 'Max HR',
+                            value: '${activity.maxHr ?? "-"}',
+                            unit: 'bpm',
+                            icon: Icons.favorite_border,
+                            color: AppColors.error,
+                          ),
                         MetricCard(
                           label: 'Calories',
                           value: '${activity.calories}',
@@ -219,7 +226,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                               ),
                             ),
                             subtitle: Text(
-                              '${Formatters.distanceKm(s.distanceKm, imperial: imperial)} · ${Formatters.duration(s.duration)} · ${Formatters.speedKmh(s.avgSpeedKmh, imperial: imperial)} · ${s.avgHr != null ? (s.avgHr)?.toStringAsPrecision(3) : "-"} bpm',
+                              '${Formatters.distanceKm(s.distanceKm, imperial: imperial)} · ${Formatters.duration(s.duration)} · ${Formatters.speedKmh(s.avgSpeedKmh, imperial: imperial)}${s.avgHr != null ? " · ${(s.avgHr)?.toStringAsPrecision(3)} bpm" : ""}',
                             ),
                           ),
                         ),
