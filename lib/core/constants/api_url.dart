@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 abstract final class ApiUrl {
   static final String base = kReleaseMode
       ? "https://cadenceiq.onrender.com/api"
-      : "https://6374-2409-40d0-122f-dc3d-ad32-4c47-583d-664c.ngrok-free.app/api";
+      : "https://01c4-2409-40d0-300e-d81-79ad-9569-7557-97b.ngrok-free.app/api";
 
   // auth
   static const login = '/auth/login';

@@ -127,6 +127,9 @@ class TrainingTarget {
     required this.fatigue,
     required this.fitness,
     required this.readiness,
+    required this.goalDifficulty,
+    required this.goalConfidence,
+    required this.goalReason,
     required this.plan,
   });
   final num currentLoad;
@@ -135,6 +138,9 @@ class TrainingTarget {
   final num fatigue;
   final num fitness;
   final num readiness;
+  final String goalDifficulty;
+  final int goalConfidence;
+  final String goalReason;
   final List<PrePlan> plan;
 
   factory TrainingTarget.fromJson(Map<String, dynamic> json) {
@@ -145,6 +151,9 @@ class TrainingTarget {
       fatigue: json["fatigue"],
       fitness: json["fitness"],
       readiness: json["readiness"],
+      goalDifficulty: json["goalSummary"]["difficulty"],
+      goalConfidence: json["goalSummary"]["confidence"],
+      goalReason: json["goalSummary"]["reason"],
       plan: (json["plan"] as List).map((e) => PrePlan.fromJson(e)).toList(),
     );
   }
@@ -158,6 +167,11 @@ class TrainingTarget {
       "fitness": fitness,
       "readiness": readiness,
       "plan": plan.map((e) => e.toJson()).toList(),
+      "goalSummary": {
+        "difficulty": goalDifficulty,
+        "confidence": goalConfidence,
+        "reason": goalReason,
+      },
     };
   }
 }
