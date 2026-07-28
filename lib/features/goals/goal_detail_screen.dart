@@ -142,7 +142,7 @@ class _InfoCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '${Formatters.percent(double.parse(goal.completion.toString()))} complete · ${goal.daysRemaining} days remaining',
+              '${Formatters.percent(double.parse(goal.completion.toString()))} complete · ${goal.daysRemaining > 0 ? '${goal.daysRemaining} days left' : 'Ends today'}',
             ),
             const SizedBox(height: 16),
             Row(

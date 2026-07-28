@@ -156,6 +156,12 @@ class ActivitiesHeaderDelegate extends SliverPersistentHeaderDelegate {
                 ),
               ),
               IconButton(
+                constraints: BoxConstraints(),
+                style: IconButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  tapTargetSize:
+                      MaterialTapTargetSize.shrinkWrap, // Shrinks hit test area
+                ),
                 onPressed: dashboard.user?.stravaConnected == true
                     ? () async {
                         final res = await context.push<bool>(

@@ -170,7 +170,9 @@ class GoalProvider extends ChangeNotifier {
       final res = await _repository.getCurrentGoal();
       if (res.response != null) {
         _active = Goal.fromJson(res.response);
-      } else if (res.statusCode != 200) {
+      } else if (res.statusCode == 200) {
+        _active = null;
+      } else {
         _errorMessage = res.error?.errorMessage;
       }
     } finally {

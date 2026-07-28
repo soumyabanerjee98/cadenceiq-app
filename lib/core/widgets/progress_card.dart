@@ -35,10 +35,7 @@ class ProgressCard extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                AppColors.primary.withOpacity(0.08),
-                Colors.transparent,
-              ],
+              colors: [AppColors.primary.withOpacity(0.08), Colors.transparent],
             ),
           ),
           child: Column(
@@ -51,26 +48,26 @@ class ProgressCard extends StatelessWidget {
                   Text(
                     'Current Goal',
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
               Text(
                 title,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
               if (subtitle != null) ...[
                 const SizedBox(height: 4),
                 Text(
                   subtitle!,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
               const SizedBox(height: 16),
@@ -80,16 +77,18 @@ class ProgressCard extends StatelessWidget {
                   Text(
                     Formatters.percent(progress),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
-                        ),
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
                   ),
                   if (daysRemaining != null)
                     Text(
-                      '$daysRemaining days left',
+                      daysRemaining! > 0
+                          ? '$daysRemaining days left'
+                          : 'Ends today',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                 ],
               ),

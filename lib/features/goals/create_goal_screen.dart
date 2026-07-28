@@ -213,7 +213,6 @@ class _CreateGoalScreenState extends State<CreateGoalScreen>
         minimum: const EdgeInsets.all(16),
         child: PrimaryButton(
           label: currentPage == 0 ? 'Generate Training Plan' : 'Set Goal',
-          ai: currentPage == 0,
           shine: currentPage == 0,
           isLoading: provider.isGenerating,
           onPressed: _action,

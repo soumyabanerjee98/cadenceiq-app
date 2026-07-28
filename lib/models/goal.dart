@@ -320,7 +320,7 @@ class Goal {
   }
 
   int get daysRemaining =>
-      endDate.difference(DateTime.now()).inDays.clamp(0, 999);
+      (endDate.difference(DateTime.now()).inHours / 24).ceil().clamp(0, 999);
 
   String get experienceLabel => switch (experienceLevel) {
     ExperienceLevel.beginner => 'Beginner',

@@ -349,13 +349,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                                       ),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text(
-                                      '${Formatters.distanceKm(double.parse(session.targetDistance.toString()), imperial: settings.useImperial)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
-                                      style: const TextStyle(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 13,
+                                    if (session.type != PlanType.rest)
+                                      Text(
+                                        '${Formatters.distanceKm(double.parse(session.targetDistance.toString()), imperial: settings.useImperial)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
+                                        style: const TextStyle(
+                                          color: AppColors.textSecondary,
+                                          fontSize: 13,
+                                        ),
                                       ),
-                                    ),
                                   ],
                                 ),
                               ],
