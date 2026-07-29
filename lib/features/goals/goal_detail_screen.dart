@@ -36,31 +36,17 @@ class GoalDetailScreen extends StatelessWidget {
   }
 }
 
-class GoalDetails extends StatefulWidget {
+class GoalDetails extends StatelessWidget {
   final Goal goal;
   const GoalDetails({super.key, required this.goal});
 
   @override
-  State<GoalDetails> createState() => _GoalDetailsState();
-}
-
-class _GoalDetailsState extends State<GoalDetails> {
-  late ActivityProvider activites;
-
-  @override
-  void initState() {
-    activites = context.read<ActivityProvider>();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final padding = Responsive.horizontalPadding(context);
-    activites = context.watch<ActivityProvider>();
     return ListView(
       padding: EdgeInsets.all(padding),
       children: [
-        _InfoCard(goal: widget.goal),
+        _InfoCard(goal: goal),
         const SizedBox(height: 20),
         Text(
           'Training Plan',
@@ -69,7 +55,7 @@ class _GoalDetailsState extends State<GoalDetails> {
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 12),
-        _Timeline(goal: widget.goal),
+        _Timeline(goal: goal),
         const SizedBox(height: 20),
         Text(
           'Planned Sessions',
@@ -78,10 +64,10 @@ class _GoalDetailsState extends State<GoalDetails> {
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 12),
-        ...widget.goal.plans.map(
+        ...goal.plans.map(
           (s) => _SessionTile(
             plan: s,
-            activities: activites.activities
+            activities: goal.activities
                 .where((e) => DateHelper.isSameDate(s.date, e.date))
                 .toList(),
           ),

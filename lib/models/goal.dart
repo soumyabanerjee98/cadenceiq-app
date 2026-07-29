@@ -1,4 +1,5 @@
 import 'package:cadenceiq_app/core/theme/app_colors.dart';
+import 'package:cadenceiq_app/models/activity.dart';
 import 'package:flutter/material.dart';
 
 enum ExperienceLevel { beginner, intermediate, advanced, elite }
@@ -271,6 +272,7 @@ class Goal {
     required this.updatedAt,
     required this.completion,
     this.plans = const [],
+    this.activities = const [],
   });
 
   final String id;
@@ -291,6 +293,7 @@ class Goal {
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<Plan> plans;
+  final List<Activity> activities;
   final num completion;
 
   factory Goal.fromJson(Map<String, dynamic> json) {
@@ -316,6 +319,9 @@ class Goal {
       createdAt: DateTime.parse(json["createdAt"]),
       updatedAt: DateTime.parse(json["updatedAt"]),
       plans: (json["plan"] as List).map((e) => Plan.fromJson(e)).toList(),
+      activities: (json["activities"] as List)
+          .map((e) => Activity.fromJson(e))
+          .toList(),
     );
   }
 
