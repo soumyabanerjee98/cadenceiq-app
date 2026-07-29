@@ -1,7 +1,6 @@
 import 'package:cadenceiq_app/core/utils/date.dart';
 import 'package:cadenceiq_app/core/widgets/activity_card.dart';
 import 'package:cadenceiq_app/models/activity.dart';
-import 'package:cadenceiq_app/providers/activity_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
