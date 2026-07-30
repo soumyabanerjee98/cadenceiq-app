@@ -1,6 +1,5 @@
 import 'package:cadenceiq_app/core/utils/date.dart';
 import 'package:cadenceiq_app/core/widgets/activity_card.dart';
-import 'package:cadenceiq_app/core/widgets/ai_action_button.dart';
 import 'package:cadenceiq_app/core/widgets/ai_insight_card.dart';
 import 'package:cadenceiq_app/models/activity.dart';
 import 'package:flutter/material.dart';
@@ -541,18 +540,6 @@ class _SessionTileState extends State<_SessionTile>
                                 ),
                           ),
                         ),
-                      Row(
-                        children: [
-                          AiActionButton(
-                            loading: goal.isDailyInsightLoading,
-                            onPressed: () =>
-                                goal.generateDailyInsight(widget.plan.date),
-                            label: widget.plan.insight != null
-                                ? "Re-generate Daily Insight"
-                                : "Generate Daily Insight",
-                          ),
-                        ],
-                      ),
                     ],
                   ],
                 ],
