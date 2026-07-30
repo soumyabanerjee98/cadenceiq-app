@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 abstract final class ApiUrl {
   static final String base = kReleaseMode
       ? "https://cadenceiq.onrender.com/api"
-      : "https://125d-2409-40d0-303e-28a4-1d21-300a-be0d-d21c.ngrok-free.app/api";
+      : "https://019c-2409-40d0-303e-28a4-34f5-6150-ec84-a1a8.ngrok-free.app/api";
 
   // auth
   static const login = '/auth/login';
@@ -28,6 +28,7 @@ abstract final class ApiUrl {
   static const createGoal = '/goal/create-goal';
   static const getCurrentGoal = '/goal/current-goal';
   static const getPastGoals = '/goal/past-goals';
+  static const generateDailyInsight = '/insight/create-daily-insight';
 
   // settings
   static const connectStrava = '/strava/connect';
