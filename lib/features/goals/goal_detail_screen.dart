@@ -166,7 +166,7 @@ class _InfoCard extends StatelessWidget {
                       '${Formatters.shortDate(goal.startDate)} – ${Formatters.shortDate(goal.endDate)}',
                 ),
                 const SizedBox(width: 8),
-                _InfoChip(icon: Icons.school, label: goal.experienceLabel),
+                _InfoChip(icon: Icons.leaderboard, label: goal.experienceLabel),
               ],
             ),
             const SizedBox(height: 16),
