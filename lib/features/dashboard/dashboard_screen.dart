@@ -328,68 +328,77 @@ class _DashboardScreenState extends State<DashboardScreen>
                     Card(
                       child: Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary.withOpacity(0.12),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: const Icon(
-                                    Icons.directions_bike_rounded,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      session.title,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16,
-                                        color: AppColors.primary,
-                                      ),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) => Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: planColor(
+                                        session.type,
+                                      ).withOpacity(0.12),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                    const SizedBox(height: 4),
-                                    if (session.type != PlanType.rest)
-                                      Text(
-                                        '${Formatters.distanceKm(double.parse(session.targetDistance.toString()), imperial: settings.useImperial)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
-                                        style: const TextStyle(
-                                          color: AppColors.textSecondary,
-                                          fontSize: 13,
+                                    child: Icon(
+                                      planIcon(session.type),
+                                      color: planColor(session.type),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: constraints.maxWidth * 0.7,
+                                        child: Text(
+                                          session.title,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                            color: planColor(session.type),
+                                          ),
                                         ),
                                       ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            CircleAvatar(
-                              backgroundColor: session.completed
-                                  ? AppColors.success.withOpacity(0.15)
-                                  : !DateHelper.isPastToday(session.date)
-                                  ? AppColors.surfaceVariant
-                                  : AppColors.error.withOpacity(0.15),
-                              child: Icon(
-                                session.completed
-                                    ? Icons.check
-                                    : !DateHelper.isPastToday(session.date)
-                                    ? Icons.schedule
-                                    : Icons.close,
-                                color: session.completed
-                                    ? AppColors.success
-                                    : !DateHelper.isPastToday(session.date)
-                                    ? AppColors.textTertiary
-                                    : AppColors.error,
-                                size: 20,
+                                      const SizedBox(height: 4),
+                                      if (session.type != PlanType.rest)
+                                        Text(
+                                          '${Formatters.distanceKm(double.parse(session.targetDistance.toString()), imperial: settings.useImperial)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
+                                          style: const TextStyle(
+                                            color: AppColors.textSecondary,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                              CircleAvatar(
+                                backgroundColor: session.completed
+                                    ? AppColors.success.withOpacity(0.15)
+                                    : !DateHelper.isPastToday(session.date)
+                                    ? AppColors.surfaceVariant
+                                    : AppColors.error.withOpacity(0.15),
+                                child: Icon(
+                                  session.completed
+                                      ? Icons.check
+                                      : !DateHelper.isPastToday(session.date)
+                                      ? Icons.schedule
+                                      : Icons.close,
+                                  color: session.completed
+                                      ? AppColors.success
+                                      : !DateHelper.isPastToday(session.date)
+                                      ? AppColors.textTertiary
+                                      : AppColors.error,
+                                  size: 20,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -405,7 +414,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                               ),
                         ),
                       ),
-                    if (todayActivityCount > 0)
+                    if (todayActivityCount > 0 && session.type != PlanType.rest)
                       Row(
                         children: [
                           AiActionButton(

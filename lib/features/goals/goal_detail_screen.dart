@@ -304,21 +304,6 @@ class _SessionTileState extends State<_SessionTile>
   late GoalProvider goal;
   bool expanded = false;
 
-  IconData get _statusIcon {
-    if (widget.plan.completed) return Icons.check;
-
-    if (widget.plan.type == PlanType.rest &&
-        DateHelper.isPastToday(widget.plan.date)) {
-      return Icons.check;
-    }
-
-    if (DateHelper.isPastToday(widget.plan.date)) {
-      return Icons.close;
-    }
-
-    return Icons.schedule;
-  }
-
   bool get _isFuture => widget.plan.date.isAfter(
     DateTime.now().copyWith(hour: 23, minute: 59, second: 59),
   );
@@ -387,22 +372,36 @@ class _SessionTileState extends State<_SessionTile>
 
           leading: CircleAvatar(
             backgroundColor: _statusColor.withValues(alpha: .12),
-            child: Icon(_statusIcon, color: _statusColor),
+            child: Icon(planIcon(widget.plan.type), color: _statusColor),
           ),
           collapsedIconColor: AppColors.primary,
           title: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 12,
             children: [
-              Text(
-                widget.plan.title,
-                style: const TextStyle(fontWeight: FontWeight.w700),
+              Flexible(
+                child: Text(
+                  widget.plan.title,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
               ),
               if (DateHelper.isToday(widget.plan.date))
-                Text(
-                  "Active",
-                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: AppColors.success,
-                    fontWeight: FontWeight.w600,
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.success.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    "Active",
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: AppColors.success,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
             ],
