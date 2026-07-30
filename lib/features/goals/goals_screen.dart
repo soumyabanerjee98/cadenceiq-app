@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/core/theme/app_colors.dart';
 import 'package:cadenceiq_app/core/utils/snackbar.dart';
 import 'package:cadenceiq_app/core/widgets/floating_action_button.dart';
 import 'package:cadenceiq_app/features/goals/create_goal_screen.dart';
@@ -22,6 +23,7 @@ class GoalsScreen extends StatefulWidget {
 
 class _GoalsScreenState extends State<GoalsScreen>
     with SingleTickerProviderStateMixin {
+  late GoalProvider goal;
   late TabController _tabController;
   bool loading = false;
   final ActivityRepository _repository = ActivityRepository();
@@ -62,6 +64,7 @@ class _GoalsScreenState extends State<GoalsScreen>
   @override
   void initState() {
     super.initState();
+    goal = context.read<GoalProvider>();
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -73,7 +76,7 @@ class _GoalsScreenState extends State<GoalsScreen>
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<GoalProvider>();
+    goal = context.watch<GoalProvider>();
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(
@@ -112,18 +115,18 @@ class _GoalsScreenState extends State<GoalsScreen>
           controller: _tabController,
           children: [
             _GoalDetails(
-              goal: provider.activeGoal,
+              goal: goal.activeGoal,
               emptyMessage: 'No active goal. Create one to get started!',
             ),
             _GoalList(
-              goals: provider.pastGoals,
+              goals: goal.pastGoals,
               emptyMessage: 'No completed goals yet.',
               padding: padding,
             ),
           ],
         ),
       ),
-      floatingActionButton: provider.activeGoal == null
+      floatingActionButton: goal.activeGoal == null
           ? AppFAB.extended(
               icon: Icons.add,
               label: 'Create Goal',

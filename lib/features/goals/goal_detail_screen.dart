@@ -35,43 +35,61 @@ class GoalDetailScreen extends StatelessWidget {
   }
 }
 
-class GoalDetails extends StatelessWidget {
+class GoalDetails extends StatefulWidget {
   final Goal goal;
   const GoalDetails({super.key, required this.goal});
 
   @override
+  State<GoalDetails> createState() => _GoalDetailsState();
+}
+
+class _GoalDetailsState extends State<GoalDetails> {
+  late GoalProvider goal;
+
+  @override
+  void initState() {
+    goal = context.read<GoalProvider>();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final padding = Responsive.horizontalPadding(context);
-    return ListView(
-      padding: EdgeInsets.all(padding),
-      children: [
-        _InfoCard(goal: goal),
-        const SizedBox(height: 20),
-        Text(
-          'Training Plan',
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: 12),
-        _Timeline(goal: goal),
-        const SizedBox(height: 20),
-        Text(
-          'Planned Sessions',
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-        ),
-        const SizedBox(height: 12),
-        ...goal.plans.map(
-          (s) => _SessionTile(
-            plan: s,
-            activities: goal.activities
-                .where((e) => DateHelper.isSameDate(s.date, e.date))
-                .toList(),
+    goal = context.watch<GoalProvider>();
+    return RefreshIndicator(
+      color: AppColors.primary,
+      onRefresh: goal.getCurrentGoal,
+      child: ListView(
+        padding: EdgeInsets.all(padding),
+        children: [
+          _InfoCard(goal: widget.goal),
+          const SizedBox(height: 20),
+          Text(
+            'Training Plan',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
-        ),
-      ],
+          const SizedBox(height: 12),
+          _Timeline(goal: widget.goal),
+          const SizedBox(height: 20),
+          Text(
+            'Planned Sessions',
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 12),
+          ...widget.goal.plans.map(
+            (s) => _SessionTile(
+              plan: s,
+              activities: widget.goal.activities
+                  .where((e) => DateHelper.isSameDate(s.date, e.date))
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

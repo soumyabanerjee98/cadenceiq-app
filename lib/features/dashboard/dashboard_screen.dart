@@ -93,7 +93,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     _controller = AnimationController(vsync: this);
     tagline = getRandomGoalTagline();
     super.initState();
-    dashboard.refresh();
+    dashboard.refresh(hardRefresh: true);
   }
 
   @override
@@ -113,7 +113,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       (e) => DateHelper.isToday(e.date),
     );
 
-    if (user == null) return AppLoading();
+    if (user == null || dashboard.isLoading) return AppLoading();
 
     return RefreshIndicator(
       color: AppColors.primary,

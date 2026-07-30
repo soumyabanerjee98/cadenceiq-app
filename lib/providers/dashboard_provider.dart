@@ -33,10 +33,10 @@ class DashboardProvider extends ChangeNotifier {
     user = null;
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh({bool hardRefresh = false}) async {
     final activity = rootNavigatorKey.currentContext!.read<ActivityProvider>();
     final goal = rootNavigatorKey.currentContext!.read<GoalProvider>();
-    _isLoading = true;
+    if (hardRefresh) _isLoading = true;
     notifyListeners();
     await getProfile();
     await activity.load();
