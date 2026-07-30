@@ -1,4 +1,3 @@
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
 import 'package:cadenceiq_app/core/utils/snackbar.dart';
 import 'package:cadenceiq_app/core/widgets/floating_action_button.dart';
 import 'package:cadenceiq_app/features/goals/create_goal_screen.dart';
