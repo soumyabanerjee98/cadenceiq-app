@@ -76,6 +76,35 @@ class GoalDetails extends StatelessWidget {
   }
 }
 
+class _StatusChip extends StatelessWidget {
+  const _StatusChip({required this.status});
+  final GoalStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, color) = switch (status) {
+      GoalStatus.ontrack => ('On Track', AppColors.success),
+      GoalStatus.overtrained => ('Completed', AppColors.warning),
+      GoalStatus.undertrained => ('Upcoming', AppColors.info),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
 class _InfoCard extends StatelessWidget {
   const _InfoCard({required this.goal});
   final Goal goal;
@@ -88,7 +117,13 @@ class _InfoCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(goal.title, style: Theme.of(context).textTheme.titleLarge),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(goal.title, style: Theme.of(context).textTheme.titleLarge),
+                _StatusChip(status: goal.status),
+              ],
+            ),
             const SizedBox(height: 16),
             Text.rich(
               TextSpan(

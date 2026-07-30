@@ -1,3 +1,4 @@
+import 'package:cadenceiq_app/models/goal.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
@@ -8,6 +9,7 @@ class ProgressCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.progress,
+    required this.status,
     this.subtitle,
     this.daysRemaining,
     this.onTap,
@@ -15,6 +17,7 @@ class ProgressCard extends StatelessWidget {
 
   final String title;
   final double progress;
+  final GoalStatus status;
   final String? subtitle;
   final int? daysRemaining;
   final VoidCallback? onTap;
@@ -42,16 +45,27 @@ class ProgressCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(Icons.flag, color: AppColors.primary, size: 20),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Current Goal',
-                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.flag,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Current Goal',
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                    ],
                   ),
+                  _StatusChip(status: status),
                 ],
               ),
               const SizedBox(height: 12),
@@ -104,6 +118,35 @@ class ProgressCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusChip extends StatelessWidget {
+  const _StatusChip({required this.status});
+  final GoalStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final (label, color) = switch (status) {
+      GoalStatus.ontrack => ('On Track', AppColors.success),
+      GoalStatus.overtrained => ('Completed', AppColors.warning),
+      GoalStatus.undertrained => ('Upcoming', AppColors.info),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

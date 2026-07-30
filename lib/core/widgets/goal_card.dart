@@ -33,7 +33,7 @@ class GoalCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  _StatusChip(status: goal.status),
+                  _StatusChip(completed: goal.isCompleted),
                 ],
               ),
               const SizedBox(height: 8),
@@ -87,15 +87,14 @@ class GoalCard extends StatelessWidget {
 }
 
 class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.status});
-  final GoalStatus status;
+  const _StatusChip({required this.completed});
+  final bool completed;
 
   @override
   Widget build(BuildContext context) {
-    final (label, color) = switch (status) {
-      GoalStatus.ontrack => ('On Track', AppColors.success),
-      GoalStatus.overtrained => ('Completed', AppColors.warning),
-      GoalStatus.undertrained => ('Upcoming', AppColors.info),
+    final (label, color) = switch (completed) {
+      true => ('Complete', AppColors.success),
+      false => ('Incomplete', AppColors.error),
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

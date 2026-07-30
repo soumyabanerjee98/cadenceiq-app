@@ -273,6 +273,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     progress: double.parse(
                       (goal.activeGoal?.completion).toString(),
                     ),
+                    status: goal.activeGoal!.status,
                     daysRemaining: goal.activeGoal?.daysRemaining,
                     onTap: () => context.push('/goals/${goal.activeGoal?.id}'),
                   ),
