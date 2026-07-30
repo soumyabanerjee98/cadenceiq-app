@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:cadenceiq_app/core/widgets/ai_action_button.dart';
+import 'package:cadenceiq_app/core/widgets/ai_insight_card.dart';
 import 'package:cadenceiq_app/core/widgets/warning_card.dart';
 import 'package:collection/collection.dart';
 
@@ -112,6 +114,11 @@ class _DashboardScreenState extends State<DashboardScreen>
     final Plan? session = goal.activeGoal?.plans.firstWhereOrNull(
       (e) => DateHelper.isToday(e.date),
     );
+    final int todayActivityCount =
+        goal.activeGoal?.activities
+            .where((e) => DateHelper.isToday(e.date))
+            .length ??
+        0;
 
     if (user == null || dashboard.isLoading) return AppLoading();
 
@@ -386,6 +393,31 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ),
                       ),
                     ),
+                    if (session.insight != null)
+                      AiInsightCard(
+                        title: "Daily Insight",
+                        child: Text(
+                          session.insight!.commentary,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                height: 1.6,
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
+                      ),
+                    if (todayActivityCount > 0)
+                      Row(
+                        children: [
+                          AiActionButton(
+                            loading: goal.isDailyInsightLoading,
+                            onPressed: () =>
+                                goal.generateDailyInsight(session.date),
+                            label: session.insight != null
+                                ? "Re-generate Daily Insight"
+                                : "Generate Daily Insight",
+                          ),
+                        ],
+                      ),
                   ],
                 ] else ...[
                   Lottie.asset(

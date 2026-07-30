@@ -97,4 +97,20 @@ class GoalRepository {
       );
     }
   }
+
+  Future<ApiResponse> generateDailyInsight({required DateTime date}) async {
+    try {
+      Map<String, dynamic> payload = {
+        "date": date.toIso8601String().split("T")[0],
+      };
+      final res = await dio.post(ApiUrl.generateDailyInsight, data: payload);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(errorMessage: dio.extractError(dioErr)),
+      );
+    }
+  }
 }

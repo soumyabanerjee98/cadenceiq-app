@@ -1,5 +1,7 @@
 import 'package:cadenceiq_app/core/utils/date.dart';
 import 'package:cadenceiq_app/core/widgets/activity_card.dart';
+import 'package:cadenceiq_app/core/widgets/ai_action_button.dart';
+import 'package:cadenceiq_app/core/widgets/ai_insight_card.dart';
 import 'package:cadenceiq_app/models/activity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -300,6 +302,7 @@ class _SessionTile extends StatefulWidget {
 
 class _SessionTileState extends State<_SessionTile>
     with SingleTickerProviderStateMixin {
+  late GoalProvider goal;
   bool expanded = false;
 
   IconData get _statusIcon {
@@ -343,7 +346,14 @@ class _SessionTileState extends State<_SessionTile>
   }
 
   @override
+  void initState() {
+    goal = context.read<GoalProvider>();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    goal = context.watch<GoalProvider>();
     final actualLoad = widget.activities.fold<num>(
       0,
       (sum, e) => sum + e.trainingLoad,
@@ -519,6 +529,30 @@ class _SessionTileState extends State<_SessionTile>
                         ...widget.activities.map(
                           (activity) => ActivityCard(activity: activity),
                         ),
+                      if (widget.plan.insight != null)
+                        AiInsightCard(
+                          title: "Daily Insight",
+                          child: Text(
+                            widget.plan.insight!.commentary,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  height: 1.6,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                        ),
+                      Row(
+                        children: [
+                          AiActionButton(
+                            loading: goal.isDailyInsightLoading,
+                            onPressed: () =>
+                                goal.generateDailyInsight(widget.plan.date),
+                            label: widget.plan.insight != null
+                                ? "Re-generate Daily Insight"
+                                : "Generate Daily Insight",
+                          ),
+                        ],
+                      ),
                     ],
                   ],
                 ],

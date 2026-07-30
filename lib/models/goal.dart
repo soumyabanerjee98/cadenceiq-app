@@ -177,6 +177,19 @@ class TrainingTarget {
   }
 }
 
+class DailyInsight {
+  final String commentary;
+  const DailyInsight({required this.commentary});
+
+  factory DailyInsight.fromJson(Map<String, dynamic> json) {
+    return DailyInsight(commentary: json["commentary"]);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {"commentary": commentary};
+  }
+}
+
 class Plan {
   const Plan({
     required this.id,
@@ -189,6 +202,7 @@ class Plan {
     required this.targetDistance,
     required this.targetDuration,
     required this.completed,
+    this.insight,
     this.completedAt,
     required this.actualLoad,
     required this.createdAt,
@@ -204,6 +218,7 @@ class Plan {
   final num targetDistance; // km
   final Duration targetDuration; // minutes
   final bool completed;
+  final DailyInsight? insight;
   final DateTime? completedAt;
   final num? actualLoad;
   final DateTime createdAt;
@@ -220,6 +235,9 @@ class Plan {
       targetDistance: json["targetDistance"],
       targetDuration: Duration(minutes: json["targetDuration"]),
       completed: json["completed"],
+      insight: json['insight'] != null
+          ? DailyInsight.fromJson(json['insight'])
+          : null,
       completedAt: json["completedAt"] != null
           ? DateTime.parse(json["completedAt"])
           : null,

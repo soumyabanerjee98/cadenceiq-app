@@ -16,6 +16,7 @@ class GoalProvider extends ChangeNotifier {
   bool _isGenerating = false;
   bool _isLoading = false;
   bool _isPlanInsightLoading = false;
+  bool _isDailyInsightLoading = false;
   String? _errorMessage;
   TrainingTarget? _target;
   PlanInsight? _insight;
@@ -25,6 +26,7 @@ class GoalProvider extends ChangeNotifier {
   bool get isGenerating => _isGenerating;
   bool get isLoading => _isLoading;
   bool get isPlanInsightLoading => _isPlanInsightLoading;
+  bool get isDailyInsightLoading => _isDailyInsightLoading;
   String? get errorMessage => _errorMessage;
   Goal? get activeGoal => _active;
   TrainingTarget? get target => _target;
@@ -49,6 +51,7 @@ class GoalProvider extends ChangeNotifier {
     _isGenerating = false;
     _isLoading = false;
     _isPlanInsightLoading = false;
+    _isDailyInsightLoading = false;
     _errorMessage = null;
     _active = null;
     _target = null;
@@ -193,6 +196,32 @@ class GoalProvider extends ChangeNotifier {
       }
     } finally {
       _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> generateDailyInsight(DateTime date) async {
+    _isDailyInsightLoading = false;
+    notifyListeners();
+    try {
+      _isDailyInsightLoading = true;
+      final res = await _repository.generateDailyInsight(date: date);
+      if (res.response != null) {
+        await load();
+        notifyListeners();
+        return true;
+      } else {
+        _errorMessage = res.error?.errorMessage;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _isDailyInsightLoading = false;
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    } finally {
+      _isDailyInsightLoading = false;
       notifyListeners();
     }
   }
