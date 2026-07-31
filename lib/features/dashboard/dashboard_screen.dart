@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:cadenceiq/core/widgets/ai_action_button.dart';
 import 'package:cadenceiq/core/widgets/ai_insight_card.dart';
 import 'package:cadenceiq/core/widgets/warning_card.dart';
+import 'package:cadenceiq/models/activity.dart';
 import 'package:collection/collection.dart';
 
 import 'package:cadenceiq/core/assets/assets.dart';
@@ -114,11 +115,12 @@ class _DashboardScreenState extends State<DashboardScreen>
     final Plan? session = goal.activeGoal?.plans.firstWhereOrNull(
       (e) => DateHelper.isToday(e.date),
     );
-    final int todayActivityCount =
+
+    final List<Activity> todayActivities =
         goal.activeGoal?.activities
             .where((e) => DateHelper.isToday(e.date))
-            .length ??
-        0;
+            .toList() ??
+        [];
 
     if (user == null || dashboard.isLoading) return AppLoading();
 
@@ -329,73 +331,119 @@ class _DashboardScreenState extends State<DashboardScreen>
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: LayoutBuilder(
-                          builder: (context, constraints) => Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          builder: (context, constraints) => Column(
                             children: [
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      color: planColor(
-                                        session.type,
-                                      ).withOpacity(0.12),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Icon(
-                                      planIcon(session.type),
-                                      color: planColor(session.type),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  Row(
                                     children: [
-                                      SizedBox(
-                                        width: constraints.maxWidth * 0.7,
-                                        child: Text(
-                                          session.title,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                            color: planColor(session.type),
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: planColor(
+                                            session.type,
+                                          ).withOpacity(0.12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
                                           ),
+                                        ),
+                                        child: Icon(
+                                          planIcon(session.type),
+                                          color: planColor(session.type),
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      if (session.type != PlanType.rest)
-                                        Text(
-                                          '${Formatters.distanceKm(double.parse(session.targetDistance.toString()), imperial: settings.useImperial)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
-                                          style: const TextStyle(
-                                            color: AppColors.textSecondary,
-                                            fontSize: 13,
+                                      const SizedBox(width: 16),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: constraints.maxWidth * 0.7,
+                                            child: Text(
+                                              session.title,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16,
+                                                color: planColor(session.type),
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                          const SizedBox(height: 4),
+                                          if (session.type != PlanType.rest)
+                                            Text(
+                                              '${Formatters.distanceKm(double.parse(session.targetDistance.toString()), imperial: settings.useImperial)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
+                                              style: const TextStyle(
+                                                color: AppColors.textSecondary,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
                                     ],
+                                  ),
+                                  CircleAvatar(
+                                    backgroundColor: session.completed
+                                        ? AppColors.success.withOpacity(0.15)
+                                        : !DateHelper.isPastToday(session.date)
+                                        ? AppColors.surfaceVariant
+                                        : AppColors.error.withOpacity(0.15),
+                                    child: Icon(
+                                      session.completed
+                                          ? Icons.check
+                                          : !DateHelper.isPastToday(
+                                              session.date,
+                                            )
+                                          ? Icons.schedule
+                                          : Icons.close,
+                                      color: session.completed
+                                          ? AppColors.success
+                                          : !DateHelper.isPastToday(
+                                              session.date,
+                                            )
+                                          ? AppColors.textTertiary
+                                          : AppColors.error,
+                                      size: 20,
+                                    ),
                                   ),
                                 ],
                               ),
-                              CircleAvatar(
-                                backgroundColor: session.completed
-                                    ? AppColors.success.withOpacity(0.15)
-                                    : !DateHelper.isPastToday(session.date)
-                                    ? AppColors.surfaceVariant
-                                    : AppColors.error.withOpacity(0.15),
-                                child: Icon(
-                                  session.completed
-                                      ? Icons.check
-                                      : !DateHelper.isPastToday(session.date)
-                                      ? Icons.schedule
-                                      : Icons.close,
-                                  color: session.completed
-                                      ? AppColors.success
-                                      : !DateHelper.isPastToday(session.date)
-                                      ? AppColors.textTertiary
-                                      : AppColors.error,
-                                  size: 20,
-                                ),
+                              LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final actualLoad = todayActivities.fold<num>(
+                                    0,
+                                    (sum, e) => sum + e.trainingLoad,
+                                  );
+                                  final completion =
+                                      (actualLoad / session.targetLoad)
+                                          .clamp(0.0, 1.0)
+                                          .toDouble();
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: 12),
+                                      LinearProgressIndicator(
+                                        value: completion,
+                                        minHeight: 6,
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: AppColors.info,
+                                        backgroundColor: AppColors.divider,
+                                      ),
+
+                                      const SizedBox(height: 6),
+
+                                      Text(
+                                        "${session.actualLoad?.toStringAsFixed(0)} / ${session.targetLoad} TSS",
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.labelSmall,
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -414,7 +462,8 @@ class _DashboardScreenState extends State<DashboardScreen>
                               ),
                         ),
                       ),
-                    if (todayActivityCount > 0 && session.type != PlanType.rest)
+                    if (todayActivities.isNotEmpty &&
+                        session.type != PlanType.rest)
                       Row(
                         children: [
                           AiActionButton(

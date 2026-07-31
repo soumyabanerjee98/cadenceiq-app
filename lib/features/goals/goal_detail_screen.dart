@@ -309,24 +309,27 @@ class _SessionTileState extends State<_SessionTile>
   );
 
   Color get _statusColor {
-    if (widget.plan.completed) {
-      return AppColors.success;
-    }
-
-    if (widget.plan.type == PlanType.rest &&
-        DateHelper.isPastToday(widget.plan.date)) {
-      return AppColors.success;
-    }
-
     if (_isFuture) {
       return AppColors.textTertiary;
     }
 
-    if (DateHelper.isPastToday(widget.plan.date)) {
-      return AppColors.error;
+    return planColor(widget.plan.type);
+  }
+
+  Widget get _completinMarker {
+    if (widget.plan.completed) {
+      return Icon(Icons.check, color: AppColors.success);
     }
 
-    return AppColors.textTertiary;
+    if (widget.plan.type == PlanType.rest &&
+        DateHelper.isPastToday(widget.plan.date)) {
+      return Icon(Icons.check, color: AppColors.success);
+    }
+    if (DateHelper.isPastToday(widget.plan.date)) {
+      return Icon(Icons.close, color: AppColors.error);
+    }
+
+    return SizedBox.shrink();
   }
 
   @override
@@ -370,9 +373,17 @@ class _SessionTileState extends State<_SessionTile>
           shape: const RoundedRectangleBorder(),
           collapsedShape: const RoundedRectangleBorder(),
 
-          leading: CircleAvatar(
-            backgroundColor: _statusColor.withValues(alpha: .12),
-            child: Icon(planIcon(widget.plan.type), color: _statusColor),
+          leading: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, right: 8.0),
+                child: CircleAvatar(
+                  backgroundColor: _statusColor.withValues(alpha: .12),
+                  child: Icon(planIcon(widget.plan.type), color: _statusColor),
+                ),
+              ),
+              Positioned(top: 0, right: 0, child: _completinMarker),
+            ],
           ),
           collapsedIconColor: AppColors.primary,
           title: Row(

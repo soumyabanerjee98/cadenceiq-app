@@ -65,6 +65,7 @@ class PlanInsightCard extends StatelessWidget {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             insight.summary,

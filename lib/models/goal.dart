@@ -19,7 +19,7 @@ enum PlanType {
 Color planColor(PlanType type) {
   switch (type) {
     case PlanType.rest:
-      return Colors.grey;
+      return Colors.blueGrey;
 
     case PlanType.recovery:
       return Colors.teal;
