@@ -1,4 +1,4 @@
-import 'package:cadenceiq_app/features/auth/otp_screen.dart';
+import 'package:cadenceiq/features/auth/otp_screen.dart';
 import 'package:intl/intl.dart';
 
 abstract final class Formatters {

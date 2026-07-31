@@ -1,27 +1,27 @@
-import 'package:cadenceiq_app/features/activities/sync_activities_list.dart';
-import 'package:cadenceiq_app/features/auth/oauth.dart';
-import 'package:cadenceiq_app/features/auth/otp_screen.dart';
-import 'package:cadenceiq_app/features/profile/update_profile_screen.dart';
-import 'package:cadenceiq_app/features/settings/strava_connect.dart';
+import 'package:cadenceiq/features/activities/sync_activities_list.dart';
+import 'package:cadenceiq/features/auth/oauth.dart';
+import 'package:cadenceiq/features/auth/otp_screen.dart';
+import 'package:cadenceiq/features/profile/update_profile_screen.dart';
+import 'package:cadenceiq/features/settings/strava_connect.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:cadenceiq_app/core/constants/route_paths.dart';
-import 'package:cadenceiq_app/features/activities/activities_list_screen.dart';
-import 'package:cadenceiq_app/features/activities/activity_detail_screen.dart';
-import 'package:cadenceiq_app/features/auth/login_screen.dart';
-import 'package:cadenceiq_app/features/auth/signup_screen.dart';
-import 'package:cadenceiq_app/features/dashboard/dashboard_screen.dart';
-import 'package:cadenceiq_app/features/goals/create_goal_screen.dart';
-import 'package:cadenceiq_app/features/goals/goal_detail_screen.dart';
-import 'package:cadenceiq_app/features/goals/goals_screen.dart';
-import 'package:cadenceiq_app/features/onboarding/onboarding_screen.dart';
-import 'package:cadenceiq_app/features/onboarding/splash_screen.dart';
-import 'package:cadenceiq_app/features/profile/profile_screen.dart';
-import 'package:cadenceiq_app/features/settings/settings_screen.dart';
-import 'package:cadenceiq_app/features/shell/main_shell.dart';
-import 'package:cadenceiq_app/features/summaries/summaries_list_screen.dart';
-import 'package:cadenceiq_app/features/summaries/summary_detail_screen.dart';
+import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/features/activities/activities_list_screen.dart';
+import 'package:cadenceiq/features/activities/activity_detail_screen.dart';
+import 'package:cadenceiq/features/auth/login_screen.dart';
+import 'package:cadenceiq/features/auth/signup_screen.dart';
+import 'package:cadenceiq/features/dashboard/dashboard_screen.dart';
+import 'package:cadenceiq/features/goals/create_goal_screen.dart';
+import 'package:cadenceiq/features/goals/goal_detail_screen.dart';
+import 'package:cadenceiq/features/goals/goals_screen.dart';
+import 'package:cadenceiq/features/onboarding/onboarding_screen.dart';
+import 'package:cadenceiq/features/onboarding/splash_screen.dart';
+import 'package:cadenceiq/features/profile/profile_screen.dart';
+import 'package:cadenceiq/features/settings/settings_screen.dart';
+import 'package:cadenceiq/features/shell/main_shell.dart';
+import 'package:cadenceiq/features/summaries/summaries_list_screen.dart';
+import 'package:cadenceiq/features/summaries/summary_detail_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 

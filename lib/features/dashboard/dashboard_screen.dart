@@ -1,34 +1,34 @@
 import 'dart:math';
-import 'package:cadenceiq_app/core/widgets/ai_action_button.dart';
-import 'package:cadenceiq_app/core/widgets/ai_insight_card.dart';
-import 'package:cadenceiq_app/core/widgets/warning_card.dart';
+import 'package:cadenceiq/core/widgets/ai_action_button.dart';
+import 'package:cadenceiq/core/widgets/ai_insight_card.dart';
+import 'package:cadenceiq/core/widgets/warning_card.dart';
 import 'package:collection/collection.dart';
 
-import 'package:cadenceiq_app/core/assets/assets.dart';
-import 'package:cadenceiq_app/core/utils/date.dart';
-import 'package:cadenceiq_app/core/utils/snackbar.dart';
-import 'package:cadenceiq_app/core/widgets/loading.dart';
-import 'package:cadenceiq_app/core/constants/app_strings.dart';
-import 'package:cadenceiq_app/core/widgets/primary_button.dart';
-import 'package:cadenceiq_app/features/goals/create_goal_screen.dart';
-import 'package:cadenceiq_app/models/goal.dart';
-import 'package:cadenceiq_app/providers/activity_provider.dart';
-import 'package:cadenceiq_app/providers/goal_provider.dart';
-import 'package:cadenceiq_app/services/repo/activity_repo.dart';
+import 'package:cadenceiq/core/assets/assets.dart';
+import 'package:cadenceiq/core/utils/date.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
+import 'package:cadenceiq/core/widgets/loading.dart';
+import 'package:cadenceiq/core/constants/app_strings.dart';
+import 'package:cadenceiq/core/widgets/primary_button.dart';
+import 'package:cadenceiq/features/goals/create_goal_screen.dart';
+import 'package:cadenceiq/models/goal.dart';
+import 'package:cadenceiq/providers/activity_provider.dart';
+import 'package:cadenceiq/providers/goal_provider.dart';
+import 'package:cadenceiq/services/repo/activity_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cadenceiq_app/core/constants/route_paths.dart';
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/utils/formatters.dart';
-import 'package:cadenceiq_app/core/utils/responsive.dart';
-import 'package:cadenceiq_app/core/widgets/chart_widgets.dart';
-import 'package:cadenceiq_app/core/widgets/metric_card.dart';
-import 'package:cadenceiq_app/core/widgets/progress_card.dart';
-import 'package:cadenceiq_app/providers/dashboard_provider.dart';
-import 'package:cadenceiq_app/providers/settings_provider.dart';
+import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/utils/formatters.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/widgets/chart_widgets.dart';
+import 'package:cadenceiq/core/widgets/metric_card.dart';
+import 'package:cadenceiq/core/widgets/progress_card.dart';
+import 'package:cadenceiq/providers/dashboard_provider.dart';
+import 'package:cadenceiq/providers/settings_provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:cadenceiq_app/models/goal_summary.dart';
+import 'package:cadenceiq/models/goal_summary.dart';
 
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
@@ -31,7 +31,10 @@ class SummaryCard extends StatelessWidget {
                       color: AppColors.primary.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.emoji_events, color: AppColors.primary),
+                    child: const Icon(
+                      Icons.emoji_events,
+                      color: AppColors.primary,
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -40,15 +43,13 @@ class SummaryCard extends StatelessWidget {
                       children: [
                         Text(
                           summary.goalTitle,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
                         ),
                         Text(
                           '${Formatters.shortDate(summary.startDate)} – ${Formatters.shortDate(summary.endDate)}',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: AppColors.textSecondary,
-                              ),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: AppColors.textSecondary),
                         ),
                       ],
                     ),
@@ -56,9 +57,9 @@ class SummaryCard extends StatelessWidget {
                   Text(
                     Formatters.percent(summary.completionPercent),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
-                        ),
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ],
               ),
@@ -75,9 +76,17 @@ class SummaryCard extends StatelessWidget {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  _Stat(label: 'Sessions', value: '${summary.completedSessions}/${summary.plannedSessions}'),
+                  _Stat(
+                    label: 'Sessions',
+                    value:
+                        '${summary.completedSessions}/${summary.plannedSessions}',
+                  ),
                   const SizedBox(width: 24),
-                  _Stat(label: 'CTL Gain', value: '+${(summary.ctlEnd - summary.ctlStart).toStringAsFixed(1)}'),
+                  _Stat(
+                    label: 'CTL Gain',
+                    value:
+                        '+${(summary.ctlEnd - summary.ctlStart).toStringAsFixed(1)}',
+                  ),
                   const SizedBox(width: 24),
                   _Stat(label: 'Badges', value: '${summary.badges.length}'),
                 ],

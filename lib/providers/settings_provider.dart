@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:cadenceiq_app/core/navigation/app_router.dart';
-import 'package:cadenceiq_app/services/repo/settings_repo.dart';
+import 'package:cadenceiq/core/navigation/app_router.dart';
+import 'package:cadenceiq/services/repo/settings_repo.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:go_router/go_router.dart';

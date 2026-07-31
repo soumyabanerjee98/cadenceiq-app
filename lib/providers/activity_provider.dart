@@ -1,8 +1,8 @@
-import 'package:cadenceiq_app/core/utils/debouncer.dart';
-import 'package:cadenceiq_app/services/repo/activity_repo.dart';
+import 'package:cadenceiq/core/utils/debouncer.dart';
+import 'package:cadenceiq/services/repo/activity_repo.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:cadenceiq_app/models/activity.dart';
+import 'package:cadenceiq/models/activity.dart';
 
 enum LoadState { initial, loading, loaded, error, empty, loadingMore }
 

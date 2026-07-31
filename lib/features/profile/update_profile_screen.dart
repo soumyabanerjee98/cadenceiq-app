@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:cadenceiq_app/core/widgets/number_picker.dart';
-import 'package:cadenceiq_app/core/widgets/text_form_field.dart';
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/utils/mediapicker.dart';
-import 'package:cadenceiq_app/core/utils/responsive.dart';
-import 'package:cadenceiq_app/core/utils/snackbar.dart';
-import 'package:cadenceiq_app/core/widgets/cadence_app_bar.dart';
-import 'package:cadenceiq_app/core/widgets/primary_button.dart';
-import 'package:cadenceiq_app/core/widgets/safe_page.dart';
-import 'package:cadenceiq_app/providers/dashboard_provider.dart';
-import 'package:cadenceiq_app/services/repo/auth_repo.dart';
+import 'package:cadenceiq/core/widgets/number_picker.dart';
+import 'package:cadenceiq/core/widgets/text_form_field.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/utils/mediapicker.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
+import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
+import 'package:cadenceiq/core/widgets/primary_button.dart';
+import 'package:cadenceiq/core/widgets/safe_page.dart';
+import 'package:cadenceiq/providers/dashboard_provider.dart';
+import 'package:cadenceiq/services/repo/auth_repo.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

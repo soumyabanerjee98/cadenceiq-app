@@ -1,6 +1,6 @@
-import 'package:cadenceiq_app/core/constants/api_url.dart';
-import 'package:cadenceiq_app/core/network/dio.dart';
-import 'package:cadenceiq_app/models/goal.dart';
+import 'package:cadenceiq/core/constants/api_url.dart';
+import 'package:cadenceiq/core/network/dio.dart';
+import 'package:cadenceiq/models/goal.dart';
 import 'package:dio/dio.dart';
 
 class GoalRepository {

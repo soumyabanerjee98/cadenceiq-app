@@ -1,4 +1,4 @@
-import 'package:cadenceiq_app/core/theme/app_theme.dart';
+import 'package:cadenceiq/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';

@@ -1,6 +1,6 @@
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/widgets/ai_insight_card.dart';
-import 'package:cadenceiq_app/models/goal.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/widgets/ai_insight_card.dart';
+import 'package:cadenceiq/models/goal.dart';
 import 'package:flutter/material.dart';
 
 class PlanInsightCard extends StatelessWidget {

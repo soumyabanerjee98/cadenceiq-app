@@ -1,17 +1,17 @@
-import 'package:cadenceiq_app/core/utils/snackbar.dart';
-import 'package:cadenceiq_app/core/widgets/floating_action_button.dart';
-import 'package:cadenceiq_app/features/goals/create_goal_screen.dart';
-import 'package:cadenceiq_app/features/goals/goal_detail_screen.dart';
-import 'package:cadenceiq_app/services/repo/activity_repo.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
+import 'package:cadenceiq/core/widgets/floating_action_button.dart';
+import 'package:cadenceiq/features/goals/create_goal_screen.dart';
+import 'package:cadenceiq/features/goals/goal_detail_screen.dart';
+import 'package:cadenceiq/services/repo/activity_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cadenceiq_app/core/constants/route_paths.dart';
-import 'package:cadenceiq_app/core/utils/responsive.dart';
-import 'package:cadenceiq_app/core/widgets/goal_card.dart';
-import 'package:cadenceiq_app/models/goal.dart';
-import 'package:cadenceiq_app/providers/goal_provider.dart';
+import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/widgets/goal_card.dart';
+import 'package:cadenceiq/models/goal.dart';
+import 'package:cadenceiq/providers/goal_provider.dart';
 
 class GoalsScreen extends StatefulWidget {
   const GoalsScreen({super.key});

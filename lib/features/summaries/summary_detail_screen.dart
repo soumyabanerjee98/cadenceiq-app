@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/utils/formatters.dart';
-import 'package:cadenceiq_app/core/utils/responsive.dart';
-import 'package:cadenceiq_app/core/widgets/cadence_app_bar.dart';
-import 'package:cadenceiq_app/core/widgets/metric_card.dart';
-import 'package:cadenceiq_app/models/goal_summary.dart';
-import 'package:cadenceiq_app/core/widgets/safe_page.dart';
-import 'package:cadenceiq_app/providers/summary_provider.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/utils/formatters.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
+import 'package:cadenceiq/core/widgets/metric_card.dart';
+import 'package:cadenceiq/models/goal_summary.dart';
+import 'package:cadenceiq/core/widgets/safe_page.dart';
+import 'package:cadenceiq/providers/summary_provider.dart';
 
 class SummaryDetailScreen extends StatelessWidget {
   const SummaryDetailScreen({super.key, required this.summaryId});
@@ -31,106 +31,129 @@ class SummaryDetailScreen extends StatelessWidget {
       appBar: CadenceAppBar(showBack: true, title: summary.goalTitle),
       body: SafePage(
         child: ListView(
-        padding: EdgeInsets.all(padding),
-        children: [
-          _OverviewHeader(summary: summary),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: MetricCard(
-                  label: 'Completion',
-                  value: Formatters.percent(summary.completionPercent),
-                  color: AppColors.primary,
+          padding: EdgeInsets.all(padding),
+          children: [
+            _OverviewHeader(summary: summary),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: MetricCard(
+                    label: 'Completion',
+                    value: Formatters.percent(summary.completionPercent),
+                    color: AppColors.primary,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: MetricCard(
+                    label: 'Sessions',
+                    value:
+                        '${summary.completedSessions}/${summary.plannedSessions}',
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Training Load',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _CompareRow(
+                      label: 'Planned Load',
+                      value: Formatters.load(summary.plannedLoad),
+                    ),
+                    const Divider(height: 24),
+                    _CompareRow(
+                      label: 'Actual Load',
+                      value: Formatters.load(summary.actualLoad),
+                      highlight: true,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      '${((summary.actualLoad / summary.plannedLoad) * 100).round()}% of planned volume',
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: MetricCard(
-                  label: 'Sessions',
-                  value: '${summary.completedSessions}/${summary.plannedSessions}',
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Fitness Progression',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _CtlStat(label: 'Start CTL', value: summary.ctlStart),
+                    const Icon(Icons.arrow_forward, color: AppColors.primary),
+                    _CtlStat(label: 'End CTL', value: summary.ctlEnd),
+                  ],
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Training Load',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 12),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  _CompareRow(
-                    label: 'Planned Load',
-                    value: Formatters.load(summary.plannedLoad),
-                  ),
-                  const Divider(height: 24),
-                  _CompareRow(
-                    label: 'Actual Load',
-                    value: Formatters.load(summary.actualLoad),
-                    highlight: true,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    '${((summary.actualLoad / summary.plannedLoad) * 100).round()}% of planned volume',
-                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
-                  ),
-                ],
-              ),
             ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'Fitness Progression',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 12),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _CtlStat(label: 'Start CTL', value: summary.ctlStart),
-                  const Icon(Icons.arrow_forward, color: AppColors.primary),
-                  _CtlStat(label: 'End CTL', value: summary.ctlEnd),
-                ],
-              ),
+            const SizedBox(height: 20),
+            Text(
+              'AI Insights',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
             ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            'AI Insights',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 12),
-          ...summary.insights.map((insight) => Card(
+            const SizedBox(height: 12),
+            ...summary.insights.map(
+              (insight) => Card(
                 margin: const EdgeInsets.only(bottom: 8),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.auto_awesome, color: AppColors.primary, size: 20),
+                      const Icon(
+                        Icons.auto_awesome,
+                        color: AppColors.primary,
+                        size: 20,
+                      ),
                       const SizedBox(width: 12),
-                      Expanded(child: Text(insight, style: const TextStyle(height: 1.5))),
+                      Expanded(
+                        child: Text(
+                          insight,
+                          style: const TextStyle(height: 1.5),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              )),
-          const SizedBox(height: 20),
-          Text(
-            'Achievements',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 12),
-          ...summary.badges.map((b) => _BadgeCard(badge: b)),
-          const SizedBox(height: 32),
-        ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Achievements',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            ...summary.badges.map((b) => _BadgeCard(badge: b)),
+            const SizedBox(height: 32),
+          ],
         ),
       ),
     );
@@ -160,7 +183,11 @@ class _OverviewHeader extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.emoji_events, color: AppColors.primary, size: 32),
+              const Icon(
+                Icons.emoji_events,
+                color: AppColors.primary,
+                size: 32,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -168,11 +195,17 @@ class _OverviewHeader extends StatelessWidget {
                   children: [
                     Text(
                       summary.goalTitle,
-                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 18),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18,
+                      ),
                     ),
                     Text(
                       '${Formatters.date(summary.startDate)} – ${Formatters.date(summary.endDate)}',
-                      style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                 ),
@@ -231,9 +264,16 @@ class _CtlStat extends StatelessWidget {
       children: [
         Text(
           value.toStringAsFixed(1),
-          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 28, color: AppColors.primary),
+          style: const TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 28,
+            color: AppColors.primary,
+          ),
         ),
-        Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+        Text(
+          label,
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+        ),
       ],
     );
   }
@@ -252,7 +292,10 @@ class _BadgeCard extends StatelessWidget {
           backgroundColor: AppColors.primary.withOpacity(0.12),
           child: const Icon(Icons.emoji_events, color: AppColors.primary),
         ),
-        title: Text(badge.title, style: const TextStyle(fontWeight: FontWeight.w600)),
+        title: Text(
+          badge.title,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
         subtitle: Text(badge.description),
       ),
     );

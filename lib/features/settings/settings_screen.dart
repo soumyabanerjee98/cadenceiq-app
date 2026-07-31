@@ -1,17 +1,17 @@
-import 'package:cadenceiq_app/core/widgets/delete_account.dart';
-import 'package:cadenceiq_app/core/widgets/dialog.dart';
-import 'package:cadenceiq_app/core/widgets/primary_button.dart';
-import 'package:cadenceiq_app/providers/dashboard_provider.dart';
+import 'package:cadenceiq/core/widgets/delete_account.dart';
+import 'package:cadenceiq/core/widgets/dialog.dart';
+import 'package:cadenceiq/core/widgets/primary_button.dart';
+import 'package:cadenceiq/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cadenceiq_app/core/constants/route_paths.dart';
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/utils/responsive.dart';
-import 'package:cadenceiq_app/providers/auth_provider.dart';
-import 'package:cadenceiq_app/providers/settings_provider.dart';
+import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/providers/auth_provider.dart';
+import 'package:cadenceiq/providers/settings_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});

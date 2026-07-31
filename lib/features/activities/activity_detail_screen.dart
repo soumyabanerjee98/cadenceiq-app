@@ -1,19 +1,19 @@
-import 'package:cadenceiq_app/core/widgets/activity_map.dart';
-import 'package:cadenceiq_app/core/widgets/primary_button.dart';
-import 'package:cadenceiq_app/core/widgets/warning_card.dart';
-import 'package:cadenceiq_app/models/activity.dart';
-import 'package:cadenceiq_app/services/repo/activity_repo.dart';
+import 'package:cadenceiq/core/widgets/activity_map.dart';
+import 'package:cadenceiq/core/widgets/primary_button.dart';
+import 'package:cadenceiq/core/widgets/warning_card.dart';
+import 'package:cadenceiq/models/activity.dart';
+import 'package:cadenceiq/services/repo/activity_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/utils/formatters.dart';
-import 'package:cadenceiq_app/core/utils/responsive.dart';
-import 'package:cadenceiq_app/core/widgets/metric_card.dart';
-import 'package:cadenceiq_app/providers/activity_provider.dart';
-import 'package:cadenceiq_app/core/widgets/safe_page.dart';
-import 'package:cadenceiq_app/providers/settings_provider.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/utils/formatters.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/widgets/metric_card.dart';
+import 'package:cadenceiq/providers/activity_provider.dart';
+import 'package:cadenceiq/core/widgets/safe_page.dart';
+import 'package:cadenceiq/providers/settings_provider.dart';
 
 class ActivityDetailScreen extends StatefulWidget {
   const ActivityDetailScreen({super.key, required this.activityId});

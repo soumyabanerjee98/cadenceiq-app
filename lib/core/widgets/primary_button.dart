@@ -1,4 +1,4 @@
-import 'package:cadenceiq_app/core/assets/assets.dart';
+import 'package:cadenceiq/core/assets/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:lottie/lottie.dart';

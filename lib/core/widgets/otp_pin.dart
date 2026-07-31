@@ -1,5 +1,5 @@
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/theme/app_theme.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 

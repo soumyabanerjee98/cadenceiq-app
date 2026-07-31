@@ -1,20 +1,20 @@
-import 'package:cadenceiq_app/core/constants/route_paths.dart';
-import 'package:cadenceiq_app/core/utils/snackbar.dart';
-import 'package:cadenceiq_app/core/widgets/ai_action_button.dart';
-import 'package:cadenceiq_app/core/widgets/plan_insight_card.dart';
-import 'package:cadenceiq_app/core/widgets/text_form_field.dart';
-import 'package:cadenceiq_app/core/widgets/training_calendar.dart';
+import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
+import 'package:cadenceiq/core/widgets/ai_action_button.dart';
+import 'package:cadenceiq/core/widgets/plan_insight_card.dart';
+import 'package:cadenceiq/core/widgets/text_form_field.dart';
+import 'package:cadenceiq/core/widgets/training_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/utils/responsive.dart';
-import 'package:cadenceiq_app/core/widgets/cadence_app_bar.dart';
-import 'package:cadenceiq_app/core/widgets/primary_button.dart';
-import 'package:cadenceiq_app/core/widgets/safe_page.dart';
-import 'package:cadenceiq_app/models/goal.dart';
-import 'package:cadenceiq_app/providers/goal_provider.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
+import 'package:cadenceiq/core/widgets/primary_button.dart';
+import 'package:cadenceiq/core/widgets/safe_page.dart';
+import 'package:cadenceiq/models/goal.dart';
+import 'package:cadenceiq/providers/goal_provider.dart';
 
 class CreateGoalScreenArgs {
   const CreateGoalScreenArgs({required this.experienceLevel});

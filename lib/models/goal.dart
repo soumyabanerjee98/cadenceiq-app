@@ -1,5 +1,5 @@
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/models/activity.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/models/activity.dart';
 import 'package:flutter/material.dart';
 
 enum ExperienceLevel { beginner, intermediate, advanced, elite }

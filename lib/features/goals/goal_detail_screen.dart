@@ -1,17 +1,17 @@
-import 'package:cadenceiq_app/core/utils/date.dart';
-import 'package:cadenceiq_app/core/widgets/activity_card.dart';
-import 'package:cadenceiq_app/core/widgets/ai_insight_card.dart';
-import 'package:cadenceiq_app/models/activity.dart';
+import 'package:cadenceiq/core/utils/date.dart';
+import 'package:cadenceiq/core/widgets/activity_card.dart';
+import 'package:cadenceiq/core/widgets/ai_insight_card.dart';
+import 'package:cadenceiq/models/activity.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/utils/formatters.dart';
-import 'package:cadenceiq_app/core/utils/responsive.dart';
-import 'package:cadenceiq_app/core/widgets/cadence_app_bar.dart';
-import 'package:cadenceiq_app/core/widgets/safe_page.dart';
-import 'package:cadenceiq_app/models/goal.dart';
-import 'package:cadenceiq_app/providers/goal_provider.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/utils/formatters.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
+import 'package:cadenceiq/core/widgets/safe_page.dart';
+import 'package:cadenceiq/models/goal.dart';
+import 'package:cadenceiq/providers/goal_provider.dart';
 
 class GoalDetailScreen extends StatelessWidget {
   const GoalDetailScreen({super.key, required this.goalId});

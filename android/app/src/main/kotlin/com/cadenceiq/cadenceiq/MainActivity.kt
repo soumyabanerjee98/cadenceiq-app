@@ -1,4 +1,4 @@
-package com.cadenceiq.cadenceiq_app
+package com.cadenceiq.cadenceiq
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,5 +1,5 @@
-import 'package:cadenceiq_app/core/env/env.dart';
-import 'package:cadenceiq_app/core/utils/map.dart';
+import 'package:cadenceiq/core/env/env.dart';
+import 'package:cadenceiq/core/utils/map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
@@ -30,7 +30,7 @@ class ActivityMap extends StatelessWidget {
         TileLayer(
           urlTemplate:
               'https://tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey=${Env.mapApiKey}',
-          userAgentPackageName: 'com.cadenceiq.cadenceiq_app',
+          userAgentPackageName: 'com.cadenceiq.cadenceiq',
         ),
 
         PolylineLayer(

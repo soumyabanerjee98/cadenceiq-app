@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cadenceiq_app/core/utils/responsive.dart';
-import 'package:cadenceiq_app/core/widgets/state_widgets.dart';
-import 'package:cadenceiq_app/core/widgets/summary_card.dart';
-import 'package:cadenceiq_app/providers/summary_provider.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/widgets/state_widgets.dart';
+import 'package:cadenceiq/core/widgets/summary_card.dart';
+import 'package:cadenceiq/providers/summary_provider.dart';
 
 class SummariesListScreen extends StatelessWidget {
   const SummariesListScreen({super.key});
@@ -27,15 +27,15 @@ class SummariesListScreen extends StatelessWidget {
                   Text(
                     'Goal Summaries',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     'Review your completed training blocks',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: const Color(0xFF6B6B6B),
-                        ),
+                      color: const Color(0xFF6B6B6B),
+                    ),
                   ),
                 ],
               ),
@@ -53,16 +53,13 @@ class SummariesListScreen extends StatelessWidget {
             SliverPadding(
               padding: EdgeInsets.all(padding),
               sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, i) {
-                    final summary = summaries[i];
-                    return SummaryCard(
-                      summary: summary,
-                      onTap: () => context.push('/summaries/${summary.id}'),
-                    );
-                  },
-                  childCount: summaries.length,
-                ),
+                delegate: SliverChildBuilderDelegate((context, i) {
+                  final summary = summaries[i];
+                  return SummaryCard(
+                    summary: summary,
+                    onTap: () => context.push('/summaries/${summary.id}'),
+                  );
+                }, childCount: summaries.length),
               ),
             ),
         ],

@@ -1,4 +1,4 @@
-import 'package:cadenceiq_app/core/widgets/primary_button.dart';
+import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 
 class AppDialog {

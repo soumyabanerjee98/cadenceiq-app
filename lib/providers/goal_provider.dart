@@ -1,9 +1,9 @@
-import 'package:cadenceiq_app/core/navigation/app_router.dart';
-import 'package:cadenceiq_app/providers/dashboard_provider.dart';
-import 'package:cadenceiq_app/services/repo/goal_repo.dart';
+import 'package:cadenceiq/core/navigation/app_router.dart';
+import 'package:cadenceiq/providers/dashboard_provider.dart';
+import 'package:cadenceiq/services/repo/goal_repo.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:cadenceiq_app/models/goal.dart';
+import 'package:cadenceiq/models/goal.dart';
 import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
 

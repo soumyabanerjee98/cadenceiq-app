@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:cadenceiq_app/models/activity.dart';
+import 'package:cadenceiq/models/activity.dart';
 
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';

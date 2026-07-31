@@ -1,6 +1,6 @@
-import 'package:cadenceiq_app/core/constants/app_strings.dart';
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/utils/responsive.dart';
+import 'package:cadenceiq/core/constants/app_strings.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
 import 'package:flutter/material.dart';
 
 class AiInsightCard extends StatelessWidget {

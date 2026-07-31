@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:cadenceiq_app/core/constants/api_url.dart';
-import 'package:cadenceiq_app/core/network/api_interceptor.dart';
+import 'package:cadenceiq/core/constants/api_url.dart';
+import 'package:cadenceiq/core/network/api_interceptor.dart';
 import 'package:dio/dio.dart';
 
 class ServerError {

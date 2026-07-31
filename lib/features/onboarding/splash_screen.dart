@@ -1,12 +1,12 @@
-import 'package:cadenceiq_app/store/store.dart';
+import 'package:cadenceiq/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:cadenceiq_app/core/constants/app_strings.dart';
-import 'package:cadenceiq_app/core/constants/route_paths.dart';
-import 'package:cadenceiq_app/core/theme/app_colors.dart';
-import 'package:cadenceiq_app/core/widgets/cadence_app_bar.dart';
-import 'package:cadenceiq_app/core/widgets/safe_page.dart';
+import 'package:cadenceiq/core/constants/app_strings.dart';
+import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
+import 'package:cadenceiq/core/widgets/safe_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

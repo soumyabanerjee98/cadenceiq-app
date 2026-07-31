@@ -1,6 +1,6 @@
-import 'package:cadenceiq_app/models/activity.dart';
-import 'package:cadenceiq_app/models/goal_summary.dart';
-import 'package:cadenceiq_app/models/training_metrics.dart';
+import 'package:cadenceiq/models/activity.dart';
+import 'package:cadenceiq/models/goal_summary.dart';
+import 'package:cadenceiq/models/training_metrics.dart';
 
 abstract final class MockData {
   static final metrics = TrainingMetrics(

@@ -1,5 +1,5 @@
-import 'package:cadenceiq_app/models/goal_summary.dart';
-import 'package:cadenceiq_app/services/mock/mock_data.dart';
+import 'package:cadenceiq/models/goal_summary.dart';
+import 'package:cadenceiq/services/mock/mock_data.dart';
 
 class MockSummaryRepository {
   List<GoalSummary> getAll() => List.unmodifiable(MockData.summaries);

@@ -1,4 +1,4 @@
-import 'package:cadenceiq_app/providers/dashboard_provider.dart';
+import 'package:cadenceiq/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
