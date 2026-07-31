@@ -1,3 +1,5 @@
+import 'package:cadenceiq/models/goal.dart';
+import 'package:cadenceiq/providers/goal_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -5,14 +7,27 @@ import 'package:provider/provider.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
 import 'package:cadenceiq/core/widgets/state_widgets.dart';
 import 'package:cadenceiq/core/widgets/summary_card.dart';
-import 'package:cadenceiq/providers/summary_provider.dart';
 
-class SummariesListScreen extends StatelessWidget {
+class SummariesListScreen extends StatefulWidget {
   const SummariesListScreen({super.key});
 
   @override
+  State<SummariesListScreen> createState() => _SummariesListScreenState();
+}
+
+class _SummariesListScreenState extends State<SummariesListScreen> {
+  late GoalProvider goal;
+
+  @override
+  void initState() {
+    goal = context.read<GoalProvider>();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final summaries = context.watch<SummaryProvider>().summaries;
+    goal = context.watch<GoalProvider>();
+    final pastGoals = goal.pastGoals;
     final padding = Responsive.horizontalPadding(context);
 
     return Scaffold(
@@ -41,7 +56,7 @@ class SummariesListScreen extends StatelessWidget {
               ),
             ),
           ),
-          if (summaries.isEmpty)
+          if (pastGoals.isEmpty)
             const SliverFillRemaining(
               child: EmptyStateWidget(
                 title: 'No summaries yet',
@@ -54,12 +69,12 @@ class SummariesListScreen extends StatelessWidget {
               padding: EdgeInsets.all(padding),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate((context, i) {
-                  final summary = summaries[i];
+                  final Goal summary = pastGoals[i];
                   return SummaryCard(
                     summary: summary,
                     onTap: () => context.push('/summaries/${summary.id}'),
                   );
-                }, childCount: summaries.length),
+                }, childCount: pastGoals.length),
               ),
             ),
         ],

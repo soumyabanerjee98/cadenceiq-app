@@ -29,6 +29,8 @@ abstract final class ApiUrl {
   static const getCurrentGoal = '/goal/current-goal';
   static const getPastGoals = '/goal/past-goals';
   static const generateDailyInsight = '/insight/create-daily-insight';
+  static const getSummary = '/summary/get-summary';
+  static const getAISummary = '/summary/get-summary-insight';
 
   // settings
   static const connectStrava = '/strava/connect';

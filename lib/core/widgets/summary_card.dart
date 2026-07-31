@@ -1,6 +1,5 @@
+import 'package:cadenceiq/models/goal.dart';
 import 'package:flutter/material.dart';
-
-import 'package:cadenceiq/models/goal_summary.dart';
 
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
@@ -8,8 +7,18 @@ import '../utils/formatters.dart';
 class SummaryCard extends StatelessWidget {
   const SummaryCard({super.key, required this.summary, this.onTap});
 
-  final GoalSummary summary;
+  final Goal summary;
   final VoidCallback? onTap;
+
+  Color get _badgeColor {
+    if (summary.isCompleted) return AppColors.success;
+    return AppColors.error;
+  }
+
+  IconData get _badgeIcon {
+    if (summary.isCompleted) return Icons.check;
+    return Icons.close;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +37,10 @@ class SummaryCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.12),
+                      color: _badgeColor.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(
-                      Icons.emoji_events,
-                      color: AppColors.primary,
-                    ),
+                    child: Icon(_badgeIcon, color: _badgeColor),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -42,7 +48,7 @@ class SummaryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          summary.goalTitle,
+                          summary.title,
                           style: Theme.of(context).textTheme.titleMedium
                               ?.copyWith(fontWeight: FontWeight.w600),
                         ),
@@ -55,7 +61,7 @@ class SummaryCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    Formatters.percent(summary.completionPercent),
+                    Formatters.percent(summary.completion),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: AppColors.primary,
@@ -67,7 +73,7 @@ class SummaryCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
-                  value: summary.completionPercent.clamp(0, 1),
+                  value: summary.completion.toDouble().clamp(0, 1),
                   minHeight: 6,
                   backgroundColor: AppColors.surfaceVariant,
                   valueColor: const AlwaysStoppedAnimation(AppColors.primary),
@@ -79,16 +85,19 @@ class SummaryCard extends StatelessWidget {
                   _Stat(
                     label: 'Sessions',
                     value:
-                        '${summary.completedSessions}/${summary.plannedSessions}',
+                        '${summary.plans.where((t) => t.completed || t.type == PlanType.rest).length}/${summary.plans.length}',
                   ),
                   const SizedBox(width: 24),
                   _Stat(
                     label: 'CTL Gain',
                     value:
-                        '+${(summary.ctlEnd - summary.ctlStart).toStringAsFixed(1)}',
+                        '${summary.fitness - summary.initialFitness > 0 ? "+" : ""}${(summary.fitness - summary.initialFitness).toStringAsFixed(1)}',
                   ),
                   const SizedBox(width: 24),
-                  _Stat(label: 'Badges', value: '${summary.badges.length}'),
+                  _Stat(
+                    label: 'Experience Level',
+                    value: summary.experienceLabel,
+                  ),
                 ],
               ),
             ],

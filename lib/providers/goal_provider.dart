@@ -1,4 +1,5 @@
 import 'package:cadenceiq/core/navigation/app_router.dart';
+import 'package:cadenceiq/models/goal_summary.dart';
 import 'package:cadenceiq/providers/dashboard_provider.dart';
 import 'package:cadenceiq/services/repo/goal_repo.dart';
 import 'package:flutter/foundation.dart';
@@ -223,6 +224,30 @@ class GoalProvider extends ChangeNotifier {
     } finally {
       _isDailyInsightLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<GoalSummary?> getSummary(String goalId) async {
+    try {
+      final res = await _repository.getSummary(goalId: goalId);
+      if (res.response != null) {
+        return GoalSummary.fromJson(res.response);
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<bool> getAISummary(String summaryId) async {
+    try {
+      final res = await _repository.getAISummary(summaryId: summaryId);
+      if (res.response != null) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
     }
   }
 }

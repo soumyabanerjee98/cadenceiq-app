@@ -283,6 +283,9 @@ class Goal {
     required this.fatigue,
     required this.fitness,
     required this.readiness,
+    required this.initialFatigue,
+    required this.initialFitness,
+    required this.initialReadiness,
     required this.status,
     required this.isActive,
     required this.isCompleted,
@@ -305,6 +308,9 @@ class Goal {
   final num fatigue;
   final num fitness;
   final num readiness;
+  final num initialFatigue;
+  final num initialFitness;
+  final num initialReadiness;
   final GoalStatus status;
   final bool isActive;
   final bool isCompleted;
@@ -330,6 +336,9 @@ class Goal {
       fatigue: json["fatigue"],
       fitness: json["fitness"],
       readiness: json["readiness"],
+      initialFatigue: json["initialFatigue"],
+      initialFitness: json["initialFitness"],
+      initialReadiness: json["initialReadiness"],
       status: GoalStatus.values.firstWhere((e) => e.name == json["status"]),
       isActive: json["isActive"],
       isCompleted: json["isCompleted"],

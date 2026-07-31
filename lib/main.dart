@@ -14,7 +14,6 @@ import 'package:cadenceiq/providers/auth_provider.dart';
 import 'package:cadenceiq/providers/dashboard_provider.dart';
 import 'package:cadenceiq/providers/goal_provider.dart';
 import 'package:cadenceiq/providers/settings_provider.dart';
-import 'package:cadenceiq/providers/summary_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +46,6 @@ class CadenceIQApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => DashboardProvider()),
           ChangeNotifierProvider(create: (_) => ActivityProvider()),
           ChangeNotifierProvider(create: (_) => GoalProvider()),
-          ChangeNotifierProvider(create: (_) => SummaryProvider()),
         ],
         child: Consumer<SettingsProvider>(
           builder: (context, settings, _) {
