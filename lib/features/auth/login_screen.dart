@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:cadenceiq/core/assets/assets.dart';
 import 'package:cadenceiq/core/widgets/text_form_field.dart';
 import 'package:cadenceiq/store/store.dart';
 import 'package:flutter/material.dart';
@@ -145,42 +142,42 @@ class _LoginScreenState extends State<LoginScreen> {
                     isLoading: auth.state == AuthState.loading,
                     onPressed: _login,
                   ),
-                  const SizedBox(height: 24),
-                  Row(
-                    children: [
-                      const Expanded(child: Divider()),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          AppStrings.continueWith,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                      const Expanded(child: Divider()),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  SocialAuthButton(
-                    label: 'Continue with Google',
-                    icon: AppImages.googleIcon,
-                    onPressed: () {},
-                  ),
-                  if (Platform.isIOS == true) ...[
-                    const SizedBox(height: 10),
-                    SocialAuthButton(
-                      label: 'Continue with Apple',
-                      icon: ThemeMode.system.name == 'light'
-                          ? AppImages.appleIconDark
-                          : AppImages.appleIcon,
-                      onPressed: () {},
-                    ),
-                  ],
-                  const SizedBox(height: 10),
-                  SocialAuthButton(
-                    label: 'Continue with Facebook',
-                    icon: AppImages.facebookIcon,
-                    onPressed: () {},
-                  ),
+                  // const SizedBox(height: 24),
+                  // Row(
+                  //   children: [
+                  //     const Expanded(child: Divider()),
+                  //     Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 16),
+                  //       child: Text(
+                  //         AppStrings.continueWith,
+                  //         style: Theme.of(context).textTheme.bodySmall,
+                  //       ),
+                  //     ),
+                  //     const Expanded(child: Divider()),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 16),
+                  // SocialAuthButton(
+                  //   label: 'Continue with Google',
+                  //   icon: AppImages.googleIcon,
+                  //   onPressed: () {},
+                  // ),
+                  // if (Platform.isIOS == true) ...[
+                  //   const SizedBox(height: 10),
+                  //   SocialAuthButton(
+                  //     label: 'Continue with Apple',
+                  //     icon: ThemeMode.system.name == 'light'
+                  //         ? AppImages.appleIconDark
+                  //         : AppImages.appleIcon,
+                  //     onPressed: () {},
+                  //   ),
+                  // ],
+                  // const SizedBox(height: 10),
+                  // SocialAuthButton(
+                  //   label: 'Continue with Facebook',
+                  //   icon: AppImages.facebookIcon,
+                  //   onPressed: () {},
+                  // ),
                   const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
