@@ -85,75 +85,76 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          if (!_imagesReady)
-            const ColoredBox(
+      body: !_imagesReady
+          ? const ColoredBox(
               color: Colors.black,
               child: Center(
                 child: CircularProgressIndicator(color: AppColors.primary),
               ),
             )
-          else
-            PageView(
-              controller: _controller,
-              onPageChanged: (i) => setState(() => _currentPage = i),
+          : Stack(
+              alignment: Alignment.center,
               children: [
-                for (final page in _pages) _OnboardingPage(data: page),
-              ],
-            ),
-          Align(
-            alignment: Alignment.topRight,
-            child: SafePage(
-              child: TextButton(
-                onPressed: _completeOnboarding,
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.darkTextPrimary,
+                PageView(
+                  controller: _controller,
+                  onPageChanged: (i) => setState(() => _currentPage = i),
+                  children: [
+                    for (final page in _pages) _OnboardingPage(data: page),
+                  ],
                 ),
-                child: const Text(AppStrings.skip),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(_pages.length, (i) {
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.xs,
+                Align(
+                  alignment: Alignment.topRight,
+                  child: SafePage(
+                    child: TextButton(
+                      onPressed: _completeOnboarding,
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.darkTextPrimary,
                       ),
-                      width: _currentPage == i ? 24 : 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: _currentPage == i
-                            ? AppColors.primary
-                            : AppColors.border,
-                        borderRadius: BorderRadius.circular(AppSpacing.xs),
-                      ),
-                    );
-                  }),
+                      child: const Text(AppStrings.skip),
+                    ),
+                  ),
                 ),
-                SafeArea(
-                  minimum: const EdgeInsets.all(AppSpacing.lg),
-                  top: false,
-                  child: PrimaryButton(
-                    label: _currentPage == _pages.length - 1
-                        ? AppStrings.getStarted
-                        : AppStrings.next,
-                    onPressed: _next,
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(_pages.length, (i) {
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.xs,
+                            ),
+                            width: _currentPage == i ? 24 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: _currentPage == i
+                                  ? AppColors.primary
+                                  : AppColors.border,
+                              borderRadius: BorderRadius.circular(
+                                AppSpacing.xs,
+                              ),
+                            ),
+                          );
+                        }),
+                      ),
+                      SafeArea(
+                        minimum: const EdgeInsets.all(AppSpacing.lg),
+                        top: false,
+                        child: PrimaryButton(
+                          label: _currentPage == _pages.length - 1
+                              ? AppStrings.getStarted
+                              : AppStrings.next,
+                          onPressed: _next,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }
