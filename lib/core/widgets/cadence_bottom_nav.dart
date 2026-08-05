@@ -48,11 +48,6 @@ class CadenceBottomNav extends StatelessWidget {
           label: 'Goals',
         ),
         NavigationDestination(
-          icon: Icon(Icons.summarize_outlined, color: AppColors.textTertiary),
-          selectedIcon: const Icon(Icons.summarize, color: AppColors.primary),
-          label: 'Summaries',
-        ),
-        NavigationDestination(
           icon: Icon(Icons.settings_outlined, color: AppColors.textTertiary),
           selectedIcon: const Icon(Icons.settings, color: AppColors.primary),
           label: 'Settings',

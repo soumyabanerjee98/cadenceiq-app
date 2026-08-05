@@ -20,7 +20,6 @@ import 'package:cadenceiq/features/onboarding/splash_screen.dart';
 import 'package:cadenceiq/features/profile/profile_screen.dart';
 import 'package:cadenceiq/features/settings/settings_screen.dart';
 import 'package:cadenceiq/features/shell/main_shell.dart';
-import 'package:cadenceiq/features/summaries/summaries_list_screen.dart';
 import 'package:cadenceiq/features/summaries/summary_detail_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -88,17 +87,6 @@ class AppRouter {
                   pageBuilder: (_, state) => NoTransitionPage(
                     key: state.pageKey,
                     child: const GoalsScreen(),
-                  ),
-                ),
-              ],
-            ),
-            StatefulShellBranch(
-              routes: [
-                GoRoute(
-                  path: RoutePaths.summaries,
-                  pageBuilder: (_, state) => NoTransitionPage(
-                    key: state.pageKey,
-                    child: const SummariesListScreen(),
                   ),
                 ),
               ],

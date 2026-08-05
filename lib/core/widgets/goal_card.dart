@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:cadenceiq/models/goal.dart';
+import 'package:go_router/go_router.dart';
 
 import '../theme/app_colors.dart';
 import '../utils/formatters.dart';
@@ -77,6 +78,15 @@ class GoalCard extends StatelessWidget {
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   color: AppColors.textSecondary,
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => context.push('/summaries/${goal.id}'),
+                    child: Text("View Summary"),
+                  ),
+                ],
               ),
             ],
           ),

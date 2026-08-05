@@ -541,8 +541,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                     isLoading: loading,
                   ),
                 ],
-                const SizedBox(height: 20),
-                _SectionTitle(title: AppStrings.quickActions),
                 const SizedBox(height: 12),
                 if (dashboard.user?.stravaConnected != true) ...[
                   Row(
@@ -574,32 +572,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                     shine: true,
                   ),
                 ],
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: [
-                    _QuickAction(
-                      icon: Icons.directions_bike,
-                      label: AppStrings.navActivities,
-                      onTap: () => context.go(RoutePaths.activities),
-                    ),
-                    _QuickAction(
-                      icon: Icons.flag,
-                      label: AppStrings.navGoals,
-                      onTap: () => context.go(RoutePaths.goals),
-                    ),
-                    _QuickAction(
-                      icon: Icons.summarize,
-                      label: AppStrings.navSummaries,
-                      onTap: () => context.go(RoutePaths.summaries),
-                    ),
-                    _QuickAction(
-                      icon: Icons.settings,
-                      label: AppStrings.navSettings,
-                      onTap: () => context.go(RoutePaths.settings),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 24),
               ]),
             ),
@@ -667,42 +639,6 @@ class _MetricTile extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _QuickAction extends StatelessWidget {
-  const _QuickAction({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        width: (MediaQuery.sizeOf(context).width - 52) / 2,
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.border),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: AppColors.primary, size: 20),
-            const SizedBox(width: 8),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
-          ],
-        ),
       ),
     );
   }
