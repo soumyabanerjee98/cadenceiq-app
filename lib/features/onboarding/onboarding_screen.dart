@@ -1,4 +1,5 @@
 import 'package:cadenceiq/core/assets/assets.dart';
+import 'package:cadenceiq/core/widgets/loading.dart';
 import 'package:cadenceiq/core/widgets/safe_page.dart';
 import 'package:cadenceiq/store/store.dart';
 import 'package:flutter/material.dart';
@@ -86,12 +87,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: !_imagesReady
-          ? const ColoredBox(
-              color: Colors.black,
-              child: Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
-              ),
-            )
+          ? AppLoading(label: "Getting started...")
           : Stack(
               alignment: Alignment.center,
               children: [

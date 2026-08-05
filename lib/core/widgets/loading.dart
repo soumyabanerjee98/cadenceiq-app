@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppLoading extends StatelessWidget {
-  const AppLoading({super.key});
+  final String label;
+  const AppLoading({super.key, this.label = "Loading..."});
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +10,7 @@ class AppLoading extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: 12,
-        children: [const CircularProgressIndicator(), Text("Loading...")],
+        children: [const CircularProgressIndicator(), Text(label)],
       ),
     );
   }
