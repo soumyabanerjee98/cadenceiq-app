@@ -18,6 +18,5 @@ class AppImages {
 class AppLotties {
   static const base = 'assets/lotties';
 
-  static const noGoal = '$base/cat-idle.json';
   static const aiLoading = '$base/ai-loading.json';
 }

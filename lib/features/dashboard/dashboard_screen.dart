@@ -5,7 +5,6 @@ import 'package:cadenceiq/core/widgets/warning_card.dart';
 import 'package:cadenceiq/models/activity.dart';
 import 'package:collection/collection.dart';
 
-import 'package:cadenceiq/core/assets/assets.dart';
 import 'package:cadenceiq/core/utils/date.dart';
 import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/loading.dart';
@@ -18,7 +17,6 @@ import 'package:cadenceiq/providers/goal_provider.dart';
 import 'package:cadenceiq/services/repo/activity_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cadenceiq/core/constants/route_paths.dart';
@@ -38,12 +36,10 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen>
-    with TickerProviderStateMixin {
+class _DashboardScreenState extends State<DashboardScreen> {
   late DashboardProvider dashboard;
   late GoalProvider goal;
   late ActivityProvider activity;
-  late final AnimationController _controller;
   late final String tagline;
   final _random = Random();
   bool loading = false;
@@ -93,16 +89,9 @@ class _DashboardScreenState extends State<DashboardScreen>
     dashboard = context.read<DashboardProvider>();
     goal = context.read<GoalProvider>();
     activity = context.read<ActivityProvider>();
-    _controller = AnimationController(vsync: this);
     tagline = getRandomGoalTagline();
     super.initState();
     dashboard.refresh(hardRefresh: true);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -475,68 +464,37 @@ class _DashboardScreenState extends State<DashboardScreen>
                       ),
                   ],
                 ] else ...[
-                  Lottie.asset(
-                    AppLotties.noGoal,
-                    controller: _controller,
-                    onLoaded: (composition) {
-                      _controller.duration = composition.duration;
-
-                      _controller.addStatusListener((status) async {
-                        if (status == AnimationStatus.completed && mounted) {
-                          await Future.delayed(const Duration(seconds: 2));
-                          if (mounted) _controller.forward(from: 0);
-                        }
-                      });
-
-                      if (mounted) _controller.forward();
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  Center(
-                    child: Text.rich(
-                      TextSpan(
-                        text: "No",
-                        style: TextStyle(color: AppColors.primary),
-                        children: [
-                          TextSpan(
-                            text: " Goal... ",
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                          TextSpan(
-                            text: " No",
-                            style: TextStyle(color: AppColors.primary),
-                          ),
-                          TextSpan(
-                            text: " Progress...",
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  const SizedBox(height: 24),
+                  Icon(Icons.flag_outlined, size: 48, color: AppColors.primary),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No active goal',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 8),
                   Text(
                     tagline,
-                    style: Theme.of(context).textTheme.bodySmall,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-                  PrimaryButton(
-                    label: "Create Goal",
-                    expand: false,
-                    onPressed: dashboard.user?.stravaConnected == true
-                        ? _navigateToGoal
-                        : null,
-                    shine: dashboard.user?.stravaConnected == true,
-                    isLoading: loading,
+                  Center(
+                    child: PrimaryButton(
+                      label: 'Create Goal',
+                      expand: false,
+                      onPressed: dashboard.user?.stravaConnected == true
+                          ? _navigateToGoal
+                          : null,
+                      shine: dashboard.user?.stravaConnected == true,
+                      isLoading: loading,
+                    ),
                   ),
+                  const SizedBox(height: 8),
                 ],
                 if (dashboard.user?.stravaConnected != true) ...[
                   WarningCard(
