@@ -371,7 +371,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                           const SizedBox(height: 4),
                                           if (session.type != PlanType.rest)
                                             Text(
-                                              '${Formatters.distanceKm(double.parse(session.targetDistance.toString()), imperial: settings.useImperial)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
+                                              '${Formatters.distanceKm(session.targetDistance.toDouble(), imperial: settings.useImperial)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
                                               style: const TextStyle(
                                                 color: AppColors.textSecondary,
                                                 fontSize: 13,
@@ -433,7 +433,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                                       const SizedBox(height: 6),
 
                                       Text(
-                                        "${session.actualLoad?.toStringAsFixed(0)} / ${session.targetLoad} TSS",
+                                        "${(session.actualLoad ?? 0).toStringAsFixed(0)} / ${session.targetLoad} TSS",
                                         style: Theme.of(
                                           context,
                                         ).textTheme.labelSmall,

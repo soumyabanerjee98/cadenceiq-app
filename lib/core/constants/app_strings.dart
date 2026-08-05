@@ -40,7 +40,7 @@ abstract final class AppStrings {
   static const readiness = 'Readiness (TSB)';
   static const currentGoal = 'Current Goal';
   static const trainingMetrics = 'Training Metrics';
-  static const weeklyLoad = 'Weekly Load Trend';
+  static const weeklyLoad = 'Load Trend';
   static const zoneDistribution = 'Zone Distribution';
   static const todaysSession = "Today's Plan";
   static const quickActions = 'Quick Actions';
