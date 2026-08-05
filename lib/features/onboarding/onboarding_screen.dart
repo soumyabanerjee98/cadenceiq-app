@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cadenceiq/core/constants/app_strings.dart';
 import 'package:cadenceiq/core/constants/route_paths.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/theme/app_spacing.dart';
 import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:cadenceiq/models/onboarding_page.dart';
 
@@ -20,6 +21,7 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _controller = PageController();
   int _currentPage = 0;
+  bool _imagesReady = false;
 
   static final _pages = [
     OnboardingPageData(
@@ -45,20 +47,38 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   ];
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_imagesReady) return;
+    _precacheAllImages();
+  }
+
+  Future<void> _precacheAllImages() async {
+    await Future.wait(
+      _pages.map((page) => precacheImage(AssetImage(page.image), context)),
+    );
+    if (mounted) setState(() => _imagesReady = true);
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
-  void _next() async {
+  Future<void> _completeOnboarding() async {
+    await LocalStorage.setOnboardingCompleted();
+    if (mounted) context.go(RoutePaths.login);
+  }
+
+  void _next() {
     if (_currentPage < _pages.length - 1) {
       _controller.nextPage(
         duration: const Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
     } else {
-      await LocalStorage.setOnboardingCompleted();
-      if (mounted) context.go(RoutePaths.login);
+      _completeOnboarding();
     }
   }
 
@@ -68,20 +88,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       body: Stack(
         alignment: Alignment.center,
         children: [
-          PageView.builder(
-            controller: _controller,
-            onPageChanged: (i) => setState(() => _currentPage = i),
-            itemCount: _pages.length,
-            itemBuilder: (_, i) => _OnboardingPage(data: _pages[i]),
-          ),
+          if (!_imagesReady)
+            const ColoredBox(
+              color: Colors.black,
+              child: Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              ),
+            )
+          else
+            PageView(
+              controller: _controller,
+              onPageChanged: (i) => setState(() => _currentPage = i),
+              children: [
+                for (final page in _pages) _OnboardingPage(data: page),
+              ],
+            ),
           Align(
             alignment: Alignment.topRight,
             child: SafePage(
               child: TextButton(
-                onPressed: () async {
-                  await LocalStorage.setOnboardingCompleted();
-                  if (mounted) context.go(RoutePaths.login);
-                },
+                onPressed: _completeOnboarding,
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.darkTextPrimary,
+                ),
                 child: const Text(AppStrings.skip),
               ),
             ),
@@ -96,20 +125,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   children: List.generate(_pages.length, (i) {
                     return AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.xs,
+                      ),
                       width: _currentPage == i ? 24 : 8,
                       height: 8,
                       decoration: BoxDecoration(
                         color: _currentPage == i
                             ? AppColors.primary
                             : AppColors.border,
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(AppSpacing.xs),
                       ),
                     );
                   }),
                 ),
                 SafeArea(
-                  minimum: const EdgeInsets.all(16),
+                  minimum: const EdgeInsets.all(AppSpacing.lg),
                   top: false,
                   child: PrimaryButton(
                     label: _currentPage == _pages.length - 1
@@ -135,23 +166,25 @@ class _OnboardingPage extends StatefulWidget {
   State<_OnboardingPage> createState() => _OnboardingPageState();
 }
 
-class _OnboardingPageState extends State<_OnboardingPage> {
+class _OnboardingPageState extends State<_OnboardingPage>
+    with AutomaticKeepAliveClientMixin {
   @override
-  void didChangeDependencies() {
-    precacheImage(AssetImage(widget.data.image), context);
-    super.didChangeDependencies();
-  }
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final Size size = MediaQuery.of(context).size;
     return Stack(
       alignment: Alignment.center,
       children: [
-        Image.asset(
-          widget.data.image,
-          cacheHeight: size.height.ceil(),
-          cacheWidth: size.width.ceil(),
+        Positioned.fill(
+          child: Image.asset(
+            widget.data.image,
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+            gaplessPlayback: true,
+          ),
         ),
         Positioned.fill(
           child: DecoratedBox(
@@ -159,11 +192,10 @@ class _OnboardingPageState extends State<_OnboardingPage> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                // Controls where the black fade begins (0.6 means it starts at 60% down)
                 stops: const [0.2, 1.0],
                 colors: [
                   Colors.transparent,
-                  Colors.black87, // Adjust opacity to control darkness
+                  Colors.black.withValues(alpha: 0.87),
                 ],
               ),
             ),
@@ -175,7 +207,7 @@ class _OnboardingPageState extends State<_OnboardingPage> {
             width: size.width * 0.9,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 20,
+              spacing: AppSpacing.xl,
               children: [
                 Text(
                   widget.data.title,

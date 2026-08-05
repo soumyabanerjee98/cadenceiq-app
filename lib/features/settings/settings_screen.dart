@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 
+import 'package:cadenceiq/core/utils/app_animations.dart';
 import 'package:cadenceiq/core/constants/route_paths.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
@@ -263,15 +264,17 @@ class _SettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: AppColors.textSecondary),
-      title: Text(title),
-      subtitle: subtitle != null ? Text(subtitle!, style: subTitleStyle) : null,
-      trailing: onTap != null
-          ? const Icon(Icons.chevron_right, size: 20)
-          : null,
+    return ScaleOnTap(
       onTap: onTap,
-      contentPadding: EdgeInsets.zero,
+      child: ListTile(
+        leading: Icon(icon, color: AppColors.textSecondary),
+        title: Text(title),
+        subtitle: subtitle != null ? Text(subtitle!, style: subTitleStyle) : null,
+        trailing: onTap != null
+            ? const Icon(Icons.chevron_right, size: 20)
+            : null,
+        contentPadding: EdgeInsets.zero,
+      ),
     );
   }
 }

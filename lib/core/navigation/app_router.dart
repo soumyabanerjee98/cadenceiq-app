@@ -1,12 +1,13 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/core/utils/app_animations.dart';
 import 'package:cadenceiq/features/activities/sync_activities_list.dart';
 import 'package:cadenceiq/features/auth/oauth.dart';
 import 'package:cadenceiq/features/auth/otp_screen.dart';
 import 'package:cadenceiq/features/profile/update_profile_screen.dart';
 import 'package:cadenceiq/features/settings/strava_connect.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
-import 'package:cadenceiq/core/constants/route_paths.dart';
 import 'package:cadenceiq/features/activities/activities_list_screen.dart';
 import 'package:cadenceiq/features/activities/activity_detail_screen.dart';
 import 'package:cadenceiq/features/auth/login_screen.dart';
@@ -23,6 +24,23 @@ import 'package:cadenceiq/features/shell/main_shell.dart';
 import 'package:cadenceiq/features/summaries/summary_detail_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+
+CustomTransitionPage<T> _slideUpPage<T>({
+  required LocalKey key,
+  required Widget child,
+}) {
+  return CustomTransitionPage<T>(
+    key: key,
+    child: child,
+    transitionDuration: AppAnimations.normal,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return AppAnimations.fadeSlideIn(
+        animation: animation,
+        child: child,
+      );
+    },
+  );
+}
 
 class AppRouter {
   static GoRouter create() {
@@ -48,10 +66,10 @@ class AppRouter {
         ),
         GoRoute(
           path: RoutePaths.otp,
-          builder: (_, state) {
-            final args = state.extra as OtpScreenArgs;
-            return OTPScreen(args: args);
-          },
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: OTPScreen(args: state.extra as OtpScreenArgs),
+          ),
         ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
@@ -107,56 +125,82 @@ class AppRouter {
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.connectStrava,
-          builder: (_, __) => StravaConnect(),
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: StravaConnect(),
+          ),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.syncActivity,
-          builder: (_, __) => SyncStravaActivity(),
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: SyncStravaActivity(),
+          ),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: '/activities/:id',
-          builder: (_, state) =>
-              ActivityDetailScreen(activityId: state.pathParameters['id']!),
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: ActivityDetailScreen(
+              activityId: state.pathParameters['id']!,
+            ),
+          ),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.createGoal,
-          builder: (_, state) {
-            final args = state.extra as CreateGoalScreenArgs;
-            return CreateGoalScreen(args: args);
-          },
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: CreateGoalScreen(
+              args: state.extra as CreateGoalScreenArgs,
+            ),
+          ),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: '/goals/:id',
-          builder: (_, state) =>
-              GoalDetailScreen(goalId: state.pathParameters['id']!),
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: GoalDetailScreen(goalId: state.pathParameters['id']!),
+          ),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: '/summaries/:id',
-          builder: (_, state) =>
-              SummaryDetailScreen(summaryId: state.pathParameters['id']!),
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: SummaryDetailScreen(
+              summaryId: state.pathParameters['id']!,
+            ),
+          ),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.profile,
-          builder: (_, __) => const ProfileScreen(),
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: const ProfileScreen(),
+          ),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.updateProfile,
-          builder: (_, __) => const UpdateProfileScreen(),
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: const UpdateProfileScreen(),
+          ),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: RoutePaths.oauth,
-          builder: (_, state) {
-            final success = state.uri.queryParameters['success'] == 'true';
-            return OAuthResultScreen(success: success);
-          },
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: OAuthResultScreen(
+              success: state.uri.queryParameters['success'] == 'true',
+            ),
+          ),
         ),
       ],
     );

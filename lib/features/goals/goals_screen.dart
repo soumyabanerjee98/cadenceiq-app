@@ -1,5 +1,11 @@
+import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/core/theme/app_spacing.dart';
+import 'package:cadenceiq/core/utils/app_animations.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
 import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/floating_action_button.dart';
+import 'package:cadenceiq/core/widgets/goal_card.dart';
+import 'package:cadenceiq/core/widgets/state_widgets.dart';
 import 'package:cadenceiq/features/goals/create_goal_screen.dart';
 import 'package:cadenceiq/features/goals/goal_detail_screen.dart';
 import 'package:cadenceiq/services/repo/activity_repo.dart';
@@ -7,9 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cadenceiq/core/constants/route_paths.dart';
-import 'package:cadenceiq/core/utils/responsive.dart';
-import 'package:cadenceiq/core/widgets/goal_card.dart';
 import 'package:cadenceiq/models/goal.dart';
 import 'package:cadenceiq/providers/goal_provider.dart';
 
@@ -78,12 +81,16 @@ class _GoalsScreenState extends State<GoalsScreen>
     goal = context.watch<GoalProvider>();
     final padding = Responsive.horizontalPadding(context);
 
+    if (goal.isLoading && goal.activeGoal == null && goal.pastGoals.isEmpty) {
+      return const Scaffold(body: SkeletonList());
+    }
+
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (_, __) => [
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.fromLTRB(padding, 16, padding, 0),
+              padding: EdgeInsets.fromLTRB(padding, AppSpacing.lg, padding, 0),
               child: Row(
                 children: [
                   Expanded(
@@ -113,15 +120,8 @@ class _GoalsScreenState extends State<GoalsScreen>
         body: TabBarView(
           controller: _tabController,
           children: [
-            _GoalDetails(
-              goal: goal.activeGoal,
-              emptyMessage: 'No active goal. Create one to get started!',
-            ),
-            _GoalList(
-              goals: goal.pastGoals,
-              emptyMessage: 'No completed goals yet.',
-              padding: padding,
-            ),
+            _GoalDetails(goal: goal.activeGoal),
+            _GoalList(goals: goal.pastGoals, padding: padding),
           ],
         ),
       ),
@@ -139,42 +139,47 @@ class _GoalsScreenState extends State<GoalsScreen>
 
 class _GoalDetails extends StatelessWidget {
   final Goal? goal;
-  final String emptyMessage;
-  const _GoalDetails({required this.goal, required this.emptyMessage});
+  const _GoalDetails({required this.goal});
 
   @override
   Widget build(BuildContext context) {
     if (goal == null) {
-      return Center(child: Text(emptyMessage, textAlign: TextAlign.center));
+      return const EmptyStateWidget(
+        title: 'No active goal',
+        message: 'No active goal. Create one to get started!',
+        icon: Icons.flag_outlined,
+      );
     }
     return GoalDetails(goal: goal!);
   }
 }
 
 class _GoalList extends StatelessWidget {
-  const _GoalList({
-    required this.goals,
-    required this.emptyMessage,
-    required this.padding,
-  });
+  const _GoalList({required this.goals, required this.padding});
 
   final List<Goal> goals;
-  final String emptyMessage;
   final double padding;
 
   @override
   Widget build(BuildContext context) {
     if (goals.isEmpty) {
-      return Center(child: Text(emptyMessage, textAlign: TextAlign.center));
+      return const EmptyStateWidget(
+        title: 'No completed goals yet',
+        message: 'No completed goals yet.',
+        icon: Icons.emoji_events_outlined,
+      );
     }
     return ListView.builder(
       padding: EdgeInsets.all(padding),
       itemCount: goals.length,
       itemBuilder: (_, i) {
         final goal = goals[i];
-        return GoalCard(
-          goal: goal,
-          onTap: () => context.push('/goals/${goal.id}'),
+        return AppAnimations.staggeredListItem(
+          index: i,
+          child: GoalCard(
+            goal: goal,
+            onTap: () => context.push('/goals/${goal.id}'),
+          ),
         );
       },
     );

@@ -501,7 +501,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           TextSpan(
                             text: " Goal... ",
                             style: TextStyle(
-                              color: AppColors.darkTextSecondary,
+                              color: AppColors.textSecondary,
                             ),
                           ),
                           TextSpan(
@@ -511,7 +511,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                           TextSpan(
                             text: " Progress...",
                             style: TextStyle(
-                              color: AppColors.darkTextSecondary,
+                              color: AppColors.textSecondary,
                             ),
                           ),
                         ],
@@ -538,35 +538,14 @@ class _DashboardScreenState extends State<DashboardScreen>
                     isLoading: loading,
                   ),
                 ],
-                const SizedBox(height: 12),
                 if (dashboard.user?.stravaConnected != true) ...[
-                  Row(
-                    spacing: 8,
-                    children: [
-                      Icon(
-                        Icons.warning_amber_outlined,
-                        color: AppColors.warning,
-                      ),
-                      Text(
-                        "Strava not connected!",
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.error,
-                            ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    "Connect Strava to create goal and sync activities!",
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  PrimaryButton(
-                    label: "Connect Strava",
-                    expand: false,
-                    onPressed: () => context.push(RoutePaths.connectStrava),
-                    shine: true,
+                  WarningCard(
+                    message:
+                        'Connect Strava to create goals and sync activities!',
+                    actionText: 'Connect',
+                    action: () => context.push(RoutePaths.connectStrava),
+                    type: WarningCardType.warning,
+                    icon: Icons.warning_amber_outlined,
                   ),
                 ],
                 const SizedBox(height: 24),

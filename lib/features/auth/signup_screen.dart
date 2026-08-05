@@ -10,6 +10,8 @@ import 'package:cadenceiq/core/constants/route_paths.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
 import 'package:cadenceiq/core/widgets/primary_button.dart';
+import 'package:cadenceiq/core/theme/app_spacing.dart';
+import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq/core/widgets/safe_page.dart';
 import 'package:cadenceiq/providers/auth_provider.dart';
 
@@ -88,8 +90,10 @@ class _SignupScreenState extends State<SignupScreen> {
             child: Form(
               key: _formKey,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const SizedBox(height: AppSpacing.xl),
+                  const Center(child: CadenceLogo(size: 72)),
+                  const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Create account',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -154,10 +158,13 @@ class _SignupScreenState extends State<SignupScreen> {
                     obsecureText: true,
                   ),
                   if (auth.errorMessage != null) ...[
-                    const SizedBox(height: 12),
+                    const SizedBox(height: AppSpacing.md),
                     Text(
                       auth.errorMessage!,
-                      style: const TextStyle(color: AppColors.error),
+                      style: const TextStyle(
+                        color: AppColors.error,
+                        fontSize: 13,
+                      ),
                     ),
                   ],
                   const SizedBox(height: 24),

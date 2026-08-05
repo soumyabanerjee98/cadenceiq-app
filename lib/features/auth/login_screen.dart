@@ -10,6 +10,7 @@ import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
 import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq/core/widgets/primary_button.dart';
+import 'package:cadenceiq/core/theme/app_spacing.dart';
 import 'package:cadenceiq/core/widgets/safe_page.dart';
 import 'package:cadenceiq/providers/auth_provider.dart';
 
@@ -178,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   //   icon: AppImages.facebookIcon,
                   //   onPressed: () {},
                   // ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xl),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

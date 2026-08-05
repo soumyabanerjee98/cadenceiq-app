@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:cadenceiq/core/constants/app_strings.dart';
 import 'package:cadenceiq/core/constants/route_paths.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/theme/app_spacing.dart';
 import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq/core/widgets/safe_page.dart';
 
@@ -46,14 +47,15 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 2), () async {
       final completed = await LocalStorage.isOnboardingCompleted();
       final profile = await LocalStorage.getUserProfileId();
+      if (!mounted) return;
       if (completed == true) {
         if (profile != null) {
-          if (mounted) context.go(RoutePaths.dashboard);
+          context.go(RoutePaths.dashboard);
         } else {
-          if (mounted) context.go(RoutePaths.login);
+          context.go(RoutePaths.login);
         }
       } else {
-        if (mounted) context.go(RoutePaths.onboarding);
+        context.go(RoutePaths.onboarding);
       }
     });
   }
@@ -79,7 +81,7 @@ class _SplashScreenState extends State<SplashScreen>
                   scale: _scaleAnimation,
                   child: const CadenceLogo(size: 96),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xl),
                 Text(
                   AppStrings.appName,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
@@ -87,14 +89,14 @@ class _SplashScreenState extends State<SplashScreen>
                     letterSpacing: -0.5,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   AppStrings.tagline,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.textSecondary,
                   ),
                 ),
-                const SizedBox(height: 48),
+                const SizedBox(height: AppSpacing.xxl + AppSpacing.lg),
                 const SizedBox(
                   width: 32,
                   height: 32,

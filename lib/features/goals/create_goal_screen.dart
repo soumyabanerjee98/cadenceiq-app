@@ -29,8 +29,7 @@ class CreateGoalScreen extends StatefulWidget {
   State<CreateGoalScreen> createState() => _CreateGoalScreenState();
 }
 
-class _CreateGoalScreenState extends State<CreateGoalScreen>
-    with TickerProviderStateMixin {
+class _CreateGoalScreenState extends State<CreateGoalScreen> {
   late GoalProvider provider;
   final _formKey = GlobalKey<FormState>();
   String _title = '';
@@ -40,12 +39,10 @@ class _CreateGoalScreenState extends State<CreateGoalScreen>
   String _request = '';
   final PageController _controller = PageController();
   int currentPage = 0;
-  late final AnimationController _lottieController;
 
   @override
   void initState() {
     provider = context.read<GoalProvider>();
-    _lottieController = AnimationController(vsync: this);
     setState(() {
       _level = widget.args.experienceLevel;
     });
@@ -55,7 +52,6 @@ class _CreateGoalScreenState extends State<CreateGoalScreen>
   @override
   void dispose() {
     _controller.dispose();
-    _lottieController.dispose();
     super.dispose();
   }
 
@@ -226,7 +222,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen>
               currentPage = value;
             });
           },
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: [_buildPlanPage(), _buildCalendarPage()],
         ),
       ),

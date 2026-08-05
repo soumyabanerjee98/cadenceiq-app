@@ -1,14 +1,15 @@
 import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/core/theme/app_colors.dart';
+import 'package:cadenceiq/core/utils/app_animations.dart';
+import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/widgets/activity_card.dart';
+import 'package:cadenceiq/core/widgets/state_widgets.dart';
 import 'package:cadenceiq/core/widgets/warning_card.dart';
 import 'package:cadenceiq/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:cadenceiq/core/theme/app_colors.dart';
-import 'package:cadenceiq/core/utils/responsive.dart';
-import 'package:cadenceiq/core/widgets/activity_card.dart';
-import 'package:cadenceiq/core/widgets/state_widgets.dart';
 import 'package:cadenceiq/models/activity.dart';
 import 'package:cadenceiq/providers/activity_provider.dart';
 
@@ -89,16 +90,19 @@ class _ActivitiesListScreenState extends State<ActivitiesListScreen> {
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate((context, i) {
                     final singleActivity = activity.activities[i];
-                    return ActivityCard(
-                      activity: singleActivity,
-                      onTap: () async {
-                        final reload = await context.push<bool>(
-                          '/activities/${singleActivity.id}',
-                        );
-                        if (reload == true) {
-                          activity.refresh();
-                        }
-                      },
+                    return AppAnimations.staggeredListItem(
+                      index: i,
+                      child: ActivityCard(
+                        activity: singleActivity,
+                        onTap: () async {
+                          final reload = await context.push<bool>(
+                            '/activities/${singleActivity.id}',
+                          );
+                          if (reload == true) {
+                            activity.refresh();
+                          }
+                        },
+                      ),
                     );
                   }, childCount: activity.activities.length),
                 ),
@@ -246,12 +250,16 @@ class _FilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
-      child: FilterChip(
-        label: Text(label),
-        selected: selected,
-        onSelected: (_) => onTap(),
-        selectedColor: AppColors.primary.withValues(alpha: 0.15),
-        checkmarkColor: AppColors.primary,
+      child: AnimatedScale(
+        scale: selected ? 1.05 : 1,
+        duration: AppAnimations.fast,
+        child: FilterChip(
+          label: Text(label),
+          selected: selected,
+          onSelected: (_) => onTap(),
+          selectedColor: AppColors.primary.withValues(alpha: 0.15),
+          checkmarkColor: AppColors.primary,
+        ),
       ),
     );
   }

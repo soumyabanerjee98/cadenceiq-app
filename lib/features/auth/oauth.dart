@@ -1,7 +1,10 @@
+import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:cadenceiq/providers/dashboard_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
+import 'package:cadenceiq/core/theme/app_colors.dart';
 
 class OAuthResultScreen extends StatefulWidget {
   const OAuthResultScreen({super.key, required this.success});
@@ -31,9 +34,12 @@ class _OAuthResultScreenState extends State<OAuthResultScreen> {
     }
 
     if (mounted) {
-      setState(() {
-        _loading = false;
-      });
+      setState(() => _loading = false);
+      if (widget.success) {
+        Future.delayed(const Duration(seconds: 2), () {
+          if (mounted) context.pop();
+        });
+      }
     }
   }
 
@@ -54,33 +60,29 @@ class _OAuthResultScreenState extends State<OAuthResultScreen> {
             children: [
               Icon(
                 success ? Icons.check_circle : Icons.cancel,
-                size: 96,
+                size: 100,
                 color: success ? Colors.green : Colors.red,
               ),
-
               const SizedBox(height: 24),
-
               Text(
-                success ? "Strava Connected" : "Strava Connection Failed",
+                success ? 'Strava Connected' : 'Strava Connection Failed',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
-
               const SizedBox(height: 12),
-
               Text(
                 success
-                    ? "Your activities will now sync automatically."
-                    : "Something went wrong while connecting your account.",
+                    ? 'Your activities will now sync automatically.'
+                    : 'Something went wrong while connecting your account.',
                 textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
-
               const SizedBox(height: 32),
-
-              FilledButton(
-                onPressed: () {
-                  context.pop();
-                },
-                child: Text(success ? "Continue" : "Go Back"),
+              PrimaryButton(
+                label: success ? 'Continue' : 'Go Back',
+                expand: false,
+                onPressed: () => context.pop(),
               ),
             ],
           ),
