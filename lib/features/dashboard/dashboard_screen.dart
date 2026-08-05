@@ -276,6 +276,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                   ),
                 ),
                 const SizedBox(height: 16),
+                _SectionTitle(title: AppStrings.zoneDistribution),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: ZoneDistributionChart(zones: user.zoneDistribution),
+                  ),
+                ),
                 if (goal.activeGoal != null) ...[
                   ProgressCard(
                     title: goal.activeGoal?.title ?? "",
@@ -313,16 +320,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 20),
-                  _SectionTitle(title: AppStrings.zoneDistribution),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: ZoneDistributionChart(
-                        zones: user.zoneDistribution,
-                      ),
-                    ),
                   ),
                   if (session != null) ...[
                     const SizedBox(height: 20),
