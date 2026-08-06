@@ -118,11 +118,11 @@ class AuthProvider extends ChangeNotifier {
     _state = AuthState.loading;
     _errorMessage = null;
     notifyListeners();
-    Map<String, dynamic> payload = {"password": password};
-    FormData formData = FormData.fromMap(payload);
+    final Map<String, dynamic> payload = {"password": password};
+    final FormData formData = FormData.fromMap(payload);
     final ApiResponse res = await _repository.updateProfile(formData);
     if (res.response != null) {
-      _state = AuthState.unauthenticated;
+      _state = AuthState.authenticated;
       _errorMessage = null;
     } else {
       _state = AuthState.error;

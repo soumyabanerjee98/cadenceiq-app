@@ -1,5 +1,6 @@
 import 'package:cadenceiq/core/constants/app_strings.dart';
 import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/core/navigation/app_router.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/theme/app_spacing.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
@@ -9,15 +10,21 @@ import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:cadenceiq/core/widgets/safe_page.dart';
 import 'package:cadenceiq/core/widgets/text_form_field.dart';
 import 'package:cadenceiq/providers/auth_provider.dart';
+import 'package:cadenceiq/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ResetPasswordArgs {
-  const ResetPasswordArgs({required this.email, required this.otp});
+  const ResetPasswordArgs({
+    required this.email,
+    required this.otp,
+    this.fromProfile = false,
+  });
 
   final String email;
   final String otp;
+  final bool fromProfile;
 }
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -44,6 +51,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     if (!mounted) return;
 
     if (res.response != null) {
+      if (widget.args.fromProfile) {
+        AppSnackbar.show(
+          context,
+          message: 'Password updated successfully!',
+          status: SnackbarStatus.success,
+        );
+        // Pop reset password + OTP so prior screens stay in the stack.
+        final navigator = rootNavigatorKey.currentState;
+        navigator?.pop();
+        if (navigator?.canPop() ?? false) navigator?.pop();
+        return;
+      }
+
+      await TokenStorage.clear();
+      auth.reset();
+      if (!mounted) return;
       AppSnackbar.show(
         context,
         message: 'Password reset successfully. Please log in.',
