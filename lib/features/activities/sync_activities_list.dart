@@ -1,6 +1,7 @@
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/formatters.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:cadenceiq/core/widgets/state_widgets.dart';
@@ -42,6 +43,14 @@ class _SyncStravaActivityState extends State<SyncStravaActivity> {
           currentPage = res.response["nextPage"];
         });
       }
+    } else if (mounted) {
+      AppSnackbar.show(
+        context,
+        message:
+            res.error?.errorMessage ??
+            'Failed to load Strava activities. Please try again.',
+        status: SnackbarStatus.error,
+      );
     }
     if (mounted) {
       setState(() {
@@ -68,6 +77,14 @@ class _SyncStravaActivityState extends State<SyncStravaActivity> {
           currentPage = res.response["nextPage"];
         });
       }
+    } else if (mounted) {
+      AppSnackbar.show(
+        context,
+        message:
+            res.error?.errorMessage ??
+            'Failed to load more activities. Please try again.',
+        status: SnackbarStatus.error,
+      );
     }
     if (mounted) {
       setState(() {
@@ -108,6 +125,14 @@ class _SyncStravaActivityState extends State<SyncStravaActivity> {
       });
       if (res.response != null) {
         context.pop(true);
+      } else {
+        AppSnackbar.show(
+          context,
+          message:
+              res.error?.errorMessage ??
+              'Failed to sync activities. Please try again.',
+          status: SnackbarStatus.error,
+        );
       }
     }
   }

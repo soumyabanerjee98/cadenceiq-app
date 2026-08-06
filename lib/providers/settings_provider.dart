@@ -48,7 +48,7 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> connectStrava() async {
+  Future<bool> connectStrava() async {
     final res = await _repository.connectStrava();
     if (res.response != null) {
       String uri = res.response['url'];
@@ -58,7 +58,9 @@ class SettingsProvider extends ChangeNotifier {
       );
       final String route = link.split("/").last;
       rootNavigatorKey.currentContext?.push("/$route");
+      return true;
     }
+    return false;
   }
 
   Future<bool> disconnectStrava() async {

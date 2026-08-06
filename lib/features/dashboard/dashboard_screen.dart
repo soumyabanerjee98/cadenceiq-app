@@ -462,8 +462,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         children: [
                           AiActionButton(
                             loading: goal.isDailyInsightLoading,
-                            onPressed: () =>
-                                goal.generateDailyInsight(session.date),
+                            onPressed: () async {
+                              final success = await goal.generateDailyInsight(
+                                session.date,
+                              );
+                              if (!context.mounted) return;
+                              if (!success) {
+                                AppSnackbar.show(
+                                  context,
+                                  message:
+                                      goal.errorMessage ??
+                                      'Failed to generate daily insight.',
+                                  status: SnackbarStatus.error,
+                                );
+                              }
+                            },
                             label: session.insight != null
                                 ? "Re-generate Daily Insight"
                                 : "Generate Daily Insight",

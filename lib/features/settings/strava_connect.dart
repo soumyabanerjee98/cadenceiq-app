@@ -1,6 +1,7 @@
 import 'package:cadenceiq/core/assets/assets.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:cadenceiq/core/widgets/safe_page.dart';
@@ -26,7 +27,25 @@ class _StravaConnectState extends State<StravaConnect> {
     setState(() {
       loading = true;
     });
-    await settings.connectStrava();
+    try {
+      final success = await settings.connectStrava();
+      if (!mounted) return;
+      if (!success) {
+        AppSnackbar.show(
+          context,
+          message: 'Failed to connect Strava. Please try again.',
+          status: SnackbarStatus.error,
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        AppSnackbar.show(
+          context,
+          message: 'Failed to connect Strava. Please try again.',
+          status: SnackbarStatus.error,
+        );
+      }
+    }
     if (mounted) {
       setState(() {
         loading = false;
@@ -42,6 +61,19 @@ class _StravaConnectState extends State<StravaConnect> {
     final res = await settings.disconnectStrava();
     if (res == true) {
       await profile.refresh();
+      if (mounted) {
+        AppSnackbar.show(
+          context,
+          message: 'Strava disconnected successfully.',
+          status: SnackbarStatus.success,
+        );
+      }
+    } else if (mounted) {
+      AppSnackbar.show(
+        context,
+        message: 'Failed to disconnect Strava. Please try again.',
+        status: SnackbarStatus.error,
+      );
     }
     if (mounted) {
       setState(() {

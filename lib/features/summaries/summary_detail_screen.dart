@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/formatters.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq/core/widgets/metric_card.dart';
 import 'package:cadenceiq/models/goal_summary.dart';
@@ -52,7 +53,15 @@ class _SummaryDetailScreenState extends State<SummaryDetailScreen> {
     setState(() {
       isAILoading = false;
     });
-    if (res) getSummary(softLoad: true);
+    if (res) {
+      getSummary(softLoad: true);
+    } else {
+      AppSnackbar.show(
+        context,
+        message: goal.errorMessage ?? 'Failed to generate AI summary.',
+        status: SnackbarStatus.error,
+      );
+    }
   }
 
   @override

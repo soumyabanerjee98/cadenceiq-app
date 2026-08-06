@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/formatters.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/metric_card.dart';
 import 'package:cadenceiq/providers/activity_provider.dart';
 import 'package:cadenceiq/core/widgets/safe_page.dart';
@@ -50,8 +51,29 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
           setState(() {
             activity = Activity.fromJson(data.response);
           });
+          AppSnackbar.show(
+            context,
+            message: 'Activity re-synced successfully!',
+            status: SnackbarStatus.success,
+          );
         }
+      } else if (mounted) {
+        AppSnackbar.show(
+          context,
+          message:
+              data.error?.errorMessage ??
+              'Failed to refresh activity. Please try again.',
+          status: SnackbarStatus.error,
+        );
       }
+    } else if (mounted) {
+      AppSnackbar.show(
+        context,
+        message:
+            res.error?.errorMessage ??
+            'Failed to re-sync activity. Please try again.',
+        status: SnackbarStatus.error,
+      );
     }
     if (mounted) {
       setState(() {

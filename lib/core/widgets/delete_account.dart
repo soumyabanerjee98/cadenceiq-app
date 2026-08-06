@@ -1,6 +1,7 @@
 import 'package:cadenceiq/core/constants/app_strings.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:cadenceiq/core/widgets/text_form_field.dart';
 import 'package:cadenceiq/providers/auth_provider.dart';
@@ -19,7 +20,25 @@ class _DeleteAccountState extends State<DeleteAccount> {
   late AuthProvider auth;
 
   Future<void> _deleteAccount() async {
-    auth.deleteAccount(password: password);
+    if (password.length < 6) {
+      AppSnackbar.show(
+        context,
+        message: 'Password must be 6+ characters',
+        status: SnackbarStatus.error,
+      );
+      return;
+    }
+    auth.clearErrors();
+    final res = await auth.deleteAccount(password: password);
+    if (!mounted) return;
+    if (res.response == null) {
+      AppSnackbar.show(
+        context,
+        message:
+            auth.errorMessage ?? 'Failed to delete account. Please try again.',
+        status: SnackbarStatus.error,
+      );
+    }
   }
 
   @override
@@ -48,9 +67,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
           const SizedBox(height: 8),
           Text(
             'Enter password for confirmation of account deletion',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppColors.textSecondaryOf(context),
             ),
           ),
@@ -68,13 +85,6 @@ class _DeleteAccountState extends State<DeleteAccount> {
                 : null,
             obsecureText: true,
           ),
-          if (auth.errorMessage != null) ...[
-            const SizedBox(height: 12),
-            Text(
-              auth.errorMessage!,
-              style: const TextStyle(color: AppColors.error),
-            ),
-          ],
           const SizedBox(height: 24),
           PrimaryButton(
             label: "Delete Account",

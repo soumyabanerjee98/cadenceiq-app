@@ -82,6 +82,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         message: auth.errorMessage!,
         status: SnackbarStatus.error,
       );
+    } else {
+      AppSnackbar.show(
+        context,
+        message: 'Failed to reset password. Please try again.',
+        status: SnackbarStatus.error,
+      );
     }
   }
 
@@ -154,16 +160,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         : null,
                     obsecureText: true,
                   ),
-                  if (auth.errorMessage != null) ...[
-                    const SizedBox(height: AppSpacing.md),
-                    Text(
-                      auth.errorMessage!,
-                      style: const TextStyle(
-                        color: AppColors.error,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
                   const SizedBox(height: 24),
                   PrimaryButton(
                     label: AppStrings.resetPassword,

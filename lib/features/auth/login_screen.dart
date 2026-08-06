@@ -8,6 +8,7 @@ import 'package:cadenceiq/core/constants/app_strings.dart';
 import 'package:cadenceiq/core/constants/route_paths.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:cadenceiq/core/theme/app_spacing.dart';
@@ -29,7 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
+    auth.clearErrors();
     final res = await auth.login(email, password);
+    if (!mounted) return;
     if (auth.isAuthenticated) {
       final accessToken = res.response['accessToken'];
       final refreshToken = res.response['refreshToken'];
@@ -38,6 +41,12 @@ class _LoginScreenState extends State<LoginScreen> {
         refreshToken: refreshToken,
       );
       if (mounted) context.go(RoutePaths.dashboard);
+    } else {
+      AppSnackbar.show(
+        context,
+        message: auth.errorMessage ?? 'Login failed. Please try again.',
+        status: SnackbarStatus.error,
+      );
     }
   }
 
@@ -131,16 +140,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text(AppStrings.forgotPassword),
                     ),
                   ),
-                  if (auth.errorMessage != null) ...[
-                    Text(
-                      auth.errorMessage!,
-                      style: const TextStyle(
-                        color: AppColors.error,
-                        fontSize: 13,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                  ],
                   PrimaryButton(
                     label: AppStrings.login,
                     isLoading: auth.state == AuthState.loading,

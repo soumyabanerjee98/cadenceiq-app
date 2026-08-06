@@ -9,6 +9,7 @@ import 'package:cadenceiq/core/constants/app_strings.dart';
 import 'package:cadenceiq/core/constants/route_paths.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:cadenceiq/core/theme/app_spacing.dart';
 import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
@@ -32,8 +33,10 @@ class _SignupScreenState extends State<SignupScreen> {
 
   Future<void> _verify() async {
     if (!_formKey.currentState!.validate()) return;
-    await auth.sendOtp(email: email, reason: OtpReason.registration);
-    if (auth.isAuthenticated && mounted) {
+    auth.clearErrors();
+    final res = await auth.sendOtp(email: email, reason: OtpReason.registration);
+    if (!mounted) return;
+    if (res.response != null) {
       context.push(
         RoutePaths.otp,
         extra: OtpScreenArgs(
@@ -42,12 +45,20 @@ class _SignupScreenState extends State<SignupScreen> {
           reason: OtpReason.registration,
         ),
       );
+    } else {
+      AppSnackbar.show(
+        context,
+        message: auth.errorMessage ?? 'Failed to send OTP. Please try again.',
+        status: SnackbarStatus.error,
+      );
     }
   }
 
   Future<void> _signup() async {
     if (!_formKey.currentState!.validate()) return;
+    auth.clearErrors();
     final res = await auth.signup(name: name, email: email, password: password);
+    if (!mounted) return;
     if (auth.isAuthenticated) {
       final accessToken = res.response['accessToken'];
       final refreshToken = res.response['refreshToken'];
@@ -61,6 +72,12 @@ class _SignupScreenState extends State<SignupScreen> {
       if (mounted) {
         context.go(RoutePaths.dashboard);
       }
+    } else {
+      AppSnackbar.show(
+        context,
+        message: auth.errorMessage ?? 'Signup failed. Please try again.',
+        status: SnackbarStatus.error,
+      );
     }
   }
 
@@ -157,16 +174,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         : null,
                     obsecureText: true,
                   ),
-                  if (auth.errorMessage != null) ...[
-                    const SizedBox(height: AppSpacing.md),
-                    Text(
-                      auth.errorMessage!,
-                      style: const TextStyle(
-                        color: AppColors.error,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
                   const SizedBox(height: 24),
                   PrimaryButton(
                     label: AppStrings.signup,

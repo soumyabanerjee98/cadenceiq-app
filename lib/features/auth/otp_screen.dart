@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq/core/widgets/otp_pin.dart';
 import 'package:cadenceiq/core/widgets/primary_button.dart';
@@ -70,6 +71,7 @@ class _OTPScreenState extends State<OTPScreen> {
     setState(() {
       loading = true;
     });
+    auth.clearErrors();
     final res = await auth.verifyOtp(email: widget.args.email, otp: otp);
     if (res.response != null) {
       final accessToken = res.response['accessToken'];
@@ -82,8 +84,15 @@ class _OTPScreenState extends State<OTPScreen> {
         loading = false;
       });
     }
-    if (auth.isAuthenticated && mounted) {
+    if (!mounted) return;
+    if (auth.isAuthenticated) {
       widget.args.onVerify(otp);
+    } else {
+      AppSnackbar.show(
+        context,
+        message: auth.errorMessage ?? 'Invalid OTP. Please try again.',
+        status: SnackbarStatus.error,
+      );
     }
   }
 
@@ -91,14 +100,30 @@ class _OTPScreenState extends State<OTPScreen> {
     setState(() {
       resendLoading = true;
     });
-    await auth.sendOtp(email: widget.args.email, reason: widget.args.reason);
+    auth.clearErrors();
+    final res = await auth.sendOtp(
+      email: widget.args.email,
+      reason: widget.args.reason,
+    );
     if (mounted) {
       setState(() {
         resendLoading = false;
       });
     }
-    if (auth.isAuthenticated) {
+    if (!mounted) return;
+    if (res.response != null) {
       _start();
+      AppSnackbar.show(
+        context,
+        message: 'OTP sent successfully.',
+        status: SnackbarStatus.success,
+      );
+    } else {
+      AppSnackbar.show(
+        context,
+        message: auth.errorMessage ?? 'Failed to resend OTP. Please try again.',
+        status: SnackbarStatus.error,
+      );
     }
   }
 
@@ -167,13 +192,6 @@ class _OTPScreenState extends State<OTPScreen> {
                           ),
                   ],
                 ),
-                if (auth.errorMessage != null) ...[
-                  const SizedBox(height: 12),
-                  Text(
-                    auth.errorMessage!,
-                    style: const TextStyle(color: AppColors.error),
-                  ),
-                ],
                 const SizedBox(height: 24),
                 PrimaryButton(
                   label: "Verify",
