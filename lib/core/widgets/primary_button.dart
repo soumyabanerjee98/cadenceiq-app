@@ -128,7 +128,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
                 widget.label,
                 style: Theme.of(
                   context,
-                ).textTheme.titleSmall!.copyWith(color: AppColors.surface),
+                ).textTheme.titleSmall!.copyWith(color: Colors.white),
               ),
             ],
           );
@@ -265,8 +265,8 @@ class SocialAuthButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.textPrimary,
-        side: const BorderSide(color: AppColors.border),
+        foregroundColor: AppColors.textPrimaryOf(context),
+        side: BorderSide(color: AppColors.borderOf(context)),
         padding: const EdgeInsets.symmetric(vertical: 12),
       ),
       child: Row(

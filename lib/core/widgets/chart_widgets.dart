@@ -30,7 +30,7 @@ class WeeklyLoadChart extends StatelessWidget {
           lineTouchData: LineTouchData(
             handleBuiltInTouches: true,
             touchTooltipData: LineTouchTooltipData(
-              getTooltipColor: (_) => Colors.white,
+              getTooltipColor: (_) => AppColors.cardOf(context),
               tooltipRoundedRadius: 12,
               tooltipPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -40,8 +40,8 @@ class WeeklyLoadChart extends StatelessWidget {
                 return spots.map((spot) {
                   return LineTooltipItem(
                     spot.y.toStringAsFixed(0),
-                    const TextStyle(
-                      color: AppColors.textPrimary,
+                    TextStyle(
+                      color: AppColors.textPrimaryOf(context),
                       fontWeight: FontWeight.w600,
                     ),
                   );
@@ -53,7 +53,7 @@ class WeeklyLoadChart extends StatelessWidget {
             show: true,
             drawVerticalLine: false,
             getDrawingHorizontalLine: (_) =>
-                FlLine(color: AppColors.border, strokeWidth: 1),
+                FlLine(color: AppColors.borderOf(context), strokeWidth: 1),
           ),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
@@ -70,9 +70,9 @@ class WeeklyLoadChart extends StatelessWidget {
                 getTitlesWidget: (value, _) {
                   return Text(
                     value.toInt().toString(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 10,
-                      color: AppColors.textTertiary,
+                      color: AppColors.textTertiaryOf(context),
                     ),
                   );
                 },
@@ -94,9 +94,9 @@ class WeeklyLoadChart extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
                       data[i].day,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 10,
-                        color: AppColors.textTertiary,
+                        color: AppColors.textTertiaryOf(context),
                       ),
                     ),
                   );
@@ -124,7 +124,7 @@ class WeeklyLoadChart extends StatelessWidget {
                     radius: 4,
                     color: AppColors.primary,
                     strokeWidth: 2,
-                    strokeColor: Colors.white,
+                    strokeColor: AppColors.cardOf(context),
                   );
                 },
               ),

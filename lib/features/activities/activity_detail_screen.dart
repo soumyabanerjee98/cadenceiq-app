@@ -112,11 +112,16 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                   ),
                   background: activity.map != null
                       ? ActivityMap(polyline: activity.map!)
-                      : Center(
-                          child: Text(
-                            "No Map Data!",
-                            style: Theme.of(context).textTheme.titleSmall!
-                                .copyWith(color: AppColors.darkTextSecondary),
+                      : ColoredBox(
+                          color: AppColors.surfaceVariantOf(context),
+                          child: Center(
+                            child: Text(
+                              "No Map Data!",
+                              style: Theme.of(context).textTheme.titleSmall
+                                  ?.copyWith(
+                                    color: AppColors.textSecondaryOf(context),
+                                  ),
+                            ),
                           ),
                         ),
                 ),
@@ -127,7 +132,7 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                   delegate: SliverChildListDelegate([
                     Text(
                       '${activity.zoneLabel} · ${Formatters.date(activity.date)}',
-                      style: const TextStyle(color: AppColors.textSecondary),
+                      style: TextStyle(color: AppColors.textSecondaryOf(context)),
                     ),
                     if (activity.maxHr == null || activity.avgHr == null)
                       WarningCard(

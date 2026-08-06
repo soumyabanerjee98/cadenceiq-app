@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cadenceiq/core/theme/app_colors.dart';
-import 'package:cadenceiq/core/theme/app_theme.dart';
 import 'package:cadenceiq/core/utils/responsive.dart';
 import 'package:cadenceiq/core/widgets/cadence_app_bar.dart';
 import 'package:cadenceiq/core/widgets/otp_pin.dart';
@@ -133,7 +132,7 @@ class _OTPScreenState extends State<OTPScreen> {
                 Text(
                   'Verify the 4 digit OTP sent to ${widget.args.email}',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: AppColors.textSecondaryOf(context),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -189,9 +188,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     ],
                   ),
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                    color: AppTheme.isDarkMode(context)
-                        ? AppColors.darkTextSecondary
-                        : AppColors.textSecondary,
+                    color: AppColors.textSecondaryOf(context),
                   ),
                 ),
               ],

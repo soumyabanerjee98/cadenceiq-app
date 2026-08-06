@@ -40,9 +40,9 @@ class GoalCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 '${Formatters.shortDate(goal.startDate)} – ${Formatters.shortDate(goal.endDate)}',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.textSecondaryOf(context),
+                ),
               ),
               const SizedBox(height: 4),
               Text(
@@ -68,7 +68,7 @@ class GoalCard extends StatelessWidget {
                 child: LinearProgressIndicator(
                   value: double.parse(goal.completion.toString()).clamp(0, 1),
                   minHeight: 6,
-                  backgroundColor: AppColors.surfaceVariant,
+                  backgroundColor: AppColors.surfaceVariantOf(context),
                   valueColor: const AlwaysStoppedAnimation(AppColors.primary),
                 ),
               ),
@@ -76,7 +76,7 @@ class GoalCard extends StatelessWidget {
               Text(
                 '${Formatters.percent(double.parse(goal.completion.toString()))} complete',
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: AppColors.textSecondaryOf(context),
                 ),
               ),
               Row(

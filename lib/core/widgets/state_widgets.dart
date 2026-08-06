@@ -1,4 +1,3 @@
-import 'package:cadenceiq/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import '../theme/app_colors.dart';
@@ -28,7 +27,7 @@ class EmptyStateWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 64, color: AppColors.textTertiary),
+            Icon(icon, size: 64, color: AppColors.textTertiaryOf(context)),
             const SizedBox(height: 16),
             Text(
               title,
@@ -42,7 +41,7 @@ class EmptyStateWidget extends StatelessWidget {
               Text(
                 message!,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: AppColors.textSecondaryOf(context),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -87,9 +86,9 @@ class ErrorStateWidget extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               message,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: AppColors.textSecondaryOf(context),
+              ),
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
@@ -148,17 +147,11 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
             gradient: LinearGradient(
               begin: Alignment(-1 + _controller.value * 2, 0),
               end: Alignment(1 + _controller.value * 2, 0),
-              colors: AppTheme.isDarkMode(context)
-                  ? [
-                      AppColors.darkSurface,
-                      AppColors.darkSurfaceVariant,
-                      AppColors.darkSurface,
-                    ]
-                  : [
-                      AppColors.surface,
-                      AppColors.surfaceVariant,
-                      AppColors.surface,
-                    ],
+              colors: [
+                AppColors.surfaceOf(context),
+                AppColors.surfaceVariantOf(context),
+                AppColors.surfaceOf(context),
+              ],
             ),
           ),
         );

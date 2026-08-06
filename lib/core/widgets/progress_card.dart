@@ -34,7 +34,7 @@ class ProgressCard extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: AppColors.borderOf(context)),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -80,7 +80,7 @@ class ProgressCard extends StatelessWidget {
                 Text(
                   subtitle!,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: AppColors.textSecondaryOf(context),
                   ),
                 ),
               ],
@@ -101,7 +101,7 @@ class ProgressCard extends StatelessWidget {
                           ? '$daysRemaining days left'
                           : 'Ends today',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: AppColors.textSecondaryOf(context),
                       ),
                     ),
                 ],
@@ -112,7 +112,7 @@ class ProgressCard extends StatelessWidget {
                 child: LinearProgressIndicator(
                   value: progress.clamp(0, 1),
                   minHeight: 8,
-                  backgroundColor: AppColors.surfaceVariant,
+                  backgroundColor: AppColors.surfaceVariantOf(context),
                   valueColor: const AlwaysStoppedAnimation(AppColors.primary),
                 ),
               ),

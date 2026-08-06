@@ -100,7 +100,7 @@ class ProfileScreen extends StatelessWidget {
             Center(
               child: Text(
                 user?.email ?? "",
-                style: const TextStyle(color: AppColors.textSecondary),
+                style: TextStyle(color: AppColors.textSecondaryOf(context)),
               ),
             ),
             const SizedBox(height: 32),
@@ -188,7 +188,7 @@ class _InfoRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: AppColors.textSecondary)),
+          Text(label, style: TextStyle(color: AppColors.textSecondaryOf(context))),
           Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
         ],
       ),

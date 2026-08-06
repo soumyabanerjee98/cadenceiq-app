@@ -104,7 +104,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   Text(
                     'Start your AI-powered training journey',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: AppColors.textSecondaryOf(context),
                     ),
                   ),
                   const SizedBox(height: 32),

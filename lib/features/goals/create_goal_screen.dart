@@ -232,7 +232,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   Widget _buildPlanPage() {
     final padding = Responsive.horizontalPadding(context);
     final TextStyle? normal = Theme.of(context).textTheme.bodyMedium?.copyWith(
-      color: AppColors.textSecondary,
+      color: AppColors.textSecondaryOf(context),
       height: 1.5,
     );
     final TextStyle? highlight = Theme.of(context).textTheme.bodyMedium
@@ -346,7 +346,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           'This is based on your Strava history',
           style: Theme.of(
             context,
-          ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondary),
+          ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondaryOf(context)),
         ),
         const SizedBox(height: 8),
         Text(
@@ -363,7 +363,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     provider = context.watch<GoalProvider>();
     final padding = Responsive.horizontalPadding(context);
     final TextStyle? normal = Theme.of(context).textTheme.bodyMedium?.copyWith(
-      color: AppColors.textSecondary,
+      color: AppColors.textSecondaryOf(context),
       height: 1.5,
     );
     final TextStyle? highlight = Theme.of(context).textTheme.bodyMedium

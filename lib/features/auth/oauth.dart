@@ -75,7 +75,7 @@ class _OAuthResultScreenState extends State<OAuthResultScreen> {
                     : 'Something went wrong while connecting your account.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: AppColors.textSecondaryOf(context),
                 ),
               ),
               const SizedBox(height: 32),

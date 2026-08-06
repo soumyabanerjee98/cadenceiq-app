@@ -175,7 +175,7 @@ class _InfoCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: double.parse(goal.completion.toString()).clamp(0, 1),
                 minHeight: 8,
-                backgroundColor: AppColors.surfaceVariant,
+                backgroundColor: AppColors.surfaceVariantOf(context),
                 valueColor: const AlwaysStoppedAnimation(AppColors.primary),
               ),
             ),
@@ -238,7 +238,7 @@ class _Metric extends StatelessWidget {
         ),
         Text(
           label,
-          style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          style: TextStyle(fontSize: 12, color: AppColors.textSecondaryOf(context)),
         ),
       ],
     );
@@ -276,7 +276,7 @@ class _Timeline extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: progress.clamp(0, 1),
                 minHeight: 6,
-                backgroundColor: AppColors.surfaceVariant,
+                backgroundColor: AppColors.surfaceVariantOf(context),
                 valueColor: const AlwaysStoppedAnimation(AppColors.info),
               ),
             ),
@@ -310,7 +310,7 @@ class _SessionTileState extends State<_SessionTile>
 
   Color get _statusColor {
     if (_isFuture) {
-      return AppColors.textTertiary;
+      return AppColors.textTertiaryOf(context);
     }
 
     return planColor(widget.plan.type);
@@ -438,7 +438,7 @@ class _SessionTileState extends State<_SessionTile>
                   minHeight: 6,
                   borderRadius: BorderRadius.circular(20),
                   color: AppColors.info,
-                  backgroundColor: AppColors.divider,
+                  backgroundColor: AppColors.dividerOf(context),
                 ),
 
                 const SizedBox(height: 6),
@@ -526,7 +526,7 @@ class _SessionTileState extends State<_SessionTile>
                           width: double.infinity,
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceVariant,
+                            color: AppColors.surfaceVariantOf(context),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Text(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
@@ -83,10 +84,8 @@ final TextTheme textTheme = const TextTheme(
 );
 
 abstract final class AppTheme {
-  static Brightness of(BuildContext context) {
-    final brightness = MediaQuery.platformBrightnessOf(context);
-    return brightness;
-  }
+  static Brightness of(BuildContext context) =>
+      Theme.of(context).brightness;
 
   static bool isDarkMode(BuildContext context) =>
       of(context) == Brightness.dark;
@@ -100,13 +99,38 @@ abstract final class AppTheme {
         primary: AppColors.primary,
         onPrimary: Colors.white,
         secondary: AppColors.primary,
-        surface: AppColors.surface,
+        surface: AppColors.background,
         onSurface: AppColors.textPrimary,
+        onSurfaceVariant: AppColors.textSecondary,
+        surfaceContainerHighest: AppColors.surfaceVariant,
+        surfaceContainerHigh: AppColors.surface,
+        outline: AppColors.border,
+        outlineVariant: AppColors.divider,
         error: AppColors.error,
       ),
       scaffoldBackgroundColor: AppColors.background,
       cardColor: AppColors.background,
       dividerColor: AppColors.divider,
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.background,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lgAll),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.background,
+        surfaceTintColor: Colors.transparent,
+        modalBackgroundColor: AppColors.background,
+      ),
+      listTileTheme: const ListTileThemeData(
+        iconColor: AppColors.textSecondary,
+        textColor: AppColors.textPrimary,
+      ),
+      expansionTileTheme: const ExpansionTileThemeData(
+        backgroundColor: AppColors.background,
+        collapsedBackgroundColor: AppColors.background,
+        iconColor: AppColors.textSecondary,
+        collapsedIconColor: AppColors.textTertiary,
+      ),
       textTheme: textTheme.apply(
         bodyColor: AppColors.textPrimary,
         displayColor: AppColors.textPrimary,
@@ -117,6 +141,11 @@ abstract final class AppTheme {
         centerTitle: false,
         backgroundColor: AppColors.background,
         foregroundColor: AppColors.textPrimary,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
         titleTextStyle: GoogleFonts.inter(
           fontSize: 18,
           fontWeight: FontWeight.w600,
@@ -125,6 +154,7 @@ abstract final class AppTheme {
       ),
       cardTheme: CardThemeData(
         elevation: 0,
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: AppRadius.lgAll,
           side: const BorderSide(color: AppColors.border),
@@ -186,6 +216,7 @@ abstract final class AppTheme {
       navigationBarTheme: NavigationBarThemeData(
         indicatorColor: AppColors.primary,
         backgroundColor: AppColors.background,
+        surfaceTintColor: Colors.transparent,
         labelTextStyle: WidgetStateProperty.all(
           const TextStyle(fontSize: 0, height: 0),
         ),
@@ -209,19 +240,20 @@ abstract final class AppTheme {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.divider,
+        thickness: 1,
+      ),
       tabBarTheme: const TabBarThemeData(
         indicatorColor: AppColors.primary,
         indicatorSize: TabBarIndicatorSize.label,
-
         labelColor: AppColors.primary,
-        unselectedLabelColor: Colors.grey,
-
+        unselectedLabelColor: AppColors.textTertiary,
         labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
-
         dividerColor: Colors.transparent,
         splashFactory: NoSplash.splashFactory,
       ),
@@ -235,6 +267,10 @@ abstract final class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.primary,
+        linearTrackColor: AppColors.surfaceVariant,
       ),
     );
   }
@@ -250,11 +286,36 @@ abstract final class AppTheme {
         secondary: AppColors.primary,
         surface: AppColors.darkSurface,
         onSurface: AppColors.darkTextPrimary,
+        onSurfaceVariant: AppColors.darkTextSecondary,
+        surfaceContainerHighest: AppColors.darkSurfaceVariant,
+        surfaceContainerHigh: AppColors.darkSurface,
+        outline: AppColors.darkBorder,
+        outlineVariant: AppColors.darkDivider,
         error: AppColors.error,
       ),
       scaffoldBackgroundColor: AppColors.darkBackground,
       cardColor: AppColors.darkSurface,
-      dividerColor: const Color(0xFF2A2A2A),
+      dividerColor: AppColors.darkDivider,
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppColors.darkSurface,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: AppRadius.lgAll),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: AppColors.darkSurface,
+        surfaceTintColor: Colors.transparent,
+        modalBackgroundColor: AppColors.darkSurface,
+      ),
+      listTileTheme: const ListTileThemeData(
+        iconColor: AppColors.darkTextSecondary,
+        textColor: AppColors.darkTextPrimary,
+      ),
+      expansionTileTheme: const ExpansionTileThemeData(
+        backgroundColor: AppColors.darkSurface,
+        collapsedBackgroundColor: AppColors.darkSurface,
+        iconColor: AppColors.darkTextSecondary,
+        collapsedIconColor: AppColors.darkTextTertiary,
+      ),
       textTheme: textTheme.apply(
         bodyColor: AppColors.darkTextPrimary,
         displayColor: AppColors.darkTextPrimary,
@@ -265,6 +326,11 @@ abstract final class AppTheme {
         centerTitle: false,
         backgroundColor: AppColors.darkBackground,
         foregroundColor: AppColors.darkTextPrimary,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.light,
+          statusBarBrightness: Brightness.dark,
+        ),
         titleTextStyle: GoogleFonts.inter(
           fontSize: 18,
           fontWeight: FontWeight.w600,
@@ -273,25 +339,26 @@ abstract final class AppTheme {
       ),
       cardTheme: CardThemeData(
         elevation: 0,
+        surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: Color(0xFF2A2A2A)),
+          borderRadius: AppRadius.lgAll,
+          side: const BorderSide(color: AppColors.darkBorder),
         ),
         color: AppColors.darkSurface,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.darkSurface,
+        fillColor: AppColors.darkSurfaceVariant,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF2A2A2A)),
+          borderRadius: AppRadius.mdAll,
+          borderSide: const BorderSide(color: AppColors.darkBorder),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Color(0xFF2A2A2A)),
+          borderRadius: AppRadius.mdAll,
+          borderSide: const BorderSide(color: AppColors.darkBorder),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppRadius.mdAll,
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(
@@ -306,7 +373,7 @@ abstract final class AppTheme {
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: AppRadius.mdAll,
           ),
           textStyle: GoogleFonts.inter(
             fontWeight: FontWeight.w600,
@@ -325,15 +392,16 @@ abstract final class AppTheme {
         ),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.darkSurface,
+        backgroundColor: AppColors.darkBackground,
         selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.darkTextSecondary,
+        unselectedItemColor: AppColors.darkTextTertiary,
         type: BottomNavigationBarType.fixed,
         elevation: 8,
       ),
       navigationBarTheme: NavigationBarThemeData(
         indicatorColor: AppColors.primary,
-        backgroundColor: AppColors.darkSurface,
+        backgroundColor: AppColors.darkBackground,
+        surfaceTintColor: Colors.transparent,
         labelTextStyle: WidgetStateProperty.all(
           const TextStyle(fontSize: 0, height: 0),
         ),
@@ -341,11 +409,11 @@ abstract final class AppTheme {
           if (states.contains(WidgetState.selected)) {
             return const IconThemeData(color: Colors.white);
           }
-          return const IconThemeData(color: AppColors.darkTextSecondary);
+          return const IconThemeData(color: AppColors.darkTextTertiary);
         }),
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: AppColors.darkSurface,
+        backgroundColor: AppColors.darkSurfaceVariant,
         selectedColor: AppColors.primary.withValues(alpha: 0.15),
         labelStyle: GoogleFonts.inter(fontSize: 13, color: AppColors.primary),
         shape: RoundedRectangleBorder(
@@ -357,19 +425,20 @@ abstract final class AppTheme {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
+      dividerTheme: const DividerThemeData(
+        color: AppColors.darkDivider,
+        thickness: 1,
+      ),
       tabBarTheme: const TabBarThemeData(
         indicatorColor: AppColors.primary,
         indicatorSize: TabBarIndicatorSize.label,
-
-        labelColor: Colors.white,
-        unselectedLabelColor: Colors.white60,
-
+        labelColor: AppColors.primary,
+        unselectedLabelColor: AppColors.darkTextTertiary,
         labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w500,
         ),
-
         dividerColor: Colors.transparent,
         splashFactory: NoSplash.splashFactory,
       ),
@@ -383,6 +452,10 @@ abstract final class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16)),
         ),
+      ),
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.primary,
+        linearTrackColor: AppColors.darkSurfaceVariant,
       ),
     );
   }

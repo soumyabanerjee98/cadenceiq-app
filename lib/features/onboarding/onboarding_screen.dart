@@ -128,7 +128,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             decoration: BoxDecoration(
                               color: _currentPage == i
                                   ? AppColors.primary
-                                  : AppColors.border,
+                                  : AppColors.borderOf(context),
                               borderRadius: BorderRadius.circular(
                                 AppSpacing.xs,
                               ),

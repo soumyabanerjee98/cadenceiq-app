@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     'Sign in to continue your training',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: AppColors.textSecondaryOf(context),
                     ),
                     textAlign: TextAlign.center,
                   ),

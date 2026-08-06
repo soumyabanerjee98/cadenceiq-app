@@ -1,5 +1,4 @@
 import 'package:cadenceiq/core/theme/app_colors.dart';
-import 'package:cadenceiq/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 
@@ -17,9 +16,7 @@ class OTPField extends StatelessWidget {
         fontWeight: FontWeight.w600,
       ),
       decoration: BoxDecoration(
-        color: AppTheme.isDarkMode(context)
-            ? AppColors.darkSurface
-            : AppColors.surface,
+        color: AppColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(20),
       ),
     );

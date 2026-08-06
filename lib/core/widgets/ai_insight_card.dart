@@ -15,7 +15,11 @@ class AiInsightCard extends StatelessWidget {
     final padding = Responsive.horizontalPadding(context);
     return Card(
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      color: AppColors.cardOf(context),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(color: AppColors.borderOf(context)),
+      ),
       child: Padding(
         padding: EdgeInsets.all(padding),
         child: Column(

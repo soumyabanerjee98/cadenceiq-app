@@ -200,7 +200,7 @@ class _SyncStravaActivityState extends State<SyncStravaActivity> {
                                           .textTheme
                                           .bodySmall
                                           ?.copyWith(
-                                            color: AppColors.textSecondary,
+                                            color: AppColors.textSecondaryOf(context),
                                           ),
                                     ),
                                     const SizedBox(height: 8),
@@ -212,7 +212,7 @@ class _SyncStravaActivityState extends State<SyncStravaActivity> {
                                           .textTheme
                                           .bodySmall
                                           ?.copyWith(
-                                            color: AppColors.textSecondary,
+                                            color: AppColors.textSecondaryOf(context),
                                           ),
                                     ),
                                   ],

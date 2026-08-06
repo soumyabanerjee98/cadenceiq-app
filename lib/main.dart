@@ -20,10 +20,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   DioClient.instance.initialize();
   SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-    ),
+    const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
   final GoRouter router = AppRouter.create();
   final deepLinkService = DeepLinkService(router);

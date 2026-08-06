@@ -27,14 +27,17 @@ class CadenceBottomNav extends StatelessWidget {
       },
       destinations: [
         NavigationDestination(
-          icon: Icon(Icons.dashboard_outlined, color: AppColors.textTertiary),
+          icon: Icon(
+            Icons.dashboard_outlined,
+            color: AppColors.textTertiaryOf(context),
+          ),
           selectedIcon: const Icon(Icons.dashboard, color: AppColors.primary),
           label: 'Dashboard',
         ),
         NavigationDestination(
           icon: Icon(
             Icons.directions_bike_outlined,
-            color: AppColors.textTertiary,
+            color: AppColors.textTertiaryOf(context),
           ),
           selectedIcon: const Icon(
             Icons.directions_bike,
@@ -43,12 +46,18 @@ class CadenceBottomNav extends StatelessWidget {
           label: 'Activities',
         ),
         NavigationDestination(
-          icon: Icon(Icons.flag_outlined, color: AppColors.textTertiary),
+          icon: Icon(
+            Icons.flag_outlined,
+            color: AppColors.textTertiaryOf(context),
+          ),
           selectedIcon: const Icon(Icons.flag, color: AppColors.primary),
           label: 'Goals',
         ),
         NavigationDestination(
-          icon: Icon(Icons.settings_outlined, color: AppColors.textTertiary),
+          icon: Icon(
+            Icons.settings_outlined,
+            color: AppColors.textTertiaryOf(context),
+          ),
           selectedIcon: const Icon(Icons.settings, color: AppColors.primary),
           label: 'Settings',
         ),

@@ -28,7 +28,7 @@ class MetricCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,7 +43,7 @@ class MetricCard extends StatelessWidget {
                 child: Text(
                   label,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.textSecondary,
+                    color: AppColors.textSecondaryOf(context),
                     fontWeight: FontWeight.w500,
                   ),
                   maxLines: 1,
@@ -115,7 +115,9 @@ class StatTile extends StatelessWidget {
           label,
           style: Theme.of(
             context,
-          ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+          ).textTheme.bodySmall?.copyWith(
+            color: AppColors.textSecondaryOf(context),
+          ),
           textAlign: TextAlign.center,
         ),
       ],

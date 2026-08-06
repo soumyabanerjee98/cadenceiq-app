@@ -130,7 +130,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Text(
                           dashboard.greeting,
                           style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: AppColors.textSecondary),
+                              ?.copyWith(
+                                color: AppColors.textSecondaryOf(context),
+                              ),
                         ),
                         Text(
                           (user.name ?? "").split(' ').first,
@@ -273,6 +275,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ),
                 if (goal.activeGoal != null) ...[
+                  const SizedBox(height: 16),
                   ProgressCard(
                     title: goal.activeGoal?.title ?? "",
                     progress: double.parse(
@@ -361,8 +364,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           if (session.type != PlanType.rest)
                                             Text(
                                               '${Formatters.distanceKm(session.targetDistance.toDouble(), imperial: settings.useImperial)} · ${Formatters.duration(session.targetDuration)} · TSS ${Formatters.load(session.targetLoad)}',
-                                              style: const TextStyle(
-                                                color: AppColors.textSecondary,
+                                              style: TextStyle(
+                                                color:
+                                                    AppColors.textSecondaryOf(
+                                                      context,
+                                                    ),
                                                 fontSize: 13,
                                               ),
                                             ),
@@ -374,7 +380,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     backgroundColor: session.completed
                                         ? AppColors.success.withOpacity(0.15)
                                         : !DateHelper.isPastToday(session.date)
-                                        ? AppColors.surfaceVariant
+                                        ? AppColors.surfaceVariantOf(context)
                                         : AppColors.error.withOpacity(0.15),
                                     child: Icon(
                                       session.completed
@@ -389,7 +395,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           : !DateHelper.isPastToday(
                                               session.date,
                                             )
-                                          ? AppColors.textTertiary
+                                          ? AppColors.textTertiaryOf(context)
                                           : AppColors.error,
                                       size: 20,
                                     ),
@@ -416,7 +422,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         minHeight: 6,
                                         borderRadius: BorderRadius.circular(20),
                                         color: AppColors.info,
-                                        backgroundColor: AppColors.divider,
+                                        backgroundColor: AppColors.dividerOf(
+                                          context,
+                                        ),
                                       ),
 
                                       const SizedBox(height: 6),
@@ -478,7 +486,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Text(
                     tagline,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: AppColors.textSecondaryOf(context),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -549,18 +557,18 @@ class _MetricTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: highlight
             ? AppColors.primary.withOpacity(0.08)
-            : AppColors.surface,
+            : AppColors.surfaceOf(context),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
-              color: AppColors.textSecondary,
+              color: AppColors.textSecondaryOf(context),
             ),
           ),
           const SizedBox(height: 4),
@@ -569,7 +577,9 @@ class _MetricTile extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 18,
-              color: highlight ? AppColors.primary : AppColors.textPrimary,
+              color: highlight
+                  ? AppColors.primary
+                  : AppColors.textPrimaryOf(context),
             ),
           ),
         ],

@@ -124,8 +124,8 @@ class _SummaryDetailScreenState extends State<SummaryDetailScreen> {
                           const SizedBox(height: 12),
                           Text(
                             '${((summary!.actualLoad / summary!.plannedLoad) * 100).round()}% of planned volume',
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
+                            style: TextStyle(
+                              color: AppColors.textSecondaryOf(context),
                               fontSize: 13,
                             ),
                           ),
@@ -353,7 +353,7 @@ class _OverviewHeader extends StatelessWidget {
           colors: [_color.withOpacity(0.15), _color.withOpacity(0.05)],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AppColors.borderOf(context)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -375,8 +375,8 @@ class _OverviewHeader extends StatelessWidget {
                     ),
                     Text(
                       '${Formatters.date(summary.goal.startDate)} – ${Formatters.date(summary.goal.endDate)}',
-                      style: const TextStyle(
-                        color: AppColors.textSecondary,
+                      style: TextStyle(
+                        color: AppColors.textSecondaryOf(context),
                         fontSize: 13,
                       ),
                     ),
@@ -445,7 +445,7 @@ class _CtlStat extends StatelessWidget {
         ),
         Text(
           label,
-          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+          style: TextStyle(color: AppColors.textSecondaryOf(context), fontSize: 12),
         ),
       ],
     );

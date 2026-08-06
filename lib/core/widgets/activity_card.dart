@@ -40,7 +40,7 @@ class ActivityCard extends StatelessWidget {
                     Text(
                       Formatters.date(activity.date),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: AppColors.textSecondaryOf(context),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -119,13 +119,13 @@ class _Chip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 12, color: AppColors.textTertiary),
+        Icon(icon, size: 12, color: AppColors.textTertiaryOf(context)),
         const SizedBox(width: 3),
         Text(
           label,
-          style: Theme.of(
-            context,
-          ).textTheme.labelSmall?.copyWith(color: AppColors.textSecondary),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: AppColors.textSecondaryOf(context),
+          ),
         ),
       ],
     );

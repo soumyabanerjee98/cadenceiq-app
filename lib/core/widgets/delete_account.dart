@@ -50,7 +50,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
             'Enter password for confirmation of account deletion',
             style: Theme.of(
               context,
-            ).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
+            ).textTheme.bodyMedium?.copyWith(
+              color: AppColors.textSecondaryOf(context),
+            ),
           ),
           const SizedBox(height: 32),
           CustomTextFormField(

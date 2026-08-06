@@ -12,7 +12,7 @@ abstract final class AppTextStyles {
       fontSize: 14,
       fontWeight: FontWeight.w400,
       height: 1.5,
-      color: color ?? AppColors.textSecondary,
+      color: color ?? AppColors.textSecondaryOf(context),
     );
   }
 
@@ -20,7 +20,7 @@ abstract final class AppTextStyles {
     return GoogleFonts.inter(
       fontSize: 13,
       fontWeight: FontWeight.w500,
-      color: color ?? AppColors.textSecondary,
+      color: color ?? AppColors.textSecondaryOf(context),
     );
   }
 

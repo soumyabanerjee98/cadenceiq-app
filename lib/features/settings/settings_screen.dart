@@ -267,7 +267,7 @@ class _SettingsTile extends StatelessWidget {
     return ScaleOnTap(
       onTap: onTap,
       child: ListTile(
-        leading: Icon(icon, color: AppColors.textSecondary),
+        leading: Icon(icon, color: AppColors.textSecondaryOf(context)),
         title: Text(title),
         subtitle: subtitle != null ? Text(subtitle!, style: subTitleStyle) : null,
         trailing: onTap != null
