@@ -8,6 +8,7 @@ import 'package:cadenceiq/providers/dashboard_provider.dart';
 import 'package:cadenceiq/providers/goal_provider.dart';
 import 'package:cadenceiq/services/repo/auth_repo.dart';
 import 'package:cadenceiq/store/store.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -105,6 +106,24 @@ class AuthProvider extends ChangeNotifier {
     final ApiResponse res = await _repository.verifyOtp(email: email, otp: otp);
     if (res.response != null) {
       _state = AuthState.authenticated;
+    } else {
+      _state = AuthState.error;
+      _errorMessage = res.error?.errorMessage;
+    }
+    notifyListeners();
+    return res;
+  }
+
+  Future<ApiResponse> resetPassword({required String password}) async {
+    _state = AuthState.loading;
+    _errorMessage = null;
+    notifyListeners();
+    Map<String, dynamic> payload = {"password": password};
+    FormData formData = FormData.fromMap(payload);
+    final ApiResponse res = await _repository.updateProfile(formData);
+    if (res.response != null) {
+      _state = AuthState.unauthenticated;
+      _errorMessage = null;
     } else {
       _state = AuthState.error;
       _errorMessage = res.error?.errorMessage;

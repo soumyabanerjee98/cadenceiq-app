@@ -37,7 +37,7 @@ class _SignupScreenState extends State<SignupScreen> {
       context.push(
         RoutePaths.otp,
         extra: OtpScreenArgs(
-          onVerify: _signup,
+          onVerify: (_) => _signup(),
           email: email,
           reason: OtpReason.registration,
         ),

@@ -238,6 +238,9 @@ abstract final class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
+        backgroundColor: const Color(0xFF323232),
+        contentTextStyle: const TextStyle(color: Colors.white),
+        actionTextColor: AppColors.primaryLight,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       dividerTheme: const DividerThemeData(
@@ -423,7 +426,13 @@ abstract final class AppTheme {
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        backgroundColor: AppColors.darkSurfaceVariant,
+        contentTextStyle: const TextStyle(color: AppColors.darkTextPrimary),
+        actionTextColor: AppColors.primaryLight,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: AppColors.darkBorder),
+        ),
       ),
       dividerTheme: const DividerThemeData(
         color: AppColors.darkDivider,

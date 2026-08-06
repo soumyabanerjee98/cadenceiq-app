@@ -7,6 +7,7 @@ import 'package:cadenceiq/core/widgets/otp_pin.dart';
 import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:cadenceiq/core/widgets/safe_page.dart';
 import 'package:cadenceiq/providers/auth_provider.dart';
+import 'package:cadenceiq/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,7 @@ class OtpScreenArgs {
   });
   final String email;
   final OtpReason reason;
-  final VoidCallback onVerify;
+  final void Function(String otp) onVerify;
 }
 
 class OTPScreen extends StatefulWidget {
@@ -69,14 +70,20 @@ class _OTPScreenState extends State<OTPScreen> {
     setState(() {
       loading = true;
     });
-    await auth.verifyOtp(email: widget.args.email, otp: otp);
+    final res = await auth.verifyOtp(email: widget.args.email, otp: otp);
+    if (res.response != null) {
+      final accessToken = res.response['accessToken'];
+      if (accessToken != null) {
+        await TokenStorage.save(accessToken: accessToken);
+      }
+    }
     if (mounted) {
       setState(() {
         loading = false;
       });
     }
     if (auth.isAuthenticated && mounted) {
-      widget.args.onVerify();
+      widget.args.onVerify(otp);
     }
   }
 

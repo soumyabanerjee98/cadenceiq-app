@@ -27,6 +27,12 @@ abstract final class AppStrings {
   static const confirmPassword = 'Confirm Password';
   static const name = 'Full Name';
   static const forgotPassword = 'Forgot Password?';
+  static const forgotPasswordTitle = 'Forgot Password';
+  static const resetPasswordTitle = 'Reset Password';
+  static const newPassword = 'New Password';
+  static const sendOtp = 'Send OTP';
+  static const resetPassword = 'Reset Password';
+  static const backToLogin = 'Back to Log In';
   static const noAccount = "Don't have an account?";
   static const haveAccount = 'Already have an account?';
   static const continueWith = 'Or';

@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:cadenceiq/core/constants/route_paths.dart';
 import 'package:cadenceiq/core/utils/app_animations.dart';
 import 'package:cadenceiq/features/activities/sync_activities_list.dart';
+import 'package:cadenceiq/features/auth/forgot_password_screen.dart';
 import 'package:cadenceiq/features/auth/oauth.dart';
 import 'package:cadenceiq/features/auth/otp_screen.dart';
+import 'package:cadenceiq/features/auth/reset_password_screen.dart';
 import 'package:cadenceiq/features/profile/update_profile_screen.dart';
 import 'package:cadenceiq/features/settings/strava_connect.dart';
 import 'package:cadenceiq/features/activities/activities_list_screen.dart';
@@ -69,6 +71,22 @@ class AppRouter {
           pageBuilder: (_, state) => _slideUpPage(
             key: state.pageKey,
             child: OTPScreen(args: state.extra as OtpScreenArgs),
+          ),
+        ),
+        GoRoute(
+          path: RoutePaths.forgotPassword,
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: const ForgotPasswordScreen(),
+          ),
+        ),
+        GoRoute(
+          path: RoutePaths.resetPassword,
+          pageBuilder: (_, state) => _slideUpPage(
+            key: state.pageKey,
+            child: ResetPasswordScreen(
+              args: state.extra as ResetPasswordArgs,
+            ),
           ),
         ),
         StatefulShellRoute.indexedStack(

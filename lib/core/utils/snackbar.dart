@@ -1,3 +1,4 @@
+import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 enum SnackbarStatus { general, success, error }
@@ -9,15 +10,32 @@ class AppSnackbar {
     SnackbarStatus status = SnackbarStatus.general,
   }) {
     final messenger = ScaffoldMessenger.of(context);
+    final isDark = AppColors.isDark(context);
 
-    Color? bgColor() {
+    Color bgColor() {
       switch (status) {
         case SnackbarStatus.success:
-          return Colors.green;
+          return isDark
+              ? AppColors.success.withValues(alpha: 0.9)
+              : AppColors.success;
         case SnackbarStatus.error:
-          return Colors.red;
-        default:
-          return null;
+          return isDark
+              ? AppColors.error.withValues(alpha: 0.9)
+              : AppColors.error;
+        case SnackbarStatus.general:
+          return isDark
+              ? AppColors.darkSurfaceVariant
+              : const Color(0xFF323232);
+      }
+    }
+
+    Color contentColor() {
+      switch (status) {
+        case SnackbarStatus.success:
+        case SnackbarStatus.error:
+          return Colors.white;
+        case SnackbarStatus.general:
+          return isDark ? AppColors.darkTextPrimary : Colors.white;
       }
     }
 
@@ -27,10 +45,12 @@ class AppSnackbar {
           return Icons.check_circle_outline;
         case SnackbarStatus.error:
           return Icons.cancel_outlined;
-        default:
+        case SnackbarStatus.general:
           return Icons.info_outline;
       }
     }
+
+    final foreground = contentColor();
 
     messenger
       ..hideCurrentSnackBar()
@@ -40,14 +60,23 @@ class AppSnackbar {
           margin: const EdgeInsets.all(16),
           duration: const Duration(seconds: 3),
           backgroundColor: bgColor(),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: isDark
+                ? BorderSide(color: AppColors.darkBorder)
+                : BorderSide.none,
+          ),
           content: Row(
             children: [
-              Icon(icon(), color: Colors.white),
+              Icon(icon(), color: foreground),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   message,
-                  style: const TextStyle(color: Colors.white),
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    color: foreground,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],
