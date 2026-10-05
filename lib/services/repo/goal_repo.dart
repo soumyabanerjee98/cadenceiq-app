@@ -112,6 +112,19 @@ class GoalRepository {
     }
   }
 
+  Future<ApiResponse> deleteCurrentGoal() async {
+    try {
+      final res = await dio.delete(ApiUrl.getCurrentGoal);
+      return ApiResponse(statusCode: res.statusCode, response: res.data);
+    } on DioException catch (dioErr) {
+      return ApiResponse(
+        statusCode: dioErr.response?.statusCode,
+        response: null,
+        error: ServerError(errorMessage: dio.extractError(dioErr)),
+      );
+    }
+  }
+
   Future<ApiResponse> getPastGoals() async {
     try {
       final res = await dio.get(ApiUrl.getPastGoals);

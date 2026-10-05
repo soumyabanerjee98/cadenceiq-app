@@ -1,8 +1,12 @@
 import 'package:cadenceiq/core/utils/date.dart';
+import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/activity_card.dart';
 import 'package:cadenceiq/core/widgets/ai_insight_card.dart';
+import 'package:cadenceiq/core/widgets/dialog.dart';
+import 'package:cadenceiq/core/widgets/primary_button.dart';
 import 'package:cadenceiq/models/activity.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'package:cadenceiq/core/theme/app_colors.dart';
@@ -31,14 +35,21 @@ class GoalDetailScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: CadenceAppBar(showBack: true, title: goal.title),
-      body: SafePage(child: GoalDetails(goal: goal)),
+      body: SafePage(
+        child: GoalDetails(
+          goal: goal,
+          onDeleted: () => context.pop(),
+        ),
+      ),
     );
   }
 }
 
 class GoalDetails extends StatefulWidget {
   final Goal goal;
-  const GoalDetails({super.key, required this.goal});
+  final VoidCallback? onDeleted;
+
+  const GoalDetails({super.key, required this.goal, this.onDeleted});
 
   @override
   State<GoalDetails> createState() => _GoalDetailsState();
@@ -46,11 +57,45 @@ class GoalDetails extends StatefulWidget {
 
 class _GoalDetailsState extends State<GoalDetails> {
   late GoalProvider goal;
+  bool _isDeleting = false;
 
   @override
   void initState() {
     goal = context.read<GoalProvider>();
     super.initState();
+  }
+
+  Future<void> _deleteGoal() async {
+    final confirmed = await AppDialog.show(
+      context,
+      title: 'Delete goal',
+      description:
+          'Are you sure you want to delete this goal? This cannot be undone.',
+      actionText: 'Delete',
+      isDanger: true,
+      barrierDismissible: true,
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _isDeleting = true);
+    final ok = await goal.deleteCurrentGoal();
+    if (!mounted) return;
+    setState(() => _isDeleting = false);
+
+    if (ok) {
+      AppSnackbar.show(
+        context,
+        message: 'Goal deleted',
+        status: SnackbarStatus.success,
+      );
+      widget.onDeleted?.call();
+    } else {
+      AppSnackbar.show(
+        context,
+        message: goal.errorMessage ?? 'Failed to delete goal',
+        status: SnackbarStatus.error,
+      );
+    }
   }
 
   @override
@@ -63,7 +108,11 @@ class _GoalDetailsState extends State<GoalDetails> {
       child: ListView(
         padding: EdgeInsets.all(padding),
         children: [
-          _InfoCard(goal: widget.goal),
+          _InfoCard(
+            goal: widget.goal,
+            isDeleting: _isDeleting,
+            onDelete: widget.goal.isActive ? _deleteGoal : null,
+          ),
           const SizedBox(height: 20),
           Text(
             'Training Plan',
@@ -125,8 +174,15 @@ class _StatusChip extends StatelessWidget {
 }
 
 class _InfoCard extends StatelessWidget {
-  const _InfoCard({required this.goal});
+  const _InfoCard({
+    required this.goal,
+    this.onDelete,
+    this.isDeleting = false,
+  });
+
   final Goal goal;
+  final VoidCallback? onDelete;
+  final bool isDeleting;
 
   @override
   Widget build(BuildContext context) {
@@ -201,6 +257,16 @@ class _InfoCard extends StatelessWidget {
                 ),
               ],
             ),
+            if (onDelete != null) ...[
+              const SizedBox(height: 20),
+              PrimaryButton(
+                label: 'Delete goal',
+                icon: Icons.delete_outline,
+                danger: true,
+                isLoading: isDeleting,
+                onPressed: isDeleting ? null : onDelete,
+              ),
+            ],
           ],
         ),
       ),

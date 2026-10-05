@@ -199,6 +199,30 @@ class GoalProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> deleteCurrentGoal() async {
+    _errorMessage = null;
+    notifyListeners();
+    try {
+      final res = await _repository.deleteCurrentGoal();
+      final success = res.statusCode == 200 || res.statusCode == 204;
+      if (success) {
+        _active = null;
+        final dashboard = rootNavigatorKey.currentContext
+            ?.read<DashboardProvider>();
+        await dashboard?.refresh();
+        notifyListeners();
+        return true;
+      }
+      _errorMessage = res.error?.errorMessage ?? 'Failed to delete goal';
+      notifyListeners();
+      return false;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<void> getPastGoals() async {
     _isLoading = true;
     notifyListeners();
