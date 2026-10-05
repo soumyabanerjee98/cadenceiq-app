@@ -1,4 +1,5 @@
 import 'package:cadenceiq/core/constants/route_paths.dart';
+import 'package:cadenceiq/core/validation/goal_form_validation.dart';
 import 'package:cadenceiq/core/utils/snackbar.dart';
 import 'package:cadenceiq/core/widgets/ai_action_button.dart';
 import 'package:cadenceiq/core/widgets/plan_insight_card.dart';
@@ -33,19 +34,34 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   late GoalProvider provider;
   final _formKey = GlobalKey<FormState>();
   String _title = '';
-  DateTime _startDate = DateTime.now();
-  DateTime _endDate = DateTime.now().add(const Duration(days: 7));
+  DateTime? _startDate;
+  DateTime? _endDate;
   ExperienceLevel _level = ExperienceLevel.beginner;
-  String _request = '';
+  String _notes = '';
+  TrainingGoal? _goal;
+  int? _maxTrainingDays;
+  int? _maxWeeklyDistance;
+  int? _maxWeeklyDuration;
+  Weekday? _preferredLongRideDay;
+  final Set<Weekday> _preferredTrainingDays = {};
+  final Set<PlanType> _preferredSessionTypes = {};
   final PageController _controller = PageController();
   int currentPage = 0;
+
+  static const int _maxPlanMonths = 6;
+  static const int _maxStartMonthsAhead = 12;
+
+  DateTime _todayOnly() {
+    final today = DateTime.now();
+    return DateTime(today.year, today.month, today.day);
+  }
 
   @override
   void initState() {
     provider = context.read<GoalProvider>();
-    setState(() {
-      _level = widget.args.experienceLevel;
-    });
+    _level = widget.args.experienceLevel;
+    _startDate = _todayOnly();
+    _endDate = _todayOnly().add(const Duration(days: 6));
     super.initState();
   }
 
@@ -55,52 +71,45 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     super.dispose();
   }
 
+  DateTime _addMonths(DateTime date, int months) {
+    return DateTime(date.year, date.month + months, date.day);
+  }
+
   Future<void> _pickDate(bool isStart) async {
-    final int monthGap = 1;
     final today = DateTime.now();
     final todayOnly = DateTime(today.year, today.month, today.day);
 
     if (isStart) {
+      final initial = _startDate ?? todayOnly;
       final picked = await showDatePicker(
         context: context,
-        initialDate: _startDate.isBefore(todayOnly) ? todayOnly : _startDate,
+        initialDate: initial.isBefore(todayOnly) ? todayOnly : initial,
         firstDate: todayOnly,
-        lastDate: DateTime(
-          todayOnly.year,
-          todayOnly.month + monthGap,
-          todayOnly.day,
-        ),
+        lastDate: _addMonths(todayOnly, _maxStartMonthsAhead),
       );
 
       if (picked == null) return;
 
       setState(() {
         _startDate = picked;
-
-        final minEnd = _startDate.add(const Duration(days: 7));
-        final maxEnd = DateTime(
-          _startDate.year,
-          _startDate.month + monthGap,
-          _startDate.day,
-        );
-
-        if (_endDate.isBefore(minEnd)) {
-          _endDate = minEnd;
-        } else if (_endDate.isAfter(maxEnd)) {
-          _endDate = maxEnd;
-        }
       });
     } else {
-      final minEnd = _startDate.add(const Duration(days: 7));
-      final maxEnd = DateTime(
-        _startDate.year,
-        _startDate.month + monthGap,
-        _startDate.day,
-      );
+      if (_startDate == null) {
+        AppSnackbar.show(
+          context,
+          message: 'Select a start date first',
+          status: SnackbarStatus.error,
+        );
+        return;
+      }
+
+      final minEnd = _startDate!.add(const Duration(days: 1));
+      final maxEnd = _addMonths(_startDate!, _maxPlanMonths);
+      final initial = _endDate ?? minEnd;
 
       final picked = await showDatePicker(
         context: context,
-        initialDate: _endDate.isBefore(minEnd) ? minEnd : _endDate,
+        initialDate: initial.isBefore(minEnd) ? minEnd : initial,
         firstDate: minEnd,
         lastDate: maxEnd,
       );
@@ -111,6 +120,45 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         _endDate = picked;
       });
     }
+  }
+
+  String? _validatePlanPreferences() {
+    return GoalFormValidation.validateBuildPlan(
+      title: _title,
+      startDate: _startDate,
+      endDate: _endDate,
+      goal: _goal,
+      maxTrainingDays: _maxTrainingDays,
+      maxWeeklyDistance: _maxWeeklyDistance,
+      maxWeeklyDuration: _maxWeeklyDuration,
+      preferredLongRideDay: _preferredLongRideDay,
+      preferredTrainingDays: _preferredTrainingDays,
+      preferredSessionTypes: _preferredSessionTypes,
+    );
+  }
+
+  void _toggleTrainingDay(Weekday day) {
+    setState(() {
+      if (_preferredTrainingDays.contains(day)) {
+        _preferredTrainingDays.remove(day);
+        if (_preferredLongRideDay == day) {
+          _preferredLongRideDay = null;
+        }
+      } else if (_preferredTrainingDays.length <
+          GoalFormValidation.maxPreferredTrainingDays) {
+        _preferredTrainingDays.add(day);
+      }
+    });
+  }
+
+  void _toggleSessionType(PlanType type) {
+    setState(() {
+      if (_preferredSessionTypes.contains(type)) {
+        _preferredSessionTypes.remove(type);
+      } else {
+        _preferredSessionTypes.add(type);
+      }
+    });
   }
 
   void _action() {
@@ -145,12 +193,43 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Future<void> _buildPlan() async {
-    if (!_formKey.currentState!.validate()) return;
+    final formState = _formKey.currentState;
+    if (formState == null || !formState.validate()) {
+      return;
+    }
+
+    final preferenceError = _validatePlanPreferences();
+    if (preferenceError != null) {
+      if (!mounted) return;
+      AppSnackbar.show(
+        context,
+        message: GoalFormValidation.humanizeMessage(preferenceError),
+        status: SnackbarStatus.error,
+      );
+      return;
+    }
+
+    final startDate = _startDate;
+    final endDate = _endDate;
+    final goal = _goal;
+    if (startDate == null || endDate == null || goal == null) {
+      return;
+    }
+
     final res = await provider.buildPlan(
-      startDate: _startDate,
-      endDate: _endDate,
+      startDate: startDate,
+      endDate: endDate,
       level: _level,
-      request: _request,
+      goal: goal,
+      maxTrainingDays: _maxTrainingDays,
+      maxWeeklyDistance: _maxWeeklyDistance,
+      maxWeeklyDuration: _maxWeeklyDuration,
+      preferredLongRideDay: _preferredLongRideDay,
+      preferredTrainingDays: kDayOfWeekValues
+          .where(_preferredTrainingDays.contains)
+          .toList(),
+      preferredSessionTypes: _preferredSessionTypes.toList(),
+      notes: _notes,
     );
     if (res) {
       _nextPage();
@@ -158,7 +237,9 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       if (!mounted) return;
       AppSnackbar.show(
         context,
-        message: provider.errorMessage ?? "Something went wrong!",
+        message: GoalFormValidation.humanizeMessage(
+          provider.errorMessage ?? "Something went wrong!",
+        ),
         status: SnackbarStatus.error,
       );
     }
@@ -172,18 +253,30 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       if (!mounted) return;
       AppSnackbar.show(
         context,
-        message: provider.errorMessage ?? "Something went wrong!",
+        message: GoalFormValidation.humanizeMessage(
+          provider.errorMessage ?? "Something went wrong!",
+        ),
         status: SnackbarStatus.error,
       );
     }
   }
 
   Future<void> _createGoal() async {
+    final titleError = GoalFormValidation.validateTitle(_title);
+    if (titleError != null) {
+      if (!mounted) return;
+      AppSnackbar.show(
+        context,
+        message: titleError,
+        status: SnackbarStatus.error,
+      );
+      return;
+    }
     final res = await provider.createGoal(
-      startDate: _startDate,
-      endDate: _endDate,
+      startDate: _startDate!,
+      endDate: _endDate!,
       level: _level,
-      request: _request,
+      request: _notes,
       title: _title,
     );
     if (res) {
@@ -193,7 +286,9 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       if (!mounted) return;
       AppSnackbar.show(
         context,
-        message: provider.errorMessage ?? "Something went wrong!",
+        message: GoalFormValidation.humanizeMessage(
+          provider.errorMessage ?? "Something went wrong!",
+        ),
         status: SnackbarStatus.error,
       );
     }
@@ -241,12 +336,14 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           height: 1.5,
           fontWeight: FontWeight.w600,
         );
-    return ListView(
-      padding: EdgeInsets.all(padding),
-      children: [
-        Text.rich(
-          TextSpan(
-            text: "Tell us about your goal and our ",
+    return Form(
+      key: _formKey,
+      child: ListView(
+        padding: EdgeInsets.all(padding),
+        children: [
+          Text.rich(
+            TextSpan(
+              text: "Tell us about your goal and our ",
             children: [
               TextSpan(text: "AI coach ", style: highlight),
               TextSpan(text: "will build a "),
@@ -274,53 +371,72 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         const SizedBox(height: 12),
         Text.rich(
           TextSpan(
-            text: "Your ",
+            text: "End date must be ",
             children: [
-              TextSpan(text: "minimum ", style: highlight),
-              TextSpan(text: "and "),
-              TextSpan(text: "maximum ", style: highlight),
-              TextSpan(text: "training range will be "),
-              TextSpan(text: "7 days ", style: highlight),
-              TextSpan(text: "and "),
-              TextSpan(text: "1 month ", style: highlight),
-              TextSpan(text: "respectively."),
+              TextSpan(text: "after ", style: highlight),
+              TextSpan(text: "start date (up to "),
+              TextSpan(text: "$_maxPlanMonths months ", style: highlight),
+              TextSpan(text: "apart)."),
             ],
           ),
           style: normal,
         ),
         const SizedBox(height: 24),
-        Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              CustomTextFormField(
-                label: "Title of goal",
-                hintText: 'e.g. 300 BRM Training',
-                initialValue: _title,
-                onChanged: (value) {
-                  setState(() {
-                    _title = value;
-                  });
-                },
-                validator: (v) =>
-                    v == null || v.isEmpty ? 'Enter a title' : null,
-              ),
-              CustomTextFormField(
-                label: "Describe your goal",
-                hintText:
-                    'e.g. Prepare for a 300 BRM next month with focus on endurance...',
-                initialValue: _request,
-                maxLines: 5,
-                onChanged: (value) {
-                  setState(() {
-                    _request = value;
-                  });
-                },
-                validator: (v) =>
-                    v == null || v.isEmpty ? 'Enter a goal' : null,
-              ),
-            ],
-          ),
+        CustomTextFormField(
+          label: "Title of goal",
+          hintText: 'e.g. Gran Fondo 2026',
+          initialValue: _title,
+          onChanged: (value) {
+            setState(() {
+              _title = value;
+            });
+          },
+          validator: (v) => GoalFormValidation.validateTitle(v),
+        ),
+        CustomTextFormField(
+          label: "Notes (optional)",
+          hintText: 'Any extra context for your coach...',
+          initialValue: _notes,
+          maxLines: 3,
+          onChanged: (value) {
+            setState(() {
+              _notes = value;
+            });
+          },
+        ),
+        const SizedBox(height: 8),
+        _sectionHeader(
+          context,
+          title: 'Goal type',
+          subtitle: 'Required · what are you training for?',
+        ),
+        const SizedBox(height: 8),
+        _sectionHeader(
+          context,
+          title: 'Event preparation',
+          subtitle: 'Race and event-focused goals',
+          compact: true,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: kEventPrepGoals.map((g) => _goalChip(g)).toList(),
+        ),
+        const SizedBox(height: 12),
+        _sectionHeader(
+          context,
+          title: 'Other goals',
+          compact: true,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: kGoalTypeValues
+              .where((g) => !kEventPrepGoals.contains(g))
+              .map((g) => _goalChip(g))
+              .toList(),
         ),
         const SizedBox(height: 16),
         _DateField(
@@ -335,18 +451,10 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           onTap: () => _pickDate(false),
         ),
         const SizedBox(height: 24),
-        Text(
-          'Experience Level',
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'This is based on your Strava history',
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall!.copyWith(color: AppColors.textSecondaryOf(context)),
+        _sectionHeader(
+          context,
+          title: 'Experience Level',
+          subtitle: 'This is based on your Strava history',
         ),
         const SizedBox(height: 8),
         Text(
@@ -355,9 +463,187 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
             context,
           ).textTheme.titleMedium!.copyWith(color: AppColors.primary),
         ),
+        const SizedBox(height: 24),
+        _sectionHeader(
+          context,
+          title: 'Weekly limits',
+          subtitle: 'Optional caps used when building your plan',
+        ),
+        const SizedBox(height: 8),
+        _sectionHeader(
+          context,
+          title: 'Max training days per week',
+          subtitle: 'Optional · 1–${GoalFormValidation.maxTrainingDaysCap}',
+          compact: true,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: List.generate(GoalFormValidation.maxTrainingDaysCap, (i) {
+            final days = i + 1;
+            return _SelectChip(
+              label: '$days',
+              selected: _maxTrainingDays == days,
+              onTap: () {
+                setState(() {
+                  _maxTrainingDays = _maxTrainingDays == days ? null : days;
+                });
+              },
+            );
+          }),
+        ),
+        CustomTextFormField(
+          label: 'Max weekly distance (km)',
+          hintText: 'e.g. 200',
+          initialValue: '',
+          keyboardType: TextInputType.number,
+          onChanged: (value) {
+            setState(() {
+              if (value.trim().isEmpty) {
+                _maxWeeklyDistance = null;
+              } else {
+                _maxWeeklyDistance = int.tryParse(value.trim());
+              }
+            });
+          },
+          validator: GoalFormValidation.validateOptionalPositiveInt,
+        ),
+        CustomTextFormField(
+          label: 'Max weekly duration (hours)',
+          hintText: 'e.g. 10',
+          initialValue: '',
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          onChanged: (value) {
+            setState(() {
+              if (value.trim().isEmpty) {
+                _maxWeeklyDuration = null;
+              } else {
+                _maxWeeklyDuration =
+                    GoalFormValidation.hoursToWeeklyDurationMinutes(value);
+              }
+            });
+          },
+          validator: GoalFormValidation.validateOptionalPositiveHours,
+        ),
+        const SizedBox(height: 16),
+        _sectionHeader(
+          context,
+          title: 'Preferred training days',
+          subtitle:
+              'Required · 1–${GoalFormValidation.maxPreferredTrainingDays} days '
+              '(${_preferredTrainingDays.length}/${GoalFormValidation.maxPreferredTrainingDays})',
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: kDayOfWeekValues.map((day) {
+            final selected = _preferredTrainingDays.contains(day);
+            final atCap = !selected &&
+                _preferredTrainingDays.length >=
+                    GoalFormValidation.maxPreferredTrainingDays;
+            return _SelectChip(
+              label: day.label,
+              selected: selected,
+              onTap: atCap ? null : () => _toggleTrainingDay(day),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 16),
+        _sectionHeader(
+          context,
+          title: 'Preferred long ride day',
+          subtitle:
+              'Optional · must be one of your preferred training days',
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: kDayOfWeekValues.map((day) {
+            return _SelectChip(
+              label: day.label,
+              selected: _preferredLongRideDay == day,
+              onTap: () => setState(() {
+                _preferredLongRideDay =
+                    _preferredLongRideDay == day ? null : day;
+              }),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 16),
+        _sectionHeader(
+          context,
+          title: 'Preferred session types',
+          subtitle: 'Required · select at least one workout style',
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: kSessionTypeValues.map((type) {
+            return _SelectChip(
+              label: _sessionTypeLabel(type),
+              selected: _preferredSessionTypes.contains(type),
+              onTap: () => _toggleSessionType(type),
+            );
+          }).toList(),
+        ),
+        ],
+      ),
+    );
+  }
+
+  Widget _goalChip(TrainingGoal g) {
+    return _SelectChip(
+      label: g.label,
+      selected: _goal == g,
+      onTap: () => setState(() => _goal = g),
+    );
+  }
+
+  Widget _sectionHeader(
+    BuildContext context, {
+    required String title,
+    String? subtitle,
+    bool compact = false,
+  }) {
+    final titleStyle = compact
+        ? Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+          )
+        : Theme.of(
+            context,
+          ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: titleStyle),
+        if (subtitle != null) ...[
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+              color: AppColors.textSecondaryOf(context),
+            ),
+          ),
+        ],
       ],
     );
   }
+
+  String _sessionTypeLabel(PlanType type) => switch (type) {
+    PlanType.rest => 'Rest',
+    PlanType.recovery => 'Recovery',
+    PlanType.easy => 'Easy',
+    PlanType.endurance => 'Endurance',
+    PlanType.tempo => 'Tempo',
+    PlanType.threshold => 'Threshold',
+    PlanType.vo2 => 'VO2',
+    PlanType.sprint => 'Sprint',
+    PlanType.long => 'Long',
+  };
 
   Widget _buildCalendarPage() {
     provider = context.watch<GoalProvider>();
@@ -430,6 +716,29 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   };
 }
 
+class _SelectChip extends StatelessWidget {
+  const _SelectChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilterChip(
+      label: Text(label),
+      selected: selected,
+      onSelected: onTap == null ? null : (_) => onTap!(),
+      selectedColor: AppColors.primary.withValues(alpha: 0.15),
+      checkmarkColor: AppColors.primary,
+    );
+  }
+}
+
 class _DateField extends StatelessWidget {
   const _DateField({
     required this.label,
@@ -438,7 +747,7 @@ class _DateField extends StatelessWidget {
   });
 
   final String label;
-  final DateTime date;
+  final DateTime? date;
   final VoidCallback onTap;
 
   @override
@@ -452,8 +761,15 @@ class _DateField extends StatelessWidget {
           suffixIcon: const Icon(Icons.calendar_today),
         ),
         child: Text(
-          '${date.month}/${date.day}/${date.year}',
-          style: const TextStyle(fontSize: 16),
+          date == null
+              ? 'Select date'
+              : '${date!.month}/${date!.day}/${date!.year}',
+          style: TextStyle(
+            fontSize: 16,
+            color: date == null
+                ? AppColors.textSecondaryOf(context)
+                : null,
+          ),
         ),
       ),
     );

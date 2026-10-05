@@ -84,26 +84,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: 'View and edit your profile',
             onTap: () => context.push(RoutePaths.profile),
           ),
-          const SizedBox(height: 16),
-          _SectionHeader(title: 'Notifications'),
-          SwitchListTile(
-            title: const Text('Push Notifications'),
-            value: settings.pushNotifications,
-            activeColor: AppColors.primary,
-            onChanged: settings.setPushNotifications,
-          ),
-          SwitchListTile(
-            title: const Text('Email Notifications'),
-            value: settings.emailNotifications,
-            activeColor: AppColors.primary,
-            onChanged: settings.setEmailNotifications,
-          ),
-          SwitchListTile(
-            title: const Text('Training Reminders'),
-            value: settings.trainingReminders,
-            activeColor: AppColors.primary,
-            onChanged: settings.setTrainingReminders,
-          ),
+          // const SizedBox(height: 16),
+          // _SectionHeader(title: 'Notifications'),
+          // SwitchListTile(
+          //   title: const Text('Push Notifications'),
+          //   value: settings.pushNotifications,
+          //   activeColor: AppColors.primary,
+          //   onChanged: settings.setPushNotifications,
+          // ),
+          // SwitchListTile(
+          //   title: const Text('Email Notifications'),
+          //   value: settings.emailNotifications,
+          //   activeColor: AppColors.primary,
+          //   onChanged: settings.setEmailNotifications,
+          // ),
+          // SwitchListTile(
+          //   title: const Text('Training Reminders'),
+          //   value: settings.trainingReminders,
+          //   activeColor: AppColors.primary,
+          //   onChanged: settings.setTrainingReminders,
+          // ),
           // const SizedBox(height: 16),
           // _SectionHeader(title: 'Appearance'),
           // SwitchListTile(
@@ -124,12 +124,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             activeColor: AppColors.primary,
             onChanged: settings.setUseImperial,
           ),
-          ListTile(
-            title: const Text('Language'),
-            subtitle: Text(settings.language),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => _showLanguagePicker(context, settings),
-          ),
+          // ListTile(
+          //   title: const Text('Language'),
+          //   subtitle: Text(settings.language),
+          //   trailing: const Icon(Icons.chevron_right),
+          //   onTap: () => _showLanguagePicker(context, settings),
+          // ),
           const SizedBox(height: 16),
           _SectionHeader(title: 'Privacy'),
           _SettingsTile(
@@ -269,7 +269,9 @@ class _SettingsTile extends StatelessWidget {
       child: ListTile(
         leading: Icon(icon, color: AppColors.textSecondaryOf(context)),
         title: Text(title),
-        subtitle: subtitle != null ? Text(subtitle!, style: subTitleStyle) : null,
+        subtitle: subtitle != null
+            ? Text(subtitle!, style: subTitleStyle)
+            : null,
         trailing: onTap != null
             ? const Icon(Icons.chevron_right, size: 20)
             : null,

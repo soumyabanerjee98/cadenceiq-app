@@ -1,20 +1,84 @@
+import 'package:cadenceiq/core/constants/goal_values.dart';
 import 'package:cadenceiq/core/theme/app_colors.dart';
 import 'package:cadenceiq/models/activity.dart';
 import 'package:flutter/material.dart';
 
 enum ExperienceLevel { beginner, intermediate, advanced, elite }
 
+enum TrainingGoal {
+  generalFitness('general_fitness', 'General fitness'),
+  paceImprovement('pace_improvement', 'Pace improvement'),
+  endurance('endurance', 'Endurance'),
+  weightLoss('weight_loss', 'Weight loss'),
+  timeTrial('time_trial', 'Time trial'),
+  granFondo('gran_fondo', 'Gran fondo'),
+  bikepacking('bikepacking', 'Bikepacking'),
+  race('race', 'Race'),
+  commuting('commuting', 'Commuting'),
+  maintenance('maintenance', 'Maintenance'),
+  custom('custom', 'Custom');
+
+  const TrainingGoal(this.apiValue, this.label);
+  final String apiValue;
+  final String label;
+
+  static TrainingGoal fromApiValue(String value) {
+    return TrainingGoal.values.firstWhere((g) => g.apiValue == value);
+  }
+}
+
+enum Weekday {
+  monday('Monday'),
+  tuesday('Tuesday'),
+  wednesday('Wednesday'),
+  thursday('Thursday'),
+  friday('Friday'),
+  saturday('Saturday'),
+  sunday('Sunday');
+
+  const Weekday(this.label);
+  final String label;
+
+  String get apiValue => name;
+
+  static Weekday fromApiValue(String value) {
+    return Weekday.values.byName(value);
+  }
+}
+
 enum PlanType {
   rest,
   recovery,
-  endurance,
   easy,
+  endurance,
   tempo,
   threshold,
   vo2,
   sprint,
-  long,
+  long;
+
+  String get apiValue => name;
+
+  static PlanType fromApiValue(String value) {
+    return PlanType.values.byName(value);
+  }
 }
+
+List<Weekday> get kDayOfWeekValues => GoalValues.dayOfWeekValues
+    .map(Weekday.fromApiValue)
+    .toList();
+
+List<PlanType> get kSessionTypeValues => GoalValues.sessionTypeValues
+    .map(PlanType.fromApiValue)
+    .toList();
+
+List<TrainingGoal> get kGoalTypeValues => GoalValues.goalTypeValues
+    .map(TrainingGoal.fromApiValue)
+    .toList();
+
+List<TrainingGoal> get kEventPrepGoals => GoalValues.eventPrepGoals
+    .map(TrainingGoal.fromApiValue)
+    .toList();
 
 Color planColor(PlanType type) {
   switch (type) {

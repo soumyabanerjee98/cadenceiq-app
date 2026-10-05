@@ -10,15 +10,42 @@ class GoalRepository {
     required DateTime startDate,
     required DateTime endDate,
     required ExperienceLevel level,
-    required String request,
+    required TrainingGoal goal,
+    int? maxTrainingDays,
+    int? maxWeeklyDistance,
+    int? maxWeeklyDuration,
+    Weekday? preferredLongRideDay,
+    required List<Weekday> preferredTrainingDays,
+    required List<PlanType> preferredSessionTypes,
+    String? notes,
   }) async {
     try {
-      Map<String, String> payload = {
+      final Map<String, dynamic> payload = {
         "startDate": startDate.toIso8601String().split("T")[0],
         "endDate": endDate.toIso8601String().split("T")[0],
         "experienceLevel": level.name,
-        "customGoalRequirements": request,
+        "goal": goal.apiValue,
+        "preferredTrainingDays":
+            preferredTrainingDays.map((d) => d.apiValue).toList(),
+        "preferredSessionTypes":
+            preferredSessionTypes.map((t) => t.apiValue).toList(),
       };
+      if (maxTrainingDays != null) {
+        payload["maxTrainingDays"] = maxTrainingDays;
+      }
+      if (maxWeeklyDistance != null) {
+        payload["maxWeeklyDistance"] = maxWeeklyDistance;
+      }
+      if (maxWeeklyDuration != null) {
+        payload["maxWeeklyDuration"] = maxWeeklyDuration;
+      }
+      if (preferredLongRideDay != null) {
+        payload["preferredLongRideDay"] = preferredLongRideDay.apiValue;
+      }
+      final trimmedNotes = notes?.trim();
+      if (trimmedNotes != null && trimmedNotes.isNotEmpty) {
+        payload["notes"] = trimmedNotes;
+      }
       final res = await dio.post(ApiUrl.buildPlan, data: payload);
       return ApiResponse(statusCode: res.statusCode, response: res.data);
     } on DioException catch (dioErr) {

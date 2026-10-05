@@ -64,7 +64,14 @@ class GoalProvider extends ChangeNotifier {
     required DateTime startDate,
     required DateTime endDate,
     required ExperienceLevel level,
-    required String request,
+    required TrainingGoal goal,
+    int? maxTrainingDays,
+    int? maxWeeklyDistance,
+    int? maxWeeklyDuration,
+    Weekday? preferredLongRideDay,
+    required List<Weekday> preferredTrainingDays,
+    required List<PlanType> preferredSessionTypes,
+    String? notes,
   }) async {
     _isGenerating = false;
     _errorMessage = null;
@@ -76,7 +83,14 @@ class GoalProvider extends ChangeNotifier {
         startDate: startDate,
         endDate: endDate,
         level: level,
-        request: request,
+        goal: goal,
+        maxTrainingDays: maxTrainingDays,
+        maxWeeklyDistance: maxWeeklyDistance,
+        maxWeeklyDuration: maxWeeklyDuration,
+        preferredLongRideDay: preferredLongRideDay,
+        preferredTrainingDays: preferredTrainingDays,
+        preferredSessionTypes: preferredSessionTypes,
+        notes: notes,
       );
       if (res.response != null) {
         _target = TrainingTarget.fromJson(res.response);
