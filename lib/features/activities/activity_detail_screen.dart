@@ -154,7 +154,9 @@ class _ActivityDetailScreenState extends State<ActivityDetailScreen> {
                   delegate: SliverChildListDelegate([
                     Text(
                       '${activity.zoneLabel} · ${Formatters.date(activity.date)}',
-                      style: TextStyle(color: AppColors.textSecondaryOf(context)),
+                      style: TextStyle(
+                        color: AppColors.textSecondaryOf(context),
+                      ),
                     ),
                     if (activity.maxHr == null || activity.avgHr == null)
                       WarningCard(
